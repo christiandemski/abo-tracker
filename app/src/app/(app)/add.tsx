@@ -1,18 +1,40 @@
-import { CirclePlus } from 'lucide-react-native';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import { Screen } from '@/components';
-import { ComingSoon } from '@/components/ComingSoon';
-import { ScreenHeader } from '@/components/ScreenHeader';
+import { Screen, ScreenHeader } from '@/components';
+import { emptyForm } from '@/features/subscriptionForm/model';
+import { SubscriptionForm } from '@/features/subscriptionForm/SubscriptionForm';
+import { useAuth } from '@/lib/auth';
+import type { Resource, Subscription } from '@/lib/types';
+import { invalidate } from '@/lib/useQuery';
+import { screenPadding } from '@/theme';
 
 export default function AddSubscriptionScreen() {
+  const { api } = useAuth();
+  const [initial] = useState(() => emptyForm());
+
   return (
-    <Screen>
-      <ScreenHeader title="Abo hinzufügen" nav="close" />
-      <ComingSoon
-        icon={CirclePlus}
-        title="Kommt als Nächstes"
-        text="Hier legst du bald Abos an: mit Vorlagen für bekannte Dienste, Rhythmus, Kategorie und Kündigungsfrist."
+    <Screen bare>
+      <View style={styles.header}>
+        <ScreenHeader title="Abo hinzufügen" nav="close" />
+      </View>
+      <SubscriptionForm
+        initial={initial}
+        withTemplates
+        submitLabel="Abo speichern"
+        onSubmit={async (payload) => {
+          const { data } = await api.post<Resource<Subscription>>('subscriptions', payload);
+          invalidate('subscriptions', 'dashboard');
+          router.replace(`/subscription/${data.id}`);
+        }}
       />
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingHorizontal: screenPadding - 4,
+  },
+});

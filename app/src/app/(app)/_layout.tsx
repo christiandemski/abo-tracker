@@ -13,6 +13,8 @@ export default function AppLayout() {
       <Stack.Screen name="add" options={{ presentation: 'modal' }} />
       <Stack.Screen name="import" options={{ presentation: 'modal' }} />
       <Stack.Screen name="settings" />
+      <Stack.Screen name="subscription/[id]/index" />
+      <Stack.Screen name="subscription/[id]/edit" options={{ presentation: 'modal' }} />
     </Stack>
   );
 }

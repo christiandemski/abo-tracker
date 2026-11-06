@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Subscription;
 use App\Services\BillingCalculator;
 use App\Services\DeadlineCalculator;
+use App\Support\Fraction;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -68,6 +69,12 @@ class SubscriptionResource extends JsonResource
             'template_key' => $this->template_key,
 
             'price_history' => PriceChangeResource::collection($this->whenLoaded('priceChanges')),
+            // Change of the current price against the first recorded price, in percent (one decimal)
+            'price_trend_percent' => $this->whenLoaded('priceChanges', function () {
+                $first = $this->priceChanges->first()?->old_cents;
+
+                return $first ? (new Fraction(($this->amount_cents - $first) * 1000, $first))->round() / 10 : null;
+            }),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

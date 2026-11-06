@@ -132,7 +132,8 @@ describe('update', function () {
             ->assertJsonPath('data.price_history.0.old_cents', 1199)
             ->assertJsonPath('data.price_history.0.new_cents', 1439)
             ->assertJsonPath('data.price_history.0.percent', 20)
-            ->assertJsonPath('data.price_history.0.effective_date', '2026-11-05');
+            ->assertJsonPath('data.price_history.0.effective_date', '2026-11-05')
+            ->assertJsonPath('data.price_trend_percent', 20);
 
         $this->patchJson("/api/v1/subscriptions/{$sub->id}", ['name' => 'Umbenannt'])->assertOk();
         expect(PriceChange::count())->toBe(1);
