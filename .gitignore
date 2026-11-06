@@ -9,3 +9,6 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Build output of the web app (created by npm run export:web / deploy workflow)
+api/public/app/
