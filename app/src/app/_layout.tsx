@@ -4,7 +4,7 @@ import {
   SpaceGrotesk_600SemiBold,
   SpaceGrotesk_700Bold,
 } from '@expo-google-fonts/space-grotesk';
-import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
+import { DarkTheme, Stack, ThemeProvider, router, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
@@ -53,14 +53,26 @@ export default function RootLayout() {
   );
 }
 
+/** Screens of the (auth) group, as URL paths. */
+const AUTH_PATHS = ['/login', '/register', '/forgot-password', '/reset-password'];
+
 function RootNavigator() {
   const { status } = useAuth();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (status !== 'loading') {
       SplashScreen.hideAsync().catch(() => {});
     }
   }, [status]);
+
+  // Stack.Protected falls back to the "(auth)" group. On native that opens its initial
+  // route (login); on web it ends up at the URL "/(auth)", which matches no screen.
+  useEffect(() => {
+    if (status === 'signedOut' && !AUTH_PATHS.includes(pathname)) {
+      router.replace('/login');
+    }
+  }, [status, pathname]);
 
   if (status === 'loading') {
     return null;

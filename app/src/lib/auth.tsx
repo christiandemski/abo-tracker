@@ -73,6 +73,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     (async () => {
       const stored = await tokenStorage.get().catch(() => null);
       if (!stored) {
+        // Web keeps the token only per tab (sessionStorage), the data cache in localStorage.
+        // Without a session the cache belongs to nobody: drop it, so neither leftover amounts
+        // stay on a shared computer nor the next user briefly sees someone else's data.
+        await clearCache().catch(() => {});
         if (!cancelled) setStatus('signedOut');
         return;
       }
