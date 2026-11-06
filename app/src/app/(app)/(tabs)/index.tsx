@@ -25,6 +25,8 @@ import {
 import { useAuth } from '@/lib/auth';
 import { formatCents, formatLongDate } from '@/lib/format';
 import { useDashboard } from '@/lib/queries';
+import { useIsDesktop } from '@/lib/useLayout';
+import { DesktopOverview } from '@/features/desktop/DesktopOverview';
 import type { Dashboard, MessageResponse } from '@/lib/types';
 import { colors, fonts, screenPadding } from '@/theme';
 
@@ -36,6 +38,15 @@ export default function OverviewScreen() {
   const dashboard = useDashboard(period);
   const verified = !!user?.email_verified;
   const notices = dashboard.data?.notices_count ?? 0;
+  const desktop = useIsDesktop();
+
+  if (desktop && verified && period === 'month' && dashboard.data && dashboard.data.subscription_count > 0) {
+    return (
+      <Screen bare>
+        <DesktopOverview dashboard={dashboard.data} />
+      </Screen>
+    );
+  }
 
   return (
     <Screen bare>

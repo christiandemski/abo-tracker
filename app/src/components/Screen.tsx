@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useIsDesktop } from '@/lib/useLayout';
 import { colors, screenPadding } from '@/theme';
 
 type Props = {
@@ -15,8 +16,9 @@ type Props = {
 };
 
 export function Screen({ children, narrow, scroll = true, bare, contentStyle }: Props) {
+  const desktop = useIsDesktop();
   const content = (
-    <View style={[styles.content, narrow && styles.narrow, contentStyle]}>{children}</View>
+    <View style={[styles.content, desktop && styles.wide, narrow && styles.narrow, contentStyle]}>{children}</View>
   );
 
   return (
@@ -53,6 +55,12 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: screenPadding,
     paddingBottom: 24,
+  },
+  // Readable column on desktop (web ≥ 1024 px)
+  wide: {
+    maxWidth: 720,
+    alignSelf: 'center',
+    paddingTop: 12,
   },
   narrow: {
     maxWidth: 420,

@@ -249,6 +249,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: screenPadding,
     paddingBottom: 32,
     flexGrow: 1,
+    width: '100%',
+    maxWidth: 760,
+    alignSelf: 'center',
   },
   empty: {
     paddingVertical: 24,
