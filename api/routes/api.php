@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\BillingPreviewController;
+use App\Http\Controllers\CalendarFeedController;
 use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -32,6 +33,12 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/forgot-password', [PasswordResetController::class, 'sendLink'])->middleware('throttle:5,1')->name('forgot-password');
     Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:10,1')->name('reset-password');
 });
+
+// Private calendar feed (secret token in the URL, no login)
+Route::get('/ical/{token}.ics', [CalendarFeedController::class, 'ics'])
+    ->where('token', '[a-f0-9]{64}')
+    ->middleware('throttle:60,1')
+    ->name('ical.feed');
 
 // Link from the verification mail (signed, no login needed)
 Route::get('/auth/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])
@@ -87,6 +94,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/settings/reminders', [ReminderSettingsController::class, 'show'])->name('settings.reminders.show');
     Route::put('/settings/reminders', [ReminderSettingsController::class, 'update'])->name('settings.reminders.update');
+
+    Route::get('/settings/calendar-feed', [CalendarFeedController::class, 'show'])->name('settings.calendar-feed.show');
+    Route::put('/settings/calendar-feed', [CalendarFeedController::class, 'update'])->name('settings.calendar-feed.update');
+    Route::post('/settings/calendar-feed/rotate', [CalendarFeedController::class, 'rotate'])->middleware('throttle:10,1')->name('settings.calendar-feed.rotate');
+    Route::delete('/settings/calendar-feed', [CalendarFeedController::class, 'destroy'])->name('settings.calendar-feed.destroy');
 
     Route::post('/push-tokens', [PushTokenController::class, 'store'])->middleware('throttle:20,1')->name('push-tokens.store');
     Route::delete('/push-tokens/{token}', [PushTokenController::class, 'destroy'])
