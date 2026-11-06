@@ -7,6 +7,7 @@ use App\Enums\NoticeUnit;
 use App\Enums\SubscriptionSource;
 use App\Enums\SubscriptionStatus;
 use App\Models\Concerns\BelongsToUser;
+use App\Services\SubscriptionDates;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,6 +33,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Subscription extends Model
 {
     use BelongsToUser, HasFactory, SoftDeletes;
+
+    protected static function booted(): void
+    {
+        // Derived dates are always recomputed from the source fields.
+        static::saving(fn (Subscription $subscription) => app(SubscriptionDates::class)->apply($subscription));
+    }
 
     protected $attributes = [
         'interval_count' => 1,

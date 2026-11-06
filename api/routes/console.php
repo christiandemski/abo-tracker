@@ -12,6 +12,12 @@ Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3')
     ->everyMinute()
     ->withoutOverlapping(5);
 
+// Recompute next charge and cancellation deadlines (dates move on every day)
+Schedule::command('subscriptions:refresh-dates')
+    ->dailyAt('00:05')
+    ->timezone('Europe/Berlin')
+    ->withoutOverlapping();
+
 // Deadline reminders (M3)
 Schedule::command('reminders:dispatch')
     ->dailyAt('07:00')

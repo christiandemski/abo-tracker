@@ -79,7 +79,7 @@ jobs:
           ssh deploy "cd '${{ secrets.DEPLOY_PATH }}' \
             && mkdir -p storage/app/public storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache \
             && $PHP_BIN artisan migrate --force \
-            && $PHP_BIN artisan db:seed --class=CategorySeeder --force \
+            && $PHP_BIN artisan db:seed --force \
             && $PHP_BIN artisan optimize"
 
       - name: Health check

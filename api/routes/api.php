@@ -3,7 +3,12 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\BillingPreviewController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => response()->json(['status' => 'ok']))->name('health');
@@ -37,4 +42,14 @@ Route::middleware('auth:sanctum')->group(function () {
 // Authenticated and verified
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
+
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/billing/preview', BillingPreviewController::class)->name('billing.preview');
+
+    Route::apiResource('subscriptions', SubscriptionController::class);
+    Route::post('/subscriptions/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
+    Route::post('/subscriptions/{subscription}/reactivate', [SubscriptionController::class, 'reactivate'])->name('subscriptions.reactivate');
+
+    Route::apiResource('categories', CategoryController::class)->except('show');
+    Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
 });
