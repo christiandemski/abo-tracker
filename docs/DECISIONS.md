@@ -6,7 +6,7 @@ Punkte, die SPEC.md und DESIGN.md offen ließen und die mit dem Nutzer geklärt 
 
 - **Commits ohne `Co-Authored-By`-Zeile** (ausdrücklicher Wunsch). Commit-Mail: christian.demski@outlook.com.
 - Vor jedem Meilenstein kurz planen, offene Punkte nachfragen, dann in kleinen lauffähigen Commits arbeiten.
-- Lokal: PHP 8.5 über scoop (`~/scoop/shims/php.exe`), weil im PATH sonst ein älteres PHP zuerst kommt.
+- Lokal: bevorzugt DDEV (`.ddev/`, PHP 8.5, MySQL 8.4, Mailpit), siehe README. Ohne DDEV: PHP 8.5 über scoop (`~/scoop/shims/php.exe`).
 
 ## M2 · Abos & Übersicht
 
@@ -14,6 +14,12 @@ Punkte, die SPEC.md und DESIGN.md offen ließen und die mit dem Nutzer geklärt 
 - Erinnerung pro Abo an-/abschaltbar (`remind`, Standard an); die Abstände gelten global pro Nutzer.
 - Rhythmus-Auswahl: monatlich / vierteljährlich / jährlich plus „Anderer Rhythmus“ (wöchentlich, halbjährlich, alle N Wochen/Monate/Jahre).
 - Betragsänderungen legen eine angenommene manuelle Preisänderung an (Preisverlauf auf der Detailseite).
+
+## Fristen (Korrektur nach Browser-Test, 06.11.2026)
+
+- `term_end_date` ist der **Verlängerungstag** (erster Tag der neuen Laufzeit); der Vertrag läuft bis zum Vortag.
+- `cancel_by` = Verlängerungstag − Kündigungsfrist − 1 Tag, damit die volle Frist vor Vertragsende liegt. Beispiel: Vertrag endet 30.11., Frist 1 Monat → Kündigung muss bis 31.10. da sein.
+- „Behalten“ gilt für die Laufzeit mit `term_end_date <= kept_until`, nicht für Fristen vor `kept_until`.
 
 ## M3 · Erinnerungen
 
@@ -45,6 +51,10 @@ Punkte, die SPEC.md und DESIGN.md offen ließen und die mit dem Nutzer geklärt 
 
 ## Noch offen
 
-- Browser-Test der Screens aus M4–M6.
+- Browser-Test M4–M6 erledigt (06.11.2026). Rückfragen daraus:
+  - Import schlägt einen alten Preis als „Preisänderung“ vor, wenn der Preis nach der letzten Abbuchung im Auszug manuell geändert wurde.
+  - Gekündigte Abos fallen sofort aus „Fixkosten pro Monat“; der Kündigungs-Screen sagt aber „Danach fällt es aus deinen Fixkosten“.
+  - „Kündbar bis“ bleibt in der Zeitleiste der Detailseite orange, auch wenn „Behalten“ gewählt ist.
+  - „Nächste Jahreszahlungen“ (Statistik) listet auch Quartalsabos.
 - Echter Sparkasse-Export (siehe M4).
 - Server-Einrichtung: Netcup, GitHub-Secrets, Cronjob, EAS/FCM, `EAS_PROJECT_ID` (siehe `docs/DEPLOY.md`).
