@@ -9,3 +9,6 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+# Bank export fixtures: keep exact bytes (Windows-1252, CRLF)
+tests/Fixtures/import/*.csv binary
