@@ -173,7 +173,7 @@ function ReserveSection({ reserve }: { reserve: Reserve }) {
       {reserve.upcoming.length > 0 && (
         <View style={styles.section}>
           <AppText variant="h2" accessibilityRole="header" style={styles.h2}>
-            Nächste Jahreszahlungen
+            Seltenere Zahlungen
           </AppText>
           <View style={styles.list}>
             {reserve.upcoming.map((p, i) => (

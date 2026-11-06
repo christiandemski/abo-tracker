@@ -273,7 +273,7 @@ function Done({ subscription: s, onUndone }: { subscription: Subscription; onUnd
               <AppText variant="body" style={styles.semi}>
                 {formatDate(s.ends_at)}
               </AppText>
-              . Danach fällt es aus deinen Fixkosten.
+              . In deinen Fixkosten zählt es ab sofort nicht mehr.
             </>
           ) : (
             'Das Abo zählt nicht mehr zu deinen Fixkosten.'

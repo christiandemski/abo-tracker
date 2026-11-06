@@ -465,7 +465,8 @@ function Timeline({ s }: { s: Subscription }) {
 
   if (s.has_term) {
     if (s.start_date) items.push({ label: 'Vertragsbeginn', date: s.start_date });
-    if (s.cancel_by_date) items.push({ label: 'Kündbar bis', date: s.cancel_by_date, tone: 'warn' });
+    // Orange only means "action needed"; after "Behalten" there is nothing to do for this term.
+    if (s.cancel_by_date) items.push({ label: 'Kündbar bis', date: s.cancel_by_date, tone: s.is_kept ? undefined : 'warn' });
     if (s.term_end_date) items.push({ label: 'Nächste Verlängerung', date: s.term_end_date, tone: 'accent' });
   } else if (s.next_charge_date) {
     items.push({ label: 'Nächste Abbuchung', date: s.next_charge_date, tone: 'accent' });
