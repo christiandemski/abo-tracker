@@ -19,7 +19,7 @@ function adobeFor(User $user, array $overrides = []): Subscription
 {
     return Subscription::factory()->for($user)->create(array_merge([
         'name' => 'Adobe Creative Cloud', 'amount_cents' => 14388, 'interval_unit' => 'year', 'anchor_date' => '2026-11-12',
-        'start_date' => '2023-11-12', 'min_term_months' => 12, 'renewal_months' => 12, 'notice_value' => 2, 'notice_unit' => 'day',
+        'start_date' => '2023-11-12', 'min_term_months' => 12, 'renewal_months' => 12, 'notice_value' => 1, 'notice_unit' => 'day',
     ], $overrides));
 }
 

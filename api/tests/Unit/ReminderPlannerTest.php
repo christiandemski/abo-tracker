@@ -11,7 +11,7 @@ function onDay(string $date): CarbonImmutable
     return CarbonImmutable::parse($date, 'Europe/Berlin')->startOfDay();
 }
 
-/** Adobe-like contract: cancel by 10.11.2026 (term end 12.11.2026, notice 2 days). */
+/** Adobe-like contract: cancel by 10.11.2026 (renews 12.11.2026, contract ends 11.11., notice 1 day). */
 function termSub(array $overrides = []): Subscription
 {
     $s = new Subscription(array_merge([
@@ -23,7 +23,7 @@ function termSub(array $overrides = []): Subscription
         'start_date' => '2023-11-12',
         'min_term_months' => 12,
         'renewal_months' => 12,
-        'notice_value' => 2,
+        'notice_value' => 1,
         'notice_unit' => 'day',
         'status' => 'active',
         'remind' => true,
@@ -89,12 +89,12 @@ it('reminds of tomorrow\'s charge only for long intervals and only when enabled'
 });
 
 it('handles deadlines at month ends and across DST', function () {
-    // term end 31.03.2027 (from 31.03.2026, 12 months), notice 1 month → cancel by 28.02.2027
+    // renews 31.03.2027 (from 31.03.2026, 12 months), notice 1 month → 28.02.2027 − 1 day → cancel by 27.02.2027
     $sub = termSub(['start_date' => '2026-03-31', 'renewal_months' => 1, 'notice_value' => 1, 'notice_unit' => 'month', 'anchor_date' => '2026-03-31']);
 
-    expect(dueSummary($this->planner->plan([$sub], reminderSettings([3]), onDay('2027-02-25'))))->toBe([['deadline', '2027-02-28', 3, 3]]);
+    expect(dueSummary($this->planner->plan([$sub], reminderSettings([3]), onDay('2027-02-24'))))->toBe([['deadline', '2027-02-27', 3, 3]]);
 
-    // cancel by 01.04.2026 → 3-day reminder on 29.03.2026 (DST switch day)
-    $dst = termSub(['start_date' => '2025-04-02', 'renewal_months' => 12, 'notice_value' => 1, 'notice_unit' => 'day', 'anchor_date' => '2025-04-02']);
+    // renews 03.04.2026, notice 1 day → cancel by 01.04.2026 → 3-day reminder on 29.03.2026 (DST switch day)
+    $dst = termSub(['start_date' => '2025-04-03', 'renewal_months' => 12, 'notice_value' => 1, 'notice_unit' => 'day', 'anchor_date' => '2025-04-03']);
     expect(dueSummary($this->planner->plan([$dst], reminderSettings([3]), onDay('2026-03-29'))))->toBe([['deadline', '2026-04-01', 3, 3]]);
 });

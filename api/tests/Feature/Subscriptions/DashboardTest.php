@@ -21,7 +21,7 @@ beforeEach(function () {
     ($this->make)(['name' => 'Strava', 'amount_cents' => 5999, 'interval_unit' => 'year', 'anchor_date' => '2026-11-21', 'category_id' => $cat('sport')]);
     ($this->make)([
         'name' => 'Adobe Creative Cloud', 'amount_cents' => 14388, 'interval_unit' => 'year', 'anchor_date' => '2026-11-12',
-        'start_date' => '2023-11-12', 'min_term_months' => 12, 'renewal_months' => 12, 'notice_value' => 2, 'notice_unit' => 'day',
+        'start_date' => '2023-11-12', 'min_term_months' => 12, 'renewal_months' => 12, 'notice_value' => 1, 'notice_unit' => 'day',
         'category_id' => $cat('software'),
     ]);
     ($this->make)(['name' => 'Ohne Kategorie', 'amount_cents' => 100, 'interval_unit' => 'year', 'anchor_date' => '2027-03-01']);

@@ -11,7 +11,11 @@ use Carbon\CarbonImmutable;
  * Cancellation deadlines.
  *
  * 1. Term end = start + minimum term; afterwards in steps of the renewal period.
- * 2. cancel_by = term end − notice period.
+ *    Note: term_end is the renewal day, i.e. the first day of the next term.
+ *    The contract itself runs until the day before (term_end − 1 day).
+ * 2. cancel_by = renewal day − notice period − 1 day, so the full notice period
+ *    still fits before the contract ends. Example: contract ends 30.11., notice
+ *    1 month → the cancellation must arrive by 31.10. (01.11.–30.11. = 1 month).
  *    We pick the first term whose cancel_by is today or later, i.e. the next deadline you can still meet.
  * 3. Without a minimum term ("jederzeit kündbar") there is no cancel_by date.
  *
@@ -53,7 +57,7 @@ class DeadlineCalculator
 
         for ($i = 0; $i < self::MAX_STEPS; $i++, $k++) {
             $termEnd = $start->addMonthsNoOverflow($minTermMonths + $k * $renewal);
-            $cancelBy = $this->subtractNotice($termEnd, $noticeValue, $noticeUnit);
+            $cancelBy = $this->subtractNotice($termEnd, $noticeValue, $noticeUnit)->subDay();
 
             if ($cancelBy->greaterThanOrEqualTo($today)) {
                 return ['term_end' => $termEnd, 'cancel_by' => $cancelBy];

@@ -14,7 +14,7 @@ beforeEach(function () {
     $this->user = User::factory()->create(['name' => 'Chris Beispiel']);
     Sanctum::actingAs($this->user);
     $this->adobe = Subscription::factory()->for($this->user)->yearly(14388)
-        ->withTerm('2023-11-12', 12, 12, 2, 'day')
+        ->withTerm('2023-11-12', 12, 12, 1, 'day')
         ->create(['name' => 'Adobe Creative Cloud', 'anchor_date' => '2026-11-12']);
 });
 

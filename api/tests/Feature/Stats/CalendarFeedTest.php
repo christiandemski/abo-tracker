@@ -13,7 +13,7 @@ beforeEach(function () {
     Sanctum::actingAs($this->user);
 
     Subscription::factory()->for($this->user)->create(['name' => 'Netflix', 'amount_cents' => 1399, 'anchor_date' => '2026-01-15']);
-    Subscription::factory()->for($this->user)->yearly(14388)->withTerm('2023-11-12', 12, 12, 2, 'day')
+    Subscription::factory()->for($this->user)->yearly(14388)->withTerm('2023-11-12', 12, 12, 1, 'day')
         ->create(['name' => 'Adobe CC', 'anchor_date' => '2026-11-12']);
     Subscription::factory()->for($this->user)->yearly(13900)->withTerm('2024-03-01', 12, 12, 3, 'month')
         ->create(['name' => 'ADAC, Plus', 'anchor_date' => '2027-03-01']);
@@ -43,7 +43,7 @@ it('starts without a link and with privacy-friendly defaults', function () {
 it('previews the next events in order, deadlines first', function () {
     $preview = $this->getJson('/api/v1/settings/calendar-feed')->json('data.preview');
 
-    expect(array_column($preview, 'date'))->toBe(['2026-11-10', '2026-11-12', '2026-11-15', '2026-12-01'])
+    expect(array_column($preview, 'date'))->toBe(['2026-11-10', '2026-11-12', '2026-11-15', '2026-11-30'])
         ->and(array_column($preview, 'title'))->toBe(['Frist: Adobe CC kündigen', 'Adobe CC', 'Netflix', 'Frist: ADAC, Plus kündigen'])
         ->and(array_column($preview, 'type'))->toBe(['deadline', 'charge', 'charge', 'deadline']);
 });
@@ -104,8 +104,8 @@ it('includes reminders 14 days before a deadline when switched on', function () 
 
     $body = $this->get("/api/v1/ical/{$token}.ics")->getContent();
 
-    // ADAC deadline 01.12.2026 → reminder 17.11.2026
-    expect($body)->toContain("DTSTART;VALUE=DATE:20261117\r\n")
+    // ADAC renews 01.03.2027, notice 3 months → deadline 30.11.2026 → reminder 16.11.2026
+    expect($body)->toContain("DTSTART;VALUE=DATE:20261116\r\n")
         ->and($body)->toContain('SUMMARY:Erinnerung: Frist für ADAC\, Plus in 14 Tagen')
         ->and($body)->not->toContain('SUMMARY:Netflix');
 });

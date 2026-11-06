@@ -31,7 +31,7 @@ function adobePayload(array $overrides = []): array
         'start_date' => '2023-11-12',
         'min_term_months' => 12,
         'renewal_months' => 12,
-        'notice_value' => 2,
+        'notice_value' => 1,
         'notice_unit' => 'day',
         'payment_method' => 'Kreditkarte',
     ], $overrides);
@@ -52,7 +52,7 @@ describe('create', function () {
             ->assertJsonPath('data.cancel_by_date', '2026-11-10')
             ->assertJsonPath('data.days_until_deadline', 5)
             ->assertJsonPath('data.has_term', true)
-            ->assertJsonPath('data.notice_label', '2 Tage')
+            ->assertJsonPath('data.notice_label', '1 Tag')
             ->assertJsonPath('data.category.key', 'software')
             ->assertJsonPath('data.source', 'manual');
 
@@ -149,14 +149,14 @@ describe('update', function () {
             // 12 months from 01.12.2025 → 01.12.2026, but the deadline (01.11.) has passed,
             // so the next term (monthly renewal) counts: 01.01.2027, cancel by 01.12.2026.
             ->assertJsonPath('data.term_end_date', '2027-01-01')
-            ->assertJsonPath('data.cancel_by_date', '2026-12-01');
+            ->assertJsonPath('data.cancel_by_date', '2026-11-30');
     });
 });
 
 describe('cancel and reactivate', function () {
     it('cancels with a term at the end of the term', function () {
         $sub = Subscription::factory()->for($this->user)->yearly(14388)
-            ->withTerm('2023-11-12', 12, 12, 2, 'day')->create(['anchor_date' => '2026-11-12']);
+            ->withTerm('2023-11-12', 12, 12, 1, 'day')->create(['anchor_date' => '2026-11-12']);
 
         $this->postJson("/api/v1/subscriptions/{$sub->id}/cancel")
             ->assertOk()

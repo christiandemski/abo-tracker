@@ -16,7 +16,7 @@ beforeEach(function () {
     $this->netflix = ($this->make)(['name' => 'Netflix', 'amount_cents' => 1399, 'anchor_date' => '2026-01-15']);
     ($this->make)([
         'name' => 'Adobe CC', 'amount_cents' => 14388, 'interval_unit' => 'year', 'anchor_date' => '2026-11-12',
-        'start_date' => '2023-11-12', 'min_term_months' => 12, 'renewal_months' => 12, 'notice_value' => 2, 'notice_unit' => 'day',
+        'start_date' => '2023-11-12', 'min_term_months' => 12, 'renewal_months' => 12, 'notice_value' => 1, 'notice_unit' => 'day',
     ]);
     $this->strava = ($this->make)(['name' => 'Strava', 'amount_cents' => 5999, 'interval_unit' => 'year', 'anchor_date' => '2026-11-21']);
     ($this->make)(['name' => 'ADAC', 'amount_cents' => 13900, 'interval_unit' => 'year', 'anchor_date' => '2027-03-01']);
