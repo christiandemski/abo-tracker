@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native
 
 import { AppText, IconButton, Notice, SkeletonList, UsageCheckCard } from '@/components';
 import { HistoryChart } from '@/components/HistoryChart';
+import { kpiFontSize } from '@/features/desktop/kpiFontSize';
 import { formatCents, formatDate, formatLongDate, formatShortDate } from '@/lib/format';
 import { useDashboard, useHistory, useSubscriptions } from '@/lib/queries';
 import type { Dashboard, Subscription } from '@/lib/types';
@@ -230,14 +231,20 @@ function TableRow({ s }: { s: Subscription }) {
 }
 
 function Kpi({ label, value, sub, warn, onPress }: { label: string; value: string; sub: string; warn?: boolean; onPress?: () => void }) {
+  // Amounts must never wrap ("3.421,12" / "€") or be cut off: shrink the font to the tile width instead.
+  const [width, setWidth] = useState(0);
+  const fontSize = kpiFontSize(value, width);
+
   const body = (
     <>
       <AppText variant="small" color={warn ? 'warnText' : 'textMuted'} style={styles.medium}>
         {label}
       </AppText>
-      <AppText variant="displayM" amount color={warn ? 'warn' : 'text'}>
-        {value}
-      </AppText>
+      <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
+        <AppText variant="displayM" amount color={warn ? 'warn' : 'text'} numberOfLines={1} style={{ fontSize }}>
+          {value}
+        </AppText>
+      </View>
       <AppText variant="caption" color={warn ? 'warnTextMuted' : 'textMuted'} numberOfLines={1}>
         {sub}
       </AppText>
