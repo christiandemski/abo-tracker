@@ -4,7 +4,7 @@ import { Calendar, ChartLine, LayoutDashboard, List, Plus, type LucideIcon } fro
 import { Fragment } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors, size } from '@/theme';
+import { colors, fonts, size } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   activeLabel: {
-    fontWeight: '600',
+    fontFamily: fonts.bodySemi,
   },
   plus: {
     width: size.fab,

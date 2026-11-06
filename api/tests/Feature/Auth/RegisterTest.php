@@ -28,7 +28,8 @@ it('registers with a valid invitation and returns a token', function () {
         ->assertCreated()
         ->assertJsonStructure(['token', 'user' => ['id', 'name', 'email', 'email_verified', 'is_admin']])
         ->assertJsonPath('user.email_verified', true)
-        ->assertJsonPath('user.is_admin', true);
+        ->assertJsonPath('user.is_admin', true)
+        ->assertJsonPath('user.timezone', 'Europe/Berlin');
 
     $user = User::sole();
     expect($user->hasVerifiedEmail())->toBeTrue()

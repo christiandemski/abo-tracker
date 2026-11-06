@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors, radius, size } from '@/theme';
+import { colors, fonts, radius, size } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -67,6 +67,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
   label: {
-    fontWeight: '600',
+    fontFamily: fonts.bodySemi,
   },
 });

@@ -9,7 +9,6 @@ type Props = TextProps & {
   color?: keyof typeof colors;
   /** Amounts: tabular numbers so columns line up. */
   amount?: boolean;
-  weight?: TextStyle['fontWeight'];
 };
 
 export function AppText({ variant = 'body', color = 'text', amount, style, ...rest }: Props) {
