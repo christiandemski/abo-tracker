@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\PriceChangeStatus;
 use App\Models\Subscription;
 use App\Services\BillingCalculator;
 use App\Services\DeadlineCalculator;
@@ -9,6 +10,7 @@ use App\Support\Fraction;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 /**
  * All amounts in cents and all derived values come from the server – the app only displays them.
@@ -68,15 +70,23 @@ class SubscriptionResource extends JsonResource
             'source' => $this->source->value,
             'template_key' => $this->template_key,
 
-            'price_history' => PriceChangeResource::collection($this->whenLoaded('priceChanges')),
+            'price_history' => PriceChangeResource::collection($this->whenLoaded('priceChanges', fn () => $this->appliedPriceChanges())),
             // Change of the current price against the first recorded price, in percent (one decimal)
             'price_trend_percent' => $this->whenLoaded('priceChanges', function () {
-                $first = $this->priceChanges->first()?->old_cents;
+                $first = $this->appliedPriceChanges()->first()?->old_cents;
 
                 return $first ? (new Fraction(($this->amount_cents - $first) * 1000, $first))->round() / 10 : null;
             }),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];
+    }
+
+    /** Only changes that are in effect belong to the history. */
+    private function appliedPriceChanges(): Collection
+    {
+        return $this->priceChanges
+            ->filter(fn ($p) => $p->status === PriceChangeStatus::Accepted && $p->applied_at !== null)
+            ->values();
     }
 }

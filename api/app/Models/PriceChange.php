@@ -20,6 +20,7 @@ class PriceChange extends Model
             'new_cents' => 'integer',
             'effective_date' => 'immutable_date',
             'status' => PriceChangeStatus::class,
+            'applied_at' => 'immutable_datetime',
         ];
     }
 

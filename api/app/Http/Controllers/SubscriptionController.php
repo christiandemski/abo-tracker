@@ -101,7 +101,7 @@ class SubscriptionController extends Controller
                     'effective_date' => CarbonImmutable::today(),
                     'source' => 'manual',
                     'status' => PriceChangeStatus::Accepted,
-                ]);
+                ])->forceFill(['applied_at' => now()])->save();
             }
 
             $subscription->save();

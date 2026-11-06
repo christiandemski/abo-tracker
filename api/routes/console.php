@@ -25,5 +25,6 @@ Schedule::command('reminders:dispatch')
     ->withoutOverlapping();
 
 // Housekeeping
+Schedule::command('imports:prune')->hourly(); // privacy: suggestions live at most 24 h
 Schedule::command('auth:clear-resets')->daily();
 Schedule::command('sanctum:prune-expired --hours=24')->daily();

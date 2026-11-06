@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Models\PriceChange;
 use App\Models\Subscription;
 use App\Support\Fraction;
 use Carbon\CarbonImmutable;
@@ -48,6 +49,8 @@ class DashboardBuilder
                 fn (Subscription $s) => $this->billing->isLongInterval($s->interval_unit, $s->interval_count)
             )->count(),
             'inactive_count' => $all->count() - $active->count(),
+            // Badge on the bell: price changes waiting for a decision
+            'notices_count' => PriceChange::query()->where('status', 'pending')->whereHas('subscription')->count(),
             'categories' => $this->categories($active, $total, $factor),
             'upcoming' => $this->upcoming($active, $today),
             'biggest' => $this->biggest($active, $factor),
