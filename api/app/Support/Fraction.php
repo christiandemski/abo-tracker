@@ -57,6 +57,29 @@ final readonly class Fraction
         return $this->numerator < 0 ? -$rounded : $rounded;
     }
 
+    public function subtract(self $other): self
+    {
+        return $this->add($other->multiply(-1));
+    }
+
+    /** Smallest integer ≥ the value. */
+    public function ceil(): int
+    {
+        $quotient = intdiv($this->numerator, $this->denominator);
+
+        return $this->numerator > 0 && $this->numerator % $this->denominator !== 0 ? $quotient + 1 : $quotient;
+    }
+
+    public function compare(self $other): int
+    {
+        return ($this->numerator * $other->denominator) <=> ($other->numerator * $this->denominator);
+    }
+
+    public function isNegative(): bool
+    {
+        return $this->numerator < 0;
+    }
+
     public function isZero(): bool
     {
         return $this->numerator === 0;

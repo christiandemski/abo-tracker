@@ -51,6 +51,7 @@ class DashboardBuilder
             'inactive_count' => $all->count() - $active->count(),
             // Badge on the bell: price changes waiting for a decision
             'notices_count' => PriceChange::query()->where('status', 'pending')->whereHas('subscription')->count(),
+            'deadlines' => $this->deadlines($active, $today),
             'categories' => $this->categories($active, $total, $factor),
             'upcoming' => $this->upcoming($active, $today),
             'biggest' => $this->biggest($active, $factor),
@@ -88,6 +89,33 @@ class DashboardBuilder
             ->map(fn (array $row) => array_diff_key($row, ['_sort' => true]))
             ->values()
             ->all();
+    }
+
+    /**
+     * Open cancellation deadlines in the next 30 days (desktop key figure).
+     *
+     * @param  Collection<int, Subscription>  $active
+     * @return array{count: int, next: ?array<string, mixed>}
+     */
+    private function deadlines(Collection $active, CarbonImmutable $today): array
+    {
+        $until = $today->addDays(self::DEADLINE_DAYS);
+        $due = $active
+            ->filter(fn (Subscription $s) => $this->hasOpenDeadline($s) && $s->cancel_by_date->betweenIncluded($today, $until))
+            ->sortBy(fn (Subscription $s) => [$s->cancel_by_date->toDateString(), mb_strtolower($s->name)])
+            ->values();
+
+        $next = $due->first();
+
+        return [
+            'count' => $due->count(),
+            'next' => $next ? ['subscription_id' => $next->id, 'name' => $next->name, 'date' => $next->cancel_by_date->toDateString()] : null,
+        ];
+    }
+
+    private function hasOpenDeadline(Subscription $s): bool
+    {
+        return $s->hasTerm() && ! $s->isKeptForCurrentTerm() && $s->cancel_by_date !== null;
     }
 
     /**

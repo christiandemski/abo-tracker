@@ -13,6 +13,7 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PriceChangeController;
 use App\Http\Controllers\PushTokenController;
 use App\Http\Controllers\ReminderSettingsController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UsageCheckController;
@@ -53,6 +54,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::get('/billing/preview', BillingPreviewController::class)->name('billing.preview');
+    Route::get('/calendar', [StatsController::class, 'calendar'])->name('calendar');
+    Route::get('/stats/history', [StatsController::class, 'history'])->name('stats.history');
+    Route::get('/stats/reserve', [StatsController::class, 'reserve'])->name('stats.reserve');
 
     Route::apiResource('subscriptions', SubscriptionController::class);
     Route::post('/subscriptions/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
