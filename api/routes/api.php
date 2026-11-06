@@ -7,6 +7,8 @@ use App\Http\Controllers\BillingPreviewController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\PushTokenController;
+use App\Http\Controllers\ReminderSettingsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
@@ -52,4 +54,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::apiResource('categories', CategoryController::class)->except('show');
     Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
+
+    Route::get('/settings/reminders', [ReminderSettingsController::class, 'show'])->name('settings.reminders.show');
+    Route::put('/settings/reminders', [ReminderSettingsController::class, 'update'])->name('settings.reminders.update');
+
+    Route::post('/push-tokens', [PushTokenController::class, 'store'])->middleware('throttle:20,1')->name('push-tokens.store');
+    Route::delete('/push-tokens/{token}', [PushTokenController::class, 'destroy'])
+        ->where('token', '.+')
+        ->name('push-tokens.destroy');
 });
