@@ -1,5 +1,5 @@
 import { useAuth } from './auth';
-import type { Category, Dashboard, Resource, Subscription, Template } from './types';
+import type { CalendarMonth, Category, Dashboard, History, Reserve, Resource, Subscription, Template } from './types';
 import { useQuery } from './useQuery';
 
 /** Query keys; invalidate('subscriptions', 'dashboard') after changes. */
@@ -9,6 +9,9 @@ export const keys = {
   subscription: (id: number | string) => `subscriptions:detail:${id}`,
   categories: 'categories',
   templates: (q: string) => `templates:${q}`,
+  calendar: (month: string) => `calendar:${month}`,
+  reserve: 'stats:reserve',
+  history: (months: number) => `stats:history:${months}`,
 };
 
 export function useDashboard(period: 'month' | 'year') {
@@ -63,4 +66,29 @@ export function useTemplates(q: string) {
     keys.templates(q),
     async () => (await api.get<Resource<Template[]>>(`templates${q ? `?q=${encodeURIComponent(q)}` : ''}`)).data,
   );
+}
+
+/** Charges per day of a month ("2026-11"). */
+export function useCalendar(month: string) {
+  const { api, user } = useAuth();
+  return useQuery(keys.calendar(month), async () => (await api.get<Resource<CalendarMonth>>(`calendar?month=${month}`)).data, {
+    persist: true,
+    enabled: !!user?.email_verified,
+  });
+}
+
+export function useReserve() {
+  const { api, user } = useAuth();
+  return useQuery(keys.reserve, async () => (await api.get<Resource<Reserve>>('stats/reserve')).data, {
+    persist: true,
+    enabled: !!user?.email_verified,
+  });
+}
+
+export function useHistory(months = 12) {
+  const { api, user } = useAuth();
+  return useQuery(keys.history(months), async () => (await api.get<Resource<History>>(`stats/history?months=${months}`)).data, {
+    persist: true,
+    enabled: !!user?.email_verified,
+  });
 }

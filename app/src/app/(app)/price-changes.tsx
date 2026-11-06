@@ -134,7 +134,7 @@ function ChangeCard({ change: pc, onChanged }: { change: PriceChangeItem; onChan
     setError(null);
     try {
       await api.post(`price-changes/${pc.id}/${action}`);
-      invalidate('subscriptions', 'dashboard');
+      invalidate('subscriptions', 'dashboard', 'calendar', 'stats');
       await onChanged();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Das hat nicht geklappt.');

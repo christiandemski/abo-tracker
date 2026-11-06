@@ -1,16 +1,24 @@
 import {
   centsToInput,
+  currentMonth,
   formatCents,
   formatDate,
   formatDaysUntil,
+  formatEuroRounded,
   formatLongDate,
+  formatMonthName,
+  formatMonthShort,
+  formatMonthYear,
   formatPercent,
   formatShortDate,
   formatWeekdayDate,
+  formatWeekdayDayMonth,
   formatWeekdayLongDate,
+  mondayIndex,
   parseDate,
   parseEuroInput,
   parseGermanDate,
+  shiftMonth,
   toIsoDate,
 } from '../format';
 
@@ -127,5 +135,36 @@ describe('date input', () => {
 
   it('formats local dates as ISO', () => {
     expect(toIsoDate(new Date(2026, 2, 29))).toBe('2026-03-29');
+  });
+});
+
+describe('month helpers', () => {
+  it('formats months', () => {
+    expect(formatMonthYear('2026-11')).toBe('November 2026');
+    expect(formatMonthShort('2027-03')).toBe('Mär');
+    expect(formatMonthShort('2027-03', true)).toBe('Mär 2027');
+    expect(formatMonthName('2026-01')).toBe('Januar');
+  });
+
+  it('shifts months across year boundaries', () => {
+    expect(shiftMonth('2026-12', 1)).toBe('2027-01');
+    expect(shiftMonth('2026-01', -1)).toBe('2025-12');
+    expect(shiftMonth('2026-11', 0)).toBe('2026-11');
+    expect(shiftMonth('2026-11', -13)).toBe('2025-10');
+  });
+
+  it('knows the current month and Monday-first weekdays', () => {
+    expect(currentMonth(new Date(2026, 10, 30))).toBe('2026-11');
+    expect(mondayIndex('2026-11-02')).toBe(0); // Monday
+    expect(mondayIndex('2026-11-01')).toBe(6); // Sunday
+    expect(formatWeekdayDayMonth('2026-11-12')).toBe('Donnerstag, 12.11.');
+  });
+});
+
+describe('formatEuroRounded', () => {
+  it('rounds to whole euros', () => {
+    expect(formatEuroRounded(14388)).toBe('144 €');
+    expect(formatEuroRounded(2999)).toBe('30 €');
+    expect(formatEuroRounded(123456)).toBe('1.235 €');
   });
 });

@@ -25,7 +25,7 @@ export default function AddSubscriptionScreen() {
         submitLabel="Abo speichern"
         onSubmit={async (payload) => {
           const { data } = await api.post<Resource<Subscription>>('subscriptions', payload);
-          invalidate('subscriptions', 'dashboard');
+          invalidate('subscriptions', 'dashboard', 'calendar', 'stats');
           router.replace(`/subscription/${data.id}`);
         }}
       />

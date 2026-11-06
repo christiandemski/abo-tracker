@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Bell, ChevronRight, LogOut } from 'lucide-react-native';
+import { Bell, CalendarSync, ChevronRight, LogOut, type LucideIcon } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -28,22 +28,13 @@ export default function SettingsScreen() {
 
       <SenderForm />
 
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => router.push('/reminders')}
-        style={({ pressed }) => [styles.section, styles.link, pressed && styles.pressed]}
-      >
-        <Bell size={20} strokeWidth={1.8} color={colors.textMuted} />
-        <View style={styles.linkText}>
-          <AppText variant="body" style={styles.medium}>
-            Erinnerungen
-          </AppText>
-          <AppText variant="caption" color="textMuted">
-            Push, E-Mail und Zeitpunkte
-          </AppText>
-        </View>
-        <ChevronRight size={20} strokeWidth={1.8} color={colors.textMuted} />
-      </Pressable>
+      <LinkRow icon={Bell} title="Erinnerungen" sub="Push, E-Mail und Zeitpunkte" onPress={() => router.push('/reminders')} />
+      <LinkRow
+        icon={CalendarSync}
+        title="Kalender-Abo"
+        sub="Abbuchungen und Fristen in deinem Kalender"
+        onPress={() => router.push('/calendar-feed')}
+      />
 
       <View style={styles.section}>
         <SecondaryButton
@@ -119,6 +110,27 @@ function SenderForm() {
   );
 }
 
+function LinkRow({ icon: Icon, title, sub, onPress }: { icon: LucideIcon; title: string; sub: string; onPress: () => void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [styles.linkGap, styles.link, pressed && styles.pressed]}
+    >
+      <Icon size={20} strokeWidth={1.8} color={colors.textMuted} />
+      <View style={styles.linkText}>
+        <AppText variant="body" style={styles.medium}>
+          {title}
+        </AppText>
+        <AppText variant="caption" color="textMuted">
+          {sub}
+        </AppText>
+      </View>
+      <ChevronRight size={20} strokeWidth={1.8} color={colors.textMuted} />
+    </Pressable>
+  );
+}
+
 function Row({ label, value, last }: { label: string; value: string; last?: boolean }) {
   return (
     <View style={[styles.row, !last && styles.divider]}>
@@ -135,6 +147,9 @@ function Row({ label, value, last }: { label: string; value: string; last?: bool
 const styles = StyleSheet.create({
   section: {
     marginTop: 22,
+  },
+  linkGap: {
+    marginTop: 12,
   },
   link: {
     minHeight: 64,

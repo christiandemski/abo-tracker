@@ -107,7 +107,7 @@ function Assistant({ subscription: s, onCancelled }: { subscription: Subscriptio
     setBusy('done');
     try {
       const { data } = await api.post<Resource<Subscription>>(`subscriptions/${s.id}/cancel`, { cancel_method: way });
-      invalidate('subscriptions', 'dashboard', 'usage-check');
+      invalidate('subscriptions', 'dashboard', 'calendar', 'stats', 'usage-check');
       onCancelled(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Das hat nicht geklappt.');
@@ -245,7 +245,7 @@ function Done({ subscription: s, onUndone }: { subscription: Subscription; onUnd
     setError(null);
     try {
       await api.post(`subscriptions/${s.id}/reactivate`);
-      invalidate('subscriptions', 'dashboard', 'usage-check');
+      invalidate('subscriptions', 'dashboard', 'calendar', 'stats', 'usage-check');
       onUndone();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Das hat nicht geklappt.');

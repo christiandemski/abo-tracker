@@ -211,7 +211,7 @@ function Review({ batch, onBack, onApplied }: { batch: ImportBatch; onBack: () =
     setError(null);
     try {
       const { data } = await api.post<Resource<ImportApplyResult>>(`imports/${batch.id}/apply`, { candidate_ids: ids });
-      invalidate('subscriptions', 'dashboard');
+      invalidate('subscriptions', 'dashboard', 'calendar', 'stats');
       onApplied(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Das hat nicht geklappt.');

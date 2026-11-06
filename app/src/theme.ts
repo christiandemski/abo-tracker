@@ -40,6 +40,14 @@ export const colors = {
   dangerSurface: '#2E161B',
   dangerBorder: '#6B2F3A',
 
+  // Month grid: day background by amount (blue shades, never orange)
+  dayLevel1: '#232A3A', // below 30 €
+  dayLevel2: '#2F3A5F', // 30–100 €
+  dayLevel3: '#465894', // above 100 €
+  dayAmount: '#C8D3FF',
+  // Charts
+  barMuted: '#2E3546',
+
   disabled: '#2A2F3A',
   switchOff: '#3A404D',
   checkboxOff: '#4A5161',

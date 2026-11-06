@@ -42,7 +42,7 @@ export default function UsageCheckScreen() {
     try {
       const res = await api.post<Resource<UsageCheckState>>('usage-check', { subscription_id: data.current.id, answer: value });
       setState(res.data);
-      invalidate('dashboard');
+      invalidate('dashboard', 'calendar', 'stats');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Das hat nicht geklappt.');
     } finally {

@@ -27,7 +27,7 @@ export default function EditSubscriptionScreen() {
           submitLabel="Änderungen speichern"
           onSubmit={async (payload) => {
             await api.patch<Resource<Subscription>>(`subscriptions/${id}`, payload);
-            invalidate('subscriptions', 'dashboard');
+            invalidate('subscriptions', 'dashboard', 'calendar', 'stats');
             if (router.canGoBack()) router.back();
             else router.replace(`/subscription/${id}`);
           }}

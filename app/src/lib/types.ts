@@ -146,6 +146,8 @@ export type Dashboard = {
   inactive_count: number;
   /** price changes waiting for a decision (bell badge) */
   notices_count: number;
+  /** open cancellation deadlines in the next 30 days */
+  deadlines: { count: number; next: { subscription_id: number; name: string; date: string } | null };
   categories: {
     category: Category | null;
     label: string;
@@ -273,4 +275,69 @@ export type UsageCheckState = {
   savings_yearly_cents: number;
   last_checked_at: string | null;
   due: boolean;
+};
+
+// --- M6: month view, statistics, calendar feed ---
+
+export type CalendarItem = {
+  subscription_id: number;
+  name: string;
+  amount_cents: number;
+  rhythm_label: string;
+  status: SubscriptionStatus;
+  /** only for subscriptions with a real deadline */
+  cancel_by_date: string | null;
+  category: Category | null;
+};
+
+export type CalendarDay = {
+  date: string;
+  total_cents: number;
+  /** color level from the API: 1 = below 30 €, 2 = 30–100 €, 3 = above 100 € */
+  level: 1 | 2 | 3;
+  items: CalendarItem[];
+};
+
+export type CalendarMonth = {
+  month: string;
+  first_day: string;
+  days_in_month: number;
+  today: string;
+  total_cents: number;
+  open_cents: number;
+  days: CalendarDay[];
+};
+
+export type ReservePayment = { name: string; date: string; amount_cents: number };
+
+export type Reserve = {
+  monthly_cents: number;
+  yearly_cents: number;
+  subscription_count: number;
+  buffer_cents: number;
+  months: { month: string; balance_cents: number; payments_cents: number; payments: ReservePayment[] }[];
+  upcoming: { subscription_id: number; name: string; date: string; amount_cents: number; category: Category | null }[];
+};
+
+export type History = {
+  months: { month: string; total_cents: number }[];
+  current_cents: number;
+  change_cents: number | null;
+};
+
+export type CalendarFeedOptions = {
+  charges: boolean;
+  deadlines: boolean;
+  reminders: boolean;
+  amounts: boolean;
+};
+
+export type CalendarFeed = {
+  active: boolean;
+  /** only right after creating the link */
+  url: string | null;
+  created_at: string | null;
+  last_fetched_at: string | null;
+  options: CalendarFeedOptions;
+  preview: { type: 'charge' | 'deadline' | 'reminder'; date: string; title: string; color: string | null }[];
 };

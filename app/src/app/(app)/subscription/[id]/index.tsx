@@ -124,7 +124,7 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
     setError(null);
     try {
       await fn();
-      invalidate('subscriptions', 'dashboard');
+      invalidate('subscriptions', 'dashboard', 'calendar', 'stats');
       after?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Das hat nicht geklappt.');
@@ -347,7 +347,7 @@ function AnnouncePrice({ subscription: s }: { subscription: Subscription }) {
     setBusy(true);
     try {
       await api.post(`subscriptions/${s.id}/price-changes`, { new_cents: cents, effective_date: iso });
-      invalidate('subscriptions', 'dashboard', 'price-changes');
+      invalidate('subscriptions', 'dashboard', 'calendar', 'stats', 'price-changes');
       setDone(`Neuer Preis gilt ab ${date}.`);
       setOpen(false);
     } catch (e) {

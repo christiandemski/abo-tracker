@@ -115,3 +115,51 @@ export function parseGermanDate(input: string): string | null {
   if (d.getFullYear() !== year || d.getMonth() !== Number(m[2]) - 1 || d.getDate() !== Number(m[1])) return null;
   return toIsoDate(d);
 }
+
+const monthShort = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+
+/** "2026-11" → "November 2026" */
+export function formatMonthYear(ym: string): string {
+  const [y, m] = ym.split('-').map(Number);
+  return `${month[m - 1]} ${y}`;
+}
+
+/** "2026-11" → "Nov" (chart labels); withYear → "Nov 2026" */
+export function formatMonthShort(ym: string, withYear = false): string {
+  const [y, m] = ym.split('-').map(Number);
+  return withYear ? `${monthShort[m - 1]} ${y}` : monthShort[m - 1];
+}
+
+/** "2026-11" → "November" */
+export function formatMonthName(ym: string): string {
+  return month[Number(ym.split('-')[1]) - 1];
+}
+
+/** Month navigation: ("2026-12", 1) → "2027-01" */
+export function shiftMonth(ym: string, delta: number): string {
+  const [y, m] = ym.split('-').map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+/** Current month as "2026-11" (local time) */
+export function currentMonth(date = new Date()): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+}
+
+/** "Donnerstag, 12.11." */
+export function formatWeekdayDayMonth(date: Date | string): string {
+  const d = typeof date === 'string' ? parseDate(date) : date;
+  return `${weekday[d.getDay()]}, ${formatShortDate(d)}`;
+}
+
+/** Position in a Monday-first week: Mo = 0 … So = 6 */
+export function mondayIndex(date: Date | string): number {
+  const d = typeof date === 'string' ? parseDate(date) : date;
+  return (d.getDay() + 6) % 7;
+}
+
+/** Whole euros for tight spaces (month grid): 14388 → "144 €" */
+export function formatEuroRounded(cents: number): string {
+  return `${Math.round(cents / 100).toLocaleString('de-DE')} €`;
+}
