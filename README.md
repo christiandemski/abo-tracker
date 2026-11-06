@@ -11,6 +11,29 @@ Persönlicher Abo- und Fixkosten-Tracker: monatliche Kosten, Kündigungsfristen,
 
 ## Lokal starten
 
+### Mit DDEV (empfohlen)
+
+Voraussetzungen: Docker, [DDEV](https://ddev.com), Node 24. PHP 8.5 und MySQL 8.4 (wie in CI) laufen im Container, Mails landen in Mailpit.
+
+```bash
+ddev start                          # https://abo-tracker.ddev.site
+ddev composer install
+cp api/.env.example api/.env        # DDEV trägt DB- und Mail-Werte beim Start selbst ein
+ddev artisan key:generate
+ddev restart
+ddev artisan migrate --seed
+ddev artisan invite:create du@example.com --admin
+ddev mailpit                        # Einladungsmail mit Link öffnen
+ddev artisan test
+```
+
+Falls `MAIL_SCHEME=smtps` in der `.env` steht: für Mailpit auf `smtp` ändern.
+
+Die App läuft weiter auf dem Rechner (nicht im Container), mit
+`EXPO_PUBLIC_API_URL=https://abo-tracker.ddev.site/api/v1` in `app/.env`, dann `cd app && npm run web`.
+
+### Ohne DDEV
+
 Voraussetzungen: PHP 8.5 mit `pdo_sqlite`, `intl`, `mbstring`; Composer; Node 24.
 
 ### API
