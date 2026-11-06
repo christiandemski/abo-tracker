@@ -43,6 +43,8 @@ class SubscriptionRequest extends FormRequest
             'payment_method' => ['sometimes', 'nullable', 'string', 'max:100'],
             'provider_url' => ['sometimes', 'nullable', 'url:http,https', 'max:255'],
             'notes' => ['sometimes', 'nullable', 'string', 'max:2000'],
+            'customer_number' => ['sometimes', 'nullable', 'string', 'max:64'],
+            'provider_email' => ['sometimes', 'nullable', 'email', 'max:255'],
             'template_key' => ['sometimes', 'nullable', 'string', Rule::exists('templates', 'key')],
         ];
     }
@@ -66,6 +68,8 @@ class SubscriptionRequest extends FormRequest
             'payment_method' => 'Zahlungsweg',
             'provider_url' => 'Link zum Anbieter',
             'notes' => 'Notizen',
+            'customer_number' => 'Kundennummer',
+            'provider_email' => 'E-Mail des Anbieters',
         ];
     }
 

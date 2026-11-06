@@ -129,6 +129,8 @@ class SubscriptionController extends Controller
 
         $data = $request->validate([
             'ends_at' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
+            'cancelled_at' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
+            'cancel_method' => ['sometimes', 'nullable', Rule::in(['online', 'mail', 'pdf', 'other'])],
         ]);
 
         $endsAt = isset($data['ends_at'])
@@ -140,6 +142,9 @@ class SubscriptionController extends Controller
         $subscription->forceFill([
             'status' => SubscriptionStatus::Cancelled,
             'ends_at' => $endsAt,
+            'cancelled_at' => $data['cancelled_at'] ?? CarbonImmutable::today()->toDateString(),
+            'cancel_method' => $data['cancel_method'] ?? null,
+            'kept_until' => null,
         ])->save();
 
         return SubscriptionResource::make($subscription->load('category', 'priceChanges'));
@@ -149,7 +154,7 @@ class SubscriptionController extends Controller
     {
         Gate::authorize('update', $subscription);
 
-        $subscription->forceFill(['status' => SubscriptionStatus::Active, 'ends_at' => null])->save();
+        $subscription->forceFill(['status' => SubscriptionStatus::Active, 'ends_at' => null, 'cancelled_at' => null, 'cancel_method' => null])->save();
 
         return SubscriptionResource::make($subscription->load('category', 'priceChanges'));
     }

@@ -70,6 +70,11 @@ class ReminderPlanner
             return null;
         }
 
+        // "Behalten" for this term: no reminder until the next one
+        if ($subscription->kept_until !== null && $cancelBy->lessThan($subscription->kept_until)) {
+            return null;
+        }
+
         $matching = [];
         foreach ($offsets as $offset) {
             $reminderDay = $cancelBy->subDays($offset);

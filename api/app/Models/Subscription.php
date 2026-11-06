@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'category_id', 'name', 'amount_cents', 'interval_unit', 'interval_count', 'anchor_date',
     'start_date', 'min_term_months', 'renewal_months', 'notice_value', 'notice_unit',
     'status', 'ends_at', 'remind', 'payment_method', 'provider_url', 'notes', 'source', 'template_key',
+    'customer_number', 'provider_email',
 ])]
 class Subscription extends Model
 {
@@ -64,6 +65,8 @@ class Subscription extends Model
             'cancel_by_date' => 'immutable_date',
             'status' => SubscriptionStatus::class,
             'ends_at' => 'immutable_date',
+            'cancelled_at' => 'immutable_date',
+            'kept_until' => 'immutable_date',
             'remind' => 'boolean',
             'source' => SubscriptionSource::class,
         ];
@@ -89,6 +92,14 @@ class Subscription extends Model
     public function isActive(): bool
     {
         return $this->status === SubscriptionStatus::Active;
+    }
+
+    /** "Behalten" chosen for the current term: no deadline banner, card or reminder. */
+    public function isKeptForCurrentTerm(): bool
+    {
+        return $this->kept_until !== null
+            && $this->cancel_by_date !== null
+            && $this->cancel_by_date->lessThan($this->kept_until);
     }
 
     /** Has a minimum term / automatic renewal, i.e. a real cancellation deadline. */

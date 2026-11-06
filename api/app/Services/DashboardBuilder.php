@@ -104,6 +104,7 @@ class DashboardBuilder
 
         $deadlines = $active
             ->filter(fn (Subscription $s) => $s->hasTerm()
+                && ! $s->isKeptForCurrentTerm()
                 && $s->cancel_by_date !== null
                 && $s->cancel_by_date->betweenIncluded($today, $deadlineUntil))
             ->sortBy(fn (Subscription $s) => $s->cancel_by_date->toDateString())

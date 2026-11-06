@@ -3,7 +3,9 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\BillingPreviewController;
+use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\PushTokenController;
 use App\Http\Controllers\ReminderSettingsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\UsageCheckController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => response()->json(['status' => 'ok']))->name('health');
@@ -37,6 +40,7 @@ Route::get('/auth/verify-email/{id}/{hash}', [EmailVerificationController::class
 // Authenticated, e-mail not yet required
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->name('me');
+    Route::patch('/me', [ProfileController::class, 'update'])->name('me.update');
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::post('/auth/email/verification-notification', [EmailVerificationController::class, 'resend'])
         ->middleware('throttle:6,1')
@@ -53,6 +57,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('subscriptions', SubscriptionController::class);
     Route::post('/subscriptions/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
     Route::post('/subscriptions/{subscription}/reactivate', [SubscriptionController::class, 'reactivate'])->name('subscriptions.reactivate');
+
+    Route::get('/subscriptions/{subscription}/cancellation-letter', [CancellationController::class, 'letter'])->name('subscriptions.letter');
+    Route::post('/subscriptions/{subscription}/cancellation-letter', [CancellationController::class, 'pdf'])->middleware('throttle:20,1')->name('subscriptions.letter.pdf');
+    Route::post('/subscriptions/{subscription}/keep', [CancellationController::class, 'keep'])->name('subscriptions.keep');
+    Route::delete('/subscriptions/{subscription}/keep', [CancellationController::class, 'unkeep'])->name('subscriptions.unkeep');
+
+    Route::get('/usage-check/next', [UsageCheckController::class, 'next'])->name('usage-check.next');
+    Route::post('/usage-check', [UsageCheckController::class, 'store'])->name('usage-check.store');
+    Route::post('/usage-check/restart', [UsageCheckController::class, 'restart'])->name('usage-check.restart');
 
     Route::post('/subscriptions/{subscription}/price-changes', [PriceChangeController::class, 'store'])->name('subscriptions.price-changes.store');
     Route::get('/price-changes', [PriceChangeController::class, 'index'])->name('price-changes.index');

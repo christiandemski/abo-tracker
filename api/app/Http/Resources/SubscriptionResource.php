@@ -67,6 +67,12 @@ class SubscriptionResource extends JsonResource
             'payment_method' => $this->payment_method,
             'provider_url' => $this->provider_url,
             'notes' => $this->notes,
+            'customer_number' => $this->customer_number,
+            'provider_email' => $this->provider_email,
+            'cancelled_at' => $this->cancelled_at?->toDateString(),
+            'cancel_method' => $this->cancel_method,
+            'kept_until' => $this->kept_until?->toDateString(),
+            'is_kept' => $this->isKeptForCurrentTerm(),
             'source' => $this->source->value,
             'template_key' => $this->template_key,
 
