@@ -14,6 +14,7 @@ use App\Models\ReminderSetting;
 use App\Models\Subscription;
 use App\Models\Template;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -70,6 +71,7 @@ class StatementImporter
                 $status = ImportCandidate::STATUS_NEW;
                 if ($match) {
                     $status = $this->isPriceChange($match->amount_cents, $payment->amountCents())
+                        && ! $this->priceChangedSince($match, $payment->lastDate())
                         ? ImportCandidate::STATUS_PRICE_CHANGE
                         : ImportCandidate::STATUS_DUPLICATE;
                 }
@@ -219,6 +221,21 @@ class StatementImporter
         $diff = abs($bookedCents - $storedCents);
 
         return $diff > self::PRICE_CHANGE_MIN_CENTS && $diff > $storedCents * self::PRICE_CHANGE_MIN_RATIO;
+    }
+
+    /**
+     * The price was changed (and accepted) after the last booking in the statement,
+     * e.g. entered by hand after a price cut. The statement is older than that
+     * price, so its amount must not be suggested as a new price.
+     */
+    private function priceChangedSince(Subscription $subscription, CarbonImmutable $lastBooking): bool
+    {
+        return PriceChange::query()
+            ->where('user_id', $subscription->user_id)
+            ->where('subscription_id', $subscription->id)
+            ->where('status', PriceChangeStatus::Accepted->value)
+            ->whereDate('effective_date', '>', $lastBooking->toDateString())
+            ->exists();
     }
 
     private function recordPriceChange(Subscription $subscription, DetectedPayment $payment): ?PriceChange

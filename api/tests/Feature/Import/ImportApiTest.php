@@ -125,6 +125,37 @@ describe('matching existing subscriptions', function () {
         expect(PriceChange::count())->toBe(1);
     });
 
+    it('does not suggest an outdated price if the price was changed after the statement', function () {
+        // Spotify costs 10,99 € in the statement (last booking 15.10.2026),
+        // but the user entered a price cut to 9,99 € effective 06.11.2026.
+        $spotify = Subscription::factory()->for($this->user)->create(['name' => 'Spotify', 'amount_cents' => 999]);
+        $manual = new PriceChange([
+            'subscription_id' => $spotify->id, 'old_cents' => 1099, 'new_cents' => 999,
+            'effective_date' => '2026-11-06', 'source' => 'manual', 'status' => 'accepted',
+        ]);
+        $manual->user_id = $this->user->id;
+        $manual->save();
+
+        $id = upload()->assertCreated()->assertJsonPath('data.counts.price_change', 0)->json('data.id');
+
+        $spotifyCandidate = collect($this->getJson("/api/v1/imports/{$id}/candidates")->json('data'))
+            ->firstWhere('subscription.name', 'Spotify');
+        expect($spotifyCandidate['status'])->toBe('duplicate')
+            ->and(PriceChange::query()->where('source', 'import')->count())->toBe(0);
+    });
+
+    it('still reports a price change if the manual change is older than the statement', function () {
+        $spotify = Subscription::factory()->for($this->user)->create(['name' => 'Spotify', 'amount_cents' => 999]);
+        $manual = new PriceChange([
+            'subscription_id' => $spotify->id, 'old_cents' => 1099, 'new_cents' => 999,
+            'effective_date' => '2026-10-01', 'source' => 'manual', 'status' => 'accepted',
+        ]);
+        $manual->user_id = $this->user->id;
+        $manual->save();
+
+        upload()->assertCreated()->assertJsonPath('data.counts.price_change', 1);
+    });
+
     it('recognizes taken-over subscriptions on the next import via import rules', function () {
         $id = upload()->json('data.id');
         $ids = collect($this->getJson("/api/v1/imports/{$id}/candidates")->json('data'))->pluck('id')->all();
