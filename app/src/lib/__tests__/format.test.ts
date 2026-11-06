@@ -1,4 +1,18 @@
-import { formatCents, formatDate, formatLongDate, parseDate } from '../format';
+import {
+  centsToInput,
+  formatCents,
+  formatDate,
+  formatDaysUntil,
+  formatLongDate,
+  formatPercent,
+  formatShortDate,
+  formatWeekdayDate,
+  formatWeekdayLongDate,
+  parseDate,
+  parseEuroInput,
+  parseGermanDate,
+  toIsoDate,
+} from '../format';
 
 const NBSP = ' ';
 
@@ -48,5 +62,70 @@ describe('dates', () => {
   it('formats the long overview date', () => {
     expect(formatLongDate('2026-11-05')).toBe('Donnerstag, 5. November');
     expect(formatLongDate('2026-03-01')).toBe('Sonntag, 1. März');
+  });
+});
+
+
+describe('short dates', () => {
+  it('formats short and weekday dates', () => {
+    expect(formatShortDate('2026-11-10')).toBe('10.11.');
+    expect(formatWeekdayDate('2026-11-15')).toBe('So, 15.11.');
+    expect(formatWeekdayLongDate('2026-11-10')).toBe('Di, 10.11.2026');
+  });
+
+  it('describes days until a date', () => {
+    expect(formatDaysUntil(0)).toBe('heute');
+    expect(formatDaysUntil(1)).toBe('morgen');
+    expect(formatDaysUntil(5)).toBe('in 5 Tagen');
+  });
+});
+
+describe('formatPercent', () => {
+  it('adds sign and German decimal comma', () => {
+    expect(formatPercent(20)).toBe('+20 %');
+    expect(formatPercent(-5.5)).toBe('−5,5 %');
+    expect(formatPercent(0)).toBe('0 %');
+  });
+});
+
+describe('amount input', () => {
+  it.each([
+    ['9,99', 999],
+    ['9,9', 990],
+    ['9', 900],
+    ['9,', 900],
+    ['1.234,56', 123456],
+    ['1234,56', 123456],
+    [' 13,99 € ', 1399],
+    ['0,01', 1],
+  ])('parses %s as %d cents', (input, cents) => {
+    expect(parseEuroInput(input)).toBe(cents);
+  });
+
+  it.each(['', 'abc', '9,999', '9.99', '1.23,00', '-5', ','])('rejects %p', (input) => {
+    expect(parseEuroInput(input)).toBeNull();
+  });
+
+  it('formats cents for editing', () => {
+    expect(centsToInput(999)).toBe('9,99');
+    expect(centsToInput(123456)).toBe('1234,56');
+  });
+});
+
+describe('date input', () => {
+  it('converts German dates to ISO', () => {
+    expect(parseGermanDate('05.11.2026')).toBe('2026-11-05');
+    expect(parseGermanDate('5.1.26')).toBe('2026-01-05');
+    expect(parseGermanDate('29.02.2028')).toBe('2028-02-29');
+  });
+
+  it('rejects impossible dates', () => {
+    expect(parseGermanDate('29.02.2026')).toBeNull();
+    expect(parseGermanDate('31.04.2026')).toBeNull();
+    expect(parseGermanDate('2026-11-05')).toBeNull();
+  });
+
+  it('formats local dates as ISO', () => {
+    expect(toIsoDate(new Date(2026, 2, 29))).toBe('2026-03-29');
   });
 });

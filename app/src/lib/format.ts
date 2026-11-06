@@ -49,3 +49,69 @@ export function formatLongDate(date: Date | string): string {
   const d = typeof date === 'string' ? parseDate(date) : date;
   return `${weekday[d.getDay()]}, ${d.getDate()}. ${month[d.getMonth()]}`;
 }
+
+const weekdayShort = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+
+/** "10.11." */
+export function formatShortDate(date: Date | string): string {
+  const d = typeof date === 'string' ? parseDate(date) : date;
+  return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.`;
+}
+
+/** "Sa, 15.11." */
+export function formatWeekdayDate(date: Date | string): string {
+  const d = typeof date === 'string' ? parseDate(date) : date;
+  return `${weekdayShort[d.getDay()]}, ${formatShortDate(d)}`;
+}
+
+/** "Mo, 10.11.2026" */
+export function formatWeekdayLongDate(date: Date | string): string {
+  const d = typeof date === 'string' ? parseDate(date) : date;
+  return `${weekdayShort[d.getDay()]}, ${formatDate(d)}`;
+}
+
+/** Days as sent by the API → "heute", "morgen", "in 5 Tagen" */
+export function formatDaysUntil(days: number): string {
+  if (days <= 0) return 'heute';
+  if (days === 1) return 'morgen';
+  return `in ${days} Tagen`;
+}
+
+/** 20 → "+20 %", -5.5 → "−5,5 %" */
+export function formatPercent(percent: number): string {
+  const sign = percent > 0 ? '+' : percent < 0 ? '−' : '';
+  const value = Math.abs(percent).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+  return `${sign}${value} %`;
+}
+
+/**
+ * Parses a German amount from a text field into cents: "9,99" → 999, "1.234,5" → 123450.
+ * Returns null for empty or invalid input. Input parsing only – no calculations.
+ */
+export function parseEuroInput(input: string): number | null {
+  const cleaned = input.replace(/\s|€/g, '');
+  if (!/^\d{1,3}(\.\d{3})*(,\d{0,2})?$|^\d+(,\d{0,2})?$/.test(cleaned)) return null;
+  const [euros, cents = ''] = cleaned.replace(/\./g, '').split(',');
+  const value = Number(euros) * 100 + Number(cents.padEnd(2, '0') || '0');
+  return Number.isSafeInteger(value) ? value : null;
+}
+
+/** 999 → "9,99" (for prefilling the amount field when editing) */
+export function centsToInput(cents: number): string {
+  return (cents / 100).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false });
+}
+
+/** Date → "2026-11-05" in local time (API DATE format) */
+export function toIsoDate(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+/** "05.11.2026" or "5.11.26" → "2026-11-05"; null if invalid */
+export function parseGermanDate(input: string): string | null {
+  const m = /^(\d{1,2})\.(\d{1,2})\.(\d{2}|\d{4})$/.exec(input.trim());
+  if (!m) return null;
+  const year = m[3].length === 2 ? 2000 + Number(m[3]) : Number(m[3]);
+  const d = new Date(year, Number(m[2]) - 1, Number(m[1]));
+  if (d.getFullYear() !== year || d.getMonth() !== Number(m[2]) - 1 || d.getDate() !== Number(m[1])) return null;
+  return toIsoDate(d);
+}

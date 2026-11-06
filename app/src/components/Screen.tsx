@@ -9,10 +9,12 @@ type Props = {
   /** Narrow centered column for auth forms on wide (desktop) screens */
   narrow?: boolean;
   scroll?: boolean;
+  /** No padding and no scroll container: the screen lays out edge-to-edge itself */
+  bare?: boolean;
   contentStyle?: ViewStyle;
 };
 
-export function Screen({ children, narrow, scroll = true, contentStyle }: Props) {
+export function Screen({ children, narrow, scroll = true, bare, contentStyle }: Props) {
   const content = (
     <View style={[styles.content, narrow && styles.narrow, contentStyle]}>{children}</View>
   );
@@ -20,7 +22,9 @@ export function Screen({ children, narrow, scroll = true, contentStyle }: Props)
   return (
     <SafeAreaView style={styles.root} edges={['top', 'left', 'right']}>
       <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        {scroll ? (
+        {bare ? (
+          children
+        ) : scroll ? (
           <ScrollView
             style={styles.root}
             contentContainerStyle={styles.scrollContent}

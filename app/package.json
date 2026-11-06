@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
     "@expo-google-fonts/space-grotesk": "^0.4.1",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~58.0.23",
     "expo-constants": "~58.0.15",
     "expo-font": "~58.0.11",
@@ -43,7 +44,7 @@
     "lint": "expo lint",
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "export:web": "expo export --platform web --output-dir ../api/public/app"
+    "export:web": "expo export --platform web --output-dir ../api/public/app && node scripts/post-export-web.js"
   },
   "private": true,
   "jest": {
