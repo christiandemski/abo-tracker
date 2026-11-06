@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { CirclePlus, FileUp, Settings } from 'lucide-react-native';
+import { Bell, CirclePlus, FileUp, Settings } from 'lucide-react-native';
 import { useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -34,6 +34,7 @@ export default function OverviewScreen() {
   const [period, setPeriod] = useState<Period>('month');
   const dashboard = useDashboard(period);
   const verified = !!user?.email_verified;
+  const notices = dashboard.data?.notices_count ?? 0;
 
   return (
     <Screen bare>
@@ -49,7 +50,17 @@ export default function OverviewScreen() {
           <ScreenHeader
             overline={formatLongDate(new Date())}
             title="Übersicht"
-            right={<IconButton icon={Settings} accessibilityLabel="Einstellungen" onPress={() => router.push('/settings')} />}
+            right={
+              <View style={styles.headerActions}>
+                <IconButton
+                  icon={Bell}
+                  accessibilityLabel={notices > 0 ? `Hinweise, ${notices} neu` : 'Hinweise'}
+                  onPress={() => router.push('/price-changes')}
+                  badge={notices > 0 ? <View style={styles.badge} /> : undefined}
+                />
+                <IconButton icon={Settings} accessibilityLabel="Einstellungen" onPress={() => router.push('/settings')} />
+              </View>
+            }
           />
         </View>
 
@@ -200,6 +211,19 @@ function VerifyEmailNotice() {
 }
 
 const styles = StyleSheet.create({
+  headerActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  // Orange dot = action required (price change waiting for a decision)
+  badge: {
+    width: 8,
+    height: 8,
+    borderRadius: 99,
+    backgroundColor: colors.warn,
+    borderWidth: 2,
+    borderColor: colors.surface,
+  },
   scroll: {
     paddingBottom: 32,
   },

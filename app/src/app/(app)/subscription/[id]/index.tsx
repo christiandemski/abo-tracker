@@ -10,6 +10,7 @@ import {
   Pause,
   Play,
   RotateCcw,
+  TrendingUp,
   StickyNote,
   Trash2,
   type LucideIcon,
@@ -28,16 +29,21 @@ import {
   Skeleton,
   StatusBadge,
   Switch,
+  TextField,
 } from '@/components';
 import { useAuth } from '@/lib/auth';
 import {
+  centsToInput,
   formatCents,
   formatDate,
   formatDaysUntil,
   formatPercent,
   formatShortDate,
   formatWeekdayLongDate,
+  parseEuroInput,
+  parseGermanDate,
 } from '@/lib/format';
+import { ApiError } from '@/lib/api';
 import { keys, useSubscription } from '@/lib/queries';
 import type { Resource, Subscription } from '@/lib/types';
 import { invalidate } from '@/lib/useQuery';
@@ -226,6 +232,8 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
         </View>
       )}
 
+      {s.status === 'active' && <AnnouncePrice subscription={s} />}
+
       <View style={[styles.section, styles.actions]}>
         {s.status === 'active' && (
           <>
@@ -285,6 +293,78 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
         ) : (
           <SecondaryButton label="Abo löschen" icon={Trash2} onPress={() => setConfirmDelete(true)} />
         )}
+      </View>
+    </View>
+  );
+}
+
+/** Announced price change (e.g. letter from the provider: "ab 01.01. 32,90 €"). */
+function AnnouncePrice({ subscription: s }: { subscription: Subscription }) {
+  const { api } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [amount, setAmount] = useState(centsToInput(s.amount_cents));
+  const [date, setDate] = useState('');
+  const [errors, setErrors] = useState<{ amount?: string; date?: string; form?: string }>({});
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
+
+  async function submit() {
+    const cents = parseEuroInput(amount);
+    const iso = parseGermanDate(date);
+    const next: typeof errors = {};
+    if (cents === null || cents <= 0) next.amount = 'Gib den neuen Preis ein, z. B. 32,90.';
+    if (!iso) next.date = 'Datum als TT.MM.JJJJ.';
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
+
+    setBusy(true);
+    try {
+      await api.post(`subscriptions/${s.id}/price-changes`, { new_cents: cents, effective_date: iso });
+      invalidate('subscriptions', 'dashboard', 'price-changes');
+      setDone(`Neuer Preis gilt ab ${date}.`);
+      setOpen(false);
+    } catch (e) {
+      if (e instanceof ApiError && e.isValidation) {
+        setErrors({ amount: e.field('new_cents'), date: e.field('effective_date') });
+      } else {
+        setErrors({ form: e instanceof Error ? e.message : 'Das hat nicht geklappt.' });
+      }
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <View style={[styles.section, styles.actions]}>
+        {done && <Notice tone="success">{done}</Notice>}
+        <SecondaryButton label="Preisänderung eintragen" icon={TrendingUp} onPress={() => setOpen(true)} />
+      </View>
+    );
+  }
+
+  return (
+    <View style={[styles.section, styles.announce]}>
+      <AppText variant="rowTitle">Preisänderung eintragen</AppText>
+      <AppText variant="small" color="textMuted">
+        Zum Beispiel aus einer Ankündigung deines Anbieters. Der neue Preis gilt ab dem Datum.
+      </AppText>
+      {errors.form && <Notice tone="danger">{errors.form}</Notice>}
+      <View style={styles.confirmButtons}>
+        <View style={styles.flex}>
+          <TextField label="Neuer Preis in €" value={amount} onChangeText={setAmount} error={errors.amount} keyboardType="decimal-pad" inputMode="decimal" />
+        </View>
+        <View style={styles.flex}>
+          <TextField label="Gültig ab" value={date} onChangeText={setDate} error={errors.date} placeholder="TT.MM.JJJJ" keyboardType="numbers-and-punctuation" />
+        </View>
+      </View>
+      <View style={styles.confirmButtons}>
+        <View style={styles.flex}>
+          <SecondaryButton label="Abbrechen" onPress={() => setOpen(false)} />
+        </View>
+        <View style={styles.flex}>
+          <SecondaryButton label="Speichern" onPress={submit} loading={busy} />
+        </View>
       </View>
     </View>
   );
@@ -601,6 +681,14 @@ const styles = StyleSheet.create({
   },
   actions: {
     gap: 10,
+  },
+  announce: {
+    gap: 10,
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
   confirm: {
     gap: 10,

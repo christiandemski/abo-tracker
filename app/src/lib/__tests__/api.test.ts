@@ -104,3 +104,19 @@ describe('createApiClient', () => {
     await expect(client.get('me')).rejects.toMatchObject({ status: 500, message: expect.stringContaining('Server') });
   });
 });
+
+describe('upload', () => {
+  it('sends FormData without a JSON content type', async () => {
+    const { client, fetchImpl } = setup();
+    fetchImpl.mockResolvedValue(jsonResponse(201, { data: { id: 1 } }));
+    const form = new FormData();
+    form.append('bank_format', 'sparkasse_camt_v2');
+
+    await client.upload('imports', form);
+
+    const [, init] = fetchImpl.mock.calls[0];
+    expect(init?.body).toBe(form);
+    expect(init?.headers).not.toHaveProperty('Content-Type');
+    expect(init?.headers).toMatchObject({ Authorization: 'Bearer secret-token' });
+  });
+});

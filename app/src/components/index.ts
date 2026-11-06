@@ -20,3 +20,6 @@ export { Skeleton, SkeletonList } from './Skeleton';
 export { StatusBadge } from './StatusBadge';
 export { SubscriptionRow } from './SubscriptionRow';
 export { UpcomingCard } from './UpcomingCard';
+export { CheckboxRow } from './CheckboxRow';
+export { StepProgress } from './StepProgress';
+export { Chip } from './Chip';

@@ -40,8 +40,10 @@ export function createApiClient({ baseUrl, getToken, onUnauthorized, fetchImpl }
 
   async function request<T>(method: Method, path: string, body?: unknown): Promise<T> {
     const token = await getToken();
+    const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
     const headers: Record<string, string> = { Accept: 'application/json' };
-    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    // multipart: the runtime sets Content-Type incl. boundary itself
+    if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json';
     if (token) headers.Authorization = `Bearer ${token}`;
 
     let response: Response;
@@ -49,7 +51,7 @@ export function createApiClient({ baseUrl, getToken, onUnauthorized, fetchImpl }
       response = await (fetchImpl ?? fetch)(`${root}/${path.replace(/^\/+/, '')}`, {
         method,
         headers,
-        body: body === undefined ? undefined : JSON.stringify(body),
+        body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body),
       });
     } catch {
       throw new ApiError('Keine Verbindung zum Server. Prüf deine Internetverbindung.', 0);
@@ -78,6 +80,8 @@ export function createApiClient({ baseUrl, getToken, onUnauthorized, fetchImpl }
     put: <T>(path: string, body?: unknown) => request<T>('PUT', path, body ?? {}),
     patch: <T>(path: string, body?: unknown) => request<T>('PATCH', path, body ?? {}),
     delete: <T = void>(path: string) => request<T>('DELETE', path),
+    /** multipart/form-data upload (e.g. CSV import) */
+    upload: <T>(path: string, form: FormData) => request<T>('POST', path, form),
   };
 }
 

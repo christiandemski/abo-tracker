@@ -131,6 +131,8 @@ export type Dashboard = {
   subscription_count: number;
   converted_count: number;
   inactive_count: number;
+  /** price changes waiting for a decision (bell badge) */
+  notices_count: number;
   categories: {
     category: Category | null;
     label: string;
@@ -167,4 +169,66 @@ export type ReminderSettings = {
   email: boolean;
   charge_reminders: boolean;
   push_devices: number;
+};
+
+export type BankFormat = { key: string; label: string; hint: string };
+
+export type ImportBatch = {
+  id: number;
+  bank_format: string;
+  file_name: string | null;
+  period_from: string | null;
+  period_to: string | null;
+  months: number;
+  rows_total: number;
+  status: 'review' | 'applied';
+  counts: { new: number; duplicate: number; price_change: number };
+};
+
+export type ImportCandidate = {
+  id: number;
+  name: string;
+  amount_cents: number;
+  monthly_cents: number | null;
+  interval_unit: IntervalUnit | null;
+  interval_count: number | null;
+  rhythm_label: string;
+  occurrences: number;
+  last_date: string;
+  confidence: 'high' | 'check';
+  status: 'new' | 'duplicate' | 'price_change';
+  category: Category | null;
+  subscription: { id: number; name: string; amount_cents: number } | null;
+};
+
+export type ImportApplyResult = {
+  created: Subscription[];
+  created_count: number;
+  monthly_added_cents: number;
+};
+
+export type PriceChangeItem = {
+  id: number;
+  status: 'pending' | 'accepted' | 'dismissed';
+  source: 'import' | 'manual';
+  old_cents: number;
+  new_cents: number;
+  diff_cents: number;
+  percent: number | null;
+  monthly_diff_cents: number;
+  effective_date: string;
+  in_future: boolean;
+  applied: boolean;
+  subscription: { id: number; name: string; rhythm_label: string; category: Category | null };
+};
+
+export type PriceChangesResponse = {
+  data: PriceChangeItem[];
+  meta: {
+    pending_count: number;
+    increase_count: number;
+    monthly_increase_cents: number;
+    yearly_increase_cents: number;
+    trends: { subscription_id: number; name: string; percent: number | null }[];
+  };
 };
