@@ -106,6 +106,35 @@ describe('keep ("Behalten")', function () {
         Notification::assertSentTo($this->user, ReminderDigestNotification::class);
     });
 
+    it('shows the next term\'s deadline even if it lies before kept_until (monthly renewal)', function () {
+        // Telekom: start 01.12.2024, 24 months, then monthly, notice 1 month.
+        // Kept term renews 01.01.2027 (cancel by 30.11.2026). The next deadline
+        // (31.12.2026 for the renewal on 01.02.2027) is before kept_until, but belongs to the next term.
+        $telekom = Subscription::factory()->for($this->user)
+            ->withTerm('2024-12-01', 24, 1, 1, 'month')
+            ->create(['name' => 'Telekom', 'anchor_date' => '2026-12-01']);
+
+        $this->postJson("/api/v1/subscriptions/{$telekom->id}/keep")
+            ->assertOk()->assertJsonPath('data.kept_until', '2027-01-01')->assertJsonPath('data.is_kept', true);
+
+        Notification::fake();
+        ReminderSetting::forUser($this->user)->update(['offsets_days' => [3]]);
+
+        // 3 days before 30.11.: kept → nothing
+        CarbonImmutable::setTestNow('2026-11-27 07:00:00');
+        Artisan::call('reminders:dispatch');
+        Notification::assertNothingSent();
+
+        // 3 days before 31.12.: next term → reminder again
+        CarbonImmutable::setTestNow('2026-12-28 07:00:00');
+        Artisan::call('subscriptions:refresh-dates');
+        Artisan::call('reminders:dispatch');
+        Notification::assertSentTo($this->user, ReminderDigestNotification::class);
+
+        expect($telekom->fresh()->cancel_by_date->toDateString())->toBe('2026-12-31')
+            ->and($telekom->fresh()->isKeptForCurrentTerm())->toBeFalse();
+    });
+
     it('can be undone', function () {
         $this->postJson("/api/v1/subscriptions/{$this->adobe->id}/keep")->assertOk();
         $this->deleteJson("/api/v1/subscriptions/{$this->adobe->id}/keep")->assertOk()->assertJsonPath('data.is_kept', false);

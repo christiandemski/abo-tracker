@@ -97,9 +97,20 @@ class Subscription extends Model
     /** "Behalten" chosen for the current term: no deadline banner, card or reminder. */
     public function isKeptForCurrentTerm(): bool
     {
-        return $this->kept_until !== null
-            && $this->cancel_by_date !== null
-            && $this->cancel_by_date->lessThan($this->kept_until);
+        return self::isKeptTerm($this->kept_until, $this->term_end_date);
+    }
+
+    /**
+     * kept_until is the renewal day of the term the user chose to keep. A deadline
+     * belongs to that term if its renewal day is not later. Comparing the deadline
+     * itself would be wrong: the next term's deadline can lie before kept_until
+     * (monthly renewal, or a notice period longer than the renewal period).
+     */
+    public static function isKeptTerm(?CarbonImmutable $keptUntil, ?CarbonImmutable $termEnd): bool
+    {
+        return $keptUntil !== null
+            && $termEnd !== null
+            && $termEnd->lessThanOrEqualTo($keptUntil);
     }
 
     /** Has a minimum term / automatic renewal, i.e. a real cancellation deadline. */

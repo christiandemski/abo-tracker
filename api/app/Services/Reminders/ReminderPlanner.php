@@ -65,13 +65,13 @@ class ReminderPlanner
         }
 
         // Always recompute: stored dates may be a day old if the nightly refresh did not run.
-        $cancelBy = $this->deadlines->computeFor($subscription, $today)['cancel_by'];
+        ['term_end' => $termEnd, 'cancel_by' => $cancelBy] = $this->deadlines->computeFor($subscription, $today);
         if ($cancelBy === null || $cancelBy->lessThan($today)) {
             return null;
         }
 
         // "Behalten" for this term: no reminder until the next one
-        if ($subscription->kept_until !== null && $cancelBy->lessThan($subscription->kept_until)) {
+        if (Subscription::isKeptTerm($subscription->kept_until, $termEnd)) {
             return null;
         }
 
