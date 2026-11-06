@@ -6,6 +6,7 @@ Persönlicher Abo- und Fixkosten-Tracker: Überblick über monatliche wiederkehr
 - **Spezifikation:** `docs/SPEC.md` (Datenmodell, API, Fachlogik, Import, Sicherheit, Deployment, Meilensteine)
 - **Design:** `docs/DESIGN.md` (Tokens, Komponenten, Screens, UX-Regeln) + Screen-Vorlagen in `design/screens/`
 - **Aktueller Auftrag:** siehe `docs/START-M1.md`
+- **Geklärte Entscheidungen:** `docs/DECISIONS.md` (vor Änderungen lesen)
 
 ## Stack
 
