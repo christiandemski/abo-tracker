@@ -51,10 +51,11 @@ Punkte, die SPEC.md und DESIGN.md offen ließen und die mit dem Nutzer geklärt 
 
 ## Noch offen
 
-- Browser-Test M4–M6 erledigt (06.11.2026). Rückfragen daraus:
-  - Import schlägt einen alten Preis als „Preisänderung“ vor, wenn der Preis nach der letzten Abbuchung im Auszug manuell geändert wurde.
-  - Gekündigte Abos fallen sofort aus „Fixkosten pro Monat“; der Kündigungs-Screen sagt aber „Danach fällt es aus deinen Fixkosten“.
-  - „Kündbar bis“ bleibt in der Zeitleiste der Detailseite orange, auch wenn „Behalten“ gewählt ist.
-  - „Nächste Jahreszahlungen“ (Statistik) listet auch Quartalsabos.
+- Browser-Test M4–M6 erledigt (06.11.2026). Daraus entschieden:
+  - Import schlägt keinen Preis als Änderung vor, wenn das Abo eine angenommene Preisänderung hat, die nach der letzten Abbuchung im Auszug wirksam wurde (der Auszug ist dann veraltet).
+  - Gekündigte Abos zählen ab sofort nicht mehr zu „Fixkosten pro Monat“ (wie bisher); der Text auf dem Kündigungs-Screen sagt das jetzt so.
+  - „Kündbar bis“ in der Zeitleiste ist bei „Behalten“ grau statt orange.
+  - Statistik: „Seltenere Zahlungen“ statt „Nächste Jahreszahlungen“ (enthält auch Quartalsabos).
+  - Web: Ohne Session wird auf `/login` umgeleitet (vorher „Unmatched Route“ unter `/(auth)`), und der Daten-Cache im `localStorage` wird geleert.
 - Echter Sparkasse-Export (siehe M4).
 - Server-Einrichtung: Netcup, GitHub-Secrets, Cronjob, EAS/FCM, `EAS_PROJECT_ID` (siehe `docs/DEPLOY.md`).
