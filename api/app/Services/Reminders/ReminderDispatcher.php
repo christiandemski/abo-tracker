@@ -9,6 +9,7 @@ use App\Models\Scopes\OwnedByCurrentUserScope;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Notifications\ReminderDigestNotification;
+use App\Services\BillingCalculator;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
@@ -29,7 +30,10 @@ class ReminderDispatcher
     /** More push messages than this are combined into one summary push. */
     public const MAX_SINGLE_PUSHES = 3;
 
-    public function __construct(private readonly ReminderPlanner $planner) {}
+    public function __construct(
+        private readonly ReminderPlanner $planner,
+        private readonly BillingCalculator $billing,
+    ) {}
 
     /**
      * @return array{users: int, mails: int, pushes: int}
@@ -160,7 +164,7 @@ class ReminderDispatcher
             'due_date' => $r->dueDate->toDateString(),
             'days_left' => $r->daysLeft,
             // Mail may show amounts (push may not).
-            'amount' => Number::currency($s->amount_cents / 100, 'EUR', 'de'),
+            'amount' => Number::currency($s->amount_cents / 100, 'EUR', 'de').' '.$this->billing->rhythmLabel($s->interval_unit, $s->interval_count),
             'term_end_date' => $r->isDeadline() ? $s->term_end_date?->toDateString() : null,
         ];
     }

@@ -109,6 +109,17 @@ eas build -p android --profile preview
 
 Am Ende gibt es einen Link zur APK zum direkten Installieren.
 
+**Push-Erinnerungen** (Android über Firebase Cloud Messaging):
+
+1. Nach `eas init` die Projekt-ID aus der Ausgabe (oder expo.dev → Projekt → „Project ID“) als EAS-Umgebungsvariable `EAS_PROJECT_ID` für das Profil `preview` hinterlegen (`eas env:create`) bzw. lokal in `app/.env` setzen. Ohne sie kann die App kein Push-Token holen. Erinnerungen kommen dann nur per Mail.
+2. In der [Firebase-Konsole](https://console.firebase.google.com) ein Projekt anlegen, eine Android-App mit Paketname `de.codekorb.abo` hinzufügen.
+3. Firebase → Projekteinstellungen → Dienstkonten → „Neuen privaten Schlüssel generieren“ (JSON).
+4. `eas credentials -p android` → „Google Service Account“ → „FCM V1“ → die JSON-Datei hochladen. Die Datei danach lokal löschen, sie gehört nicht ins Repo.
+5. Neue APK bauen (`eas build -p android --profile preview`). Beim ersten Start fragt die App nach der Erlaubnis für Benachrichtigungen.
+6. Optional: In expo.dev „Enhanced Push Security“ aktivieren und das Access-Token als `EXPO_ACCESS_TOKEN` in die Server-`.env` schreiben.
+
+Erinnerungen manuell testen (auf dem Server): `php artisan reminders:dispatch`, dann `php artisan queue:work --stop-when-empty`. Doppelte Läufe verschicken nichts doppelt.
+
 **App Links** (Einladungs- und Passwort-Links öffnen direkt die App):
 
 1. `eas credentials -p android` → SHA-256-Fingerprint des Signaturzertifikats kopieren.

@@ -159,3 +159,12 @@ export type BillingPreview = {
   rhythm_label: string;
   is_converted: boolean;
 };
+
+export type ReminderSettings = {
+  offsets_days: number[];
+  available_offsets: number[];
+  push: boolean;
+  email: boolean;
+  charge_reminders: boolean;
+  push_devices: number;
+};

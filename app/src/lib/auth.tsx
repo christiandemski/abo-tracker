@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 import { ApiError, createApiClient, type ApiClient } from './api';
 import { clearCache } from './cache';
+import { unregisterPush } from './push';
 import { apiUrl, deviceName } from './config';
 import { tokenStorage } from './tokenStorage';
 import type { AuthResponse, Invitation, MessageResponse, Resource, User } from './types';
@@ -110,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await startSession(await api.post<AuthResponse>('auth/register', { ...input, device_name: deviceName }));
       },
       signOut: async () => {
+        await unregisterPush(api);
         try {
           await api.post('auth/logout');
         } catch {

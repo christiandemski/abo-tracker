@@ -50,6 +50,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-secure-store',
     'expo-font',
     [
+      'expo-notifications',
+      {
+        color: '#8EA8FF',
+        defaultChannel: 'reminders',
+      },
+    ],
+    [
       'expo-splash-screen',
       {
         backgroundColor: '#0E1014',
@@ -64,5 +71,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   extra: {
     apiUrl: process.env.EXPO_PUBLIC_API_URL ?? DEFAULT_API_URL,
+    // Set by `eas init`; needed for Expo push tokens.
+    eas: process.env.EAS_PROJECT_ID ? { projectId: process.env.EAS_PROJECT_ID } : undefined,
   },
 });

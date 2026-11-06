@@ -60,15 +60,15 @@ class ReminderDigestNotification extends Notification implements ShouldQueue
                 : 'Diese Kündigungsfristen enden bald. Wenn du ein Abo nicht mehr brauchst, kündige rechtzeitig:');
 
             foreach ($deadlines as $item) {
-                $renewal = $item['term_end_date'] ? ', sonst Verlängerung am '.$this->date($item['term_end_date']) : '';
-                $mail->line("**{$item['name']}** – kündbar bis {$this->date($item['due_date'])} ({$this->when($item['days_left'])}){$renewal}. {$item['amount']}");
+                $renewal = $item['term_end_date'] ? ' Sonst verlängert sich der Vertrag am '.$this->date($item['term_end_date']).'.' : '';
+                $mail->line("**{$item['name']}** ({$item['amount']}): kündbar bis {$this->date($item['due_date'])}, also {$this->when($item['days_left'])}.{$renewal}");
             }
         }
 
         if ($charges !== []) {
             $mail->line(count($charges) === 1 ? 'Morgen wird abgebucht:' : 'Morgen werden abgebucht:');
             foreach ($charges as $item) {
-                $mail->line("**{$item['name']}** – {$item['amount']}");
+                $mail->line("**{$item['name']}**: {$item['amount']}");
             }
         }
 
