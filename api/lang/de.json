@@ -228,5 +228,6 @@
     "Web Server is Down": "Webserver ist ausgefallen",
     "Whoops!": "Ups!",
     "Yes": "Ja",
-    "You are receiving this email because we received a password reset request for your account.": "Du bekommst diese Mail, weil jemand für dein Konto ein neues Passwort angefordert hat."
+    "You are receiving this email because we received a password reset request for your account.": "Du bekommst diese Mail, weil jemand für dein Konto ein neues Passwort angefordert hat.",
+    "Your email address is not verified.": "Bitte bestätige zuerst deine E-Mail-Adresse."
 }
