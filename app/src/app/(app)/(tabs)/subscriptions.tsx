@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
-import { CirclePlus, Search } from 'lucide-react-native';
+import { CirclePlus, ClipboardCheck, Search } from 'lucide-react-native';
 import { useEffect, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import {
   AppText,
@@ -117,6 +117,17 @@ export default function SubscriptionsScreen() {
         </AppText>
         <Segmented options={SORT} value={sort} onChange={setSort} accessibilityLabel="Sortierung" />
       </View>
+
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => router.push('/check')}
+        style={({ pressed }) => [styles.checkLink, pressed && styles.pressed]}
+      >
+        <ClipboardCheck size={20} strokeWidth={1.8} color={colors.accent} />
+        <AppText variant="body" color="accent" style={styles.checkLabel}>
+          Lohnt sich das noch? Quartals-Check
+        </AppText>
+      </Pressable>
     </View>
   );
 
@@ -215,6 +226,18 @@ const styles = StyleSheet.create({
   chips: {
     gap: 8,
     paddingHorizontal: screenPadding,
+  },
+  checkLink: {
+    minHeight: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  checkLabel: {
+    fontFamily: fonts.bodyMedium,
+  },
+  pressed: {
+    opacity: 0.7,
   },
   sortRow: {
     flexDirection: 'row',

@@ -74,7 +74,32 @@ export function createApiClient({ baseUrl, getToken, onUnauthorized, fetchImpl }
     throw new ApiError(messageFor(response.status, data), response.status, data?.errors ?? {});
   }
 
+  /** Binary download (e.g. PDF). POST with JSON body or GET without. */
+  async function download(path: string, body?: unknown): Promise<ArrayBuffer> {
+    const token = await getToken();
+    const headers: Record<string, string> = { Accept: 'application/pdf, application/json' };
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    if (token) headers.Authorization = `Bearer ${token}`;
+    let response: Response;
+    try {
+      response = await (fetchImpl ?? fetch)(`${root}/${path.replace(/^\/+/, '')}`, {
+        method: body === undefined ? 'GET' : 'POST',
+        headers,
+        body: body === undefined ? undefined : JSON.stringify(body),
+      });
+    } catch {
+      throw new ApiError('Keine Verbindung zum Server. Prüf deine Internetverbindung.', 0);
+    }
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      if (response.status === 401 && token) onUnauthorized?.();
+      throw new ApiError(messageFor(response.status, data), response.status, data?.errors ?? {});
+    }
+    return response.arrayBuffer();
+  }
+
   return {
+    download,
     get: <T>(path: string) => request<T>('GET', path),
     post: <T>(path: string, body?: unknown) => request<T>('POST', path, body ?? {}),
     put: <T>(path: string, body?: unknown) => request<T>('PUT', path, body ?? {}),

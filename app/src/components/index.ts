@@ -23,3 +23,4 @@ export { UpcomingCard } from './UpcomingCard';
 export { CheckboxRow } from './CheckboxRow';
 export { StepProgress } from './StepProgress';
 export { Chip } from './Chip';
+export { UsageCheckCard } from './UsageCheckCard';

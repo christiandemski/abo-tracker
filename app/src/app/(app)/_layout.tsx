@@ -20,6 +20,8 @@ export default function AppLayout() {
       <Stack.Screen name="price-changes" />
       <Stack.Screen name="subscription/[id]/index" />
       <Stack.Screen name="subscription/[id]/edit" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="subscription/[id]/cancel" />
+      <Stack.Screen name="check" options={{ presentation: 'modal' }} />
     </Stack>
   );
 }

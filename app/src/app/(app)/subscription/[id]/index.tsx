@@ -30,6 +30,7 @@ import {
   StatusBadge,
   Switch,
   TextField,
+  TextLink,
 } from '@/components';
 import { useAuth } from '@/lib/auth';
 import {
@@ -110,7 +111,11 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const showBanner =
-    s.status === 'active' && s.has_term && s.days_until_deadline !== null && s.days_until_deadline <= BANNER_DAYS;
+    s.status === 'active' &&
+    s.has_term &&
+    !s.is_kept &&
+    s.days_until_deadline !== null &&
+    s.days_until_deadline <= BANNER_DAYS;
   const history = s.price_history ?? [];
   const trend = s.price_trend_percent ?? null;
 
@@ -153,7 +158,30 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
         </View>
       )}
 
-      {showBanner && <DeadlineBanner s={s} />}
+      {showBanner && (
+        <DeadlineBanner
+          s={s}
+          keeping={busy === 'keep'}
+          onKeep={() => run('keep', () => api.post(`subscriptions/${s.id}/keep`))}
+        />
+      )}
+
+      {s.status === 'active' && s.is_kept && s.kept_until && (
+        <View style={styles.block}>
+          <Notice
+            tone="info"
+            title="Du behältst das Abo"
+            action={
+              <TextLink
+                label={busy === 'unkeep' ? 'Wird geändert …' : 'Doch kündigen'}
+                onPress={() => run('unkeep', () => api.delete(`subscriptions/${s.id}/keep`))}
+              />
+            }
+          >
+            Bis zur Verlängerung am {formatDate(s.kept_until)} gibt es keine Erinnerungen an die Frist.
+          </Notice>
+        </View>
+      )}
 
       {s.status === 'cancelled' && (
         <View style={styles.block}>
@@ -244,10 +272,9 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
               onPress={() => run('pause', () => api.patch(`subscriptions/${s.id}`, { status: 'paused' }))}
             />
             <SecondaryButton
-              label="Als gekündigt markieren"
+              label="Kündigen"
               icon={CircleSlash}
-              loading={busy === 'cancel'}
-              onPress={() => run('cancel', post('cancel'))}
+              onPress={() => router.push(`/subscription/${s.id}/cancel`)}
             />
           </>
         )}
@@ -370,23 +397,46 @@ function AnnouncePrice({ subscription: s }: { subscription: Subscription }) {
   );
 }
 
-function DeadlineBanner({ s }: { s: Subscription }) {
+function DeadlineBanner({ s, onKeep, keeping }: { s: Subscription; onKeep: () => void; keeping: boolean }) {
   const renewal = s.renewal_months ?? 1;
   const renewalLabel = renewal === 1 ? '1 Monat' : `${renewal} Monate`;
 
   return (
     <View accessibilityRole="alert" style={styles.banner}>
-      <Clock size={20} strokeWidth={2} color={colors.warn} style={styles.bannerIcon} />
-      <View style={styles.bannerText}>
-        <AppText variant="rowTitle" color="warn">
-          Kündigungsfrist endet {formatDaysUntil(s.days_until_deadline ?? 0)}
-        </AppText>
-        <AppText variant="small" color="warnText" style={styles.bannerBody}>
-          Kündbar bis {formatWeekdayLongDate(s.cancel_by_date!)}.
-          {s.term_end_date
-            ? ` Danach verlängert sich das Abo am ${formatShortDate(s.term_end_date)} automatisch um ${renewalLabel}.`
-            : ''}
-        </AppText>
+      <View style={styles.bannerTop}>
+        <Clock size={20} strokeWidth={2} color={colors.warn} style={styles.bannerIcon} />
+        <View style={styles.bannerText}>
+          <AppText variant="rowTitle" color="warn">
+            Kündigungsfrist endet {formatDaysUntil(s.days_until_deadline ?? 0)}
+          </AppText>
+          <AppText variant="small" color="warnText" style={styles.bannerBody}>
+            Kündbar bis {formatWeekdayLongDate(s.cancel_by_date!)}.
+            {s.term_end_date
+              ? ` Danach verlängert sich das Abo am ${formatShortDate(s.term_end_date)} automatisch um ${renewalLabel}.`
+              : ''}
+          </AppText>
+        </View>
+      </View>
+      <View style={styles.bannerActions}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push(`/subscription/${s.id}/cancel`)}
+          style={({ pressed }) => [styles.bannerPrimary, pressed && styles.pressed]}
+        >
+          <AppText variant="body" color="onWarn" style={styles.semi}>
+            Kündigung vormerken
+          </AppText>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          disabled={keeping}
+          onPress={onKeep}
+          style={({ pressed }) => [styles.bannerSecondary, pressed && styles.pressed]}
+        >
+          <AppText variant="body" style={styles.medium}>
+            {keeping ? 'Wird gespeichert …' : 'Behalten'}
+          </AppText>
+        </Pressable>
       </View>
     </View>
   );
@@ -573,8 +623,32 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.warnBorder,
     backgroundColor: colors.warnSurface,
+    gap: 12,
+  },
+  bannerTop: {
     flexDirection: 'row',
     gap: 10,
+  },
+  bannerActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  bannerPrimary: {
+    flex: 1,
+    height: 44,
+    borderRadius: radius.input,
+    backgroundColor: colors.warn,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bannerSecondary: {
+    flex: 1,
+    height: 44,
+    borderRadius: radius.input,
+    borderWidth: 1,
+    borderColor: colors.warnBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   bannerIcon: {
     marginTop: 1,

@@ -28,6 +28,8 @@ export type FormState = {
   paymentMethod: string;
   providerUrl: string;
   notes: string;
+  customerNumber: string;
+  providerEmail: string;
 };
 
 export const RHYTHM_PRESETS: Record<Exclude<RhythmPreset, 'custom'>, { unit: IntervalUnit; count: number }> = {
@@ -63,6 +65,8 @@ export function emptyForm(today = new Date()): FormState {
     paymentMethod: '',
     providerUrl: '',
     notes: '',
+    customerNumber: '',
+    providerEmail: '',
   };
 }
 
@@ -120,6 +124,8 @@ export function formFromSubscription(s: Subscription): FormState {
     paymentMethod: s.payment_method ?? '',
     providerUrl: s.provider_url ?? '',
     notes: s.notes ?? '',
+    customerNumber: s.customer_number ?? '',
+    providerEmail: s.provider_email ?? '',
   };
 }
 
@@ -175,6 +181,11 @@ export function validate(form: FormState): { payload: SubscriptionInput | null; 
   const url = form.providerUrl.trim();
   if (url && !/^https?:\/\/\S+\.\S+/.test(url)) errors.providerUrl = 'Link mit https:// beginnen.';
 
+  const providerEmail = form.providerEmail.trim();
+  if (providerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(providerEmail)) {
+    errors.providerEmail = 'Gib eine gültige E-Mail-Adresse ein.';
+  }
+
   if (Object.keys(errors).length > 0 || amount === null || !anchor || interval.count === null) {
     return { payload: null, errors };
   }
@@ -198,6 +209,8 @@ export function validate(form: FormState): { payload: SubscriptionInput | null; 
       provider_url: url || null,
       notes: form.notes.trim() || null,
       template_key: form.templateKey,
+      customer_number: form.customerNumber.trim() || null,
+      provider_email: providerEmail || null,
     },
   };
 }
@@ -215,6 +228,8 @@ export const SERVER_FIELD: Partial<Record<keyof SubscriptionInput, keyof FormSta
   provider_url: 'providerUrl',
   payment_method: 'paymentMethod',
   notes: 'notes',
+  customer_number: 'customerNumber',
+  provider_email: 'providerEmail',
 };
 
 export { toIsoDate };

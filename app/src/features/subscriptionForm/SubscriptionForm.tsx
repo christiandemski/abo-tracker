@@ -108,7 +108,7 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showMore, setShowMore] = useState(
-    !!(initial.paymentMethod || initial.providerUrl || initial.notes),
+    !!(initial.paymentMethod || initial.providerUrl || initial.notes || initial.customerNumber || initial.providerEmail),
   );
   const [search, setSearch] = useState('');
   const q = useDebounced(search.trim());
@@ -444,6 +444,22 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
                 placeholder="https://"
                 autoCapitalize="none"
                 keyboardType="url"
+              />
+              <TextField
+                label="Kundennummer"
+                value={form.customerNumber}
+                onChangeText={(v) => set('customerNumber', v)}
+                error={errors.customerNumber}
+                hint="Steht im Kündigungsschreiben."
+              />
+              <TextField
+                label="E-Mail für Kündigungen"
+                value={form.providerEmail}
+                onChangeText={(v) => set('providerEmail', v)}
+                error={errors.providerEmail}
+                placeholder="z. B. kuendigung@anbieter.de"
+                autoCapitalize="none"
+                keyboardType="email-address"
               />
               <TextField
                 label="Notizen"

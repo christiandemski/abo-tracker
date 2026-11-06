@@ -3,9 +3,10 @@ import { Bell, ChevronRight, LogOut } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Card, Screen, SecondaryButton } from '@/components';
+import { AppText, Card, Notice, Screen, SecondaryButton, TextField } from '@/components';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { useAuth } from '@/lib/auth';
+import { useForm } from '@/lib/useForm';
 import { colors, fonts } from '@/theme';
 
 export default function SettingsScreen() {
@@ -24,6 +25,8 @@ export default function SettingsScreen() {
         <Row label="E-Mail" value={user?.email ?? ''} />
         <Row label="Status" value={user?.email_verified ? 'Adresse bestätigt' : 'Adresse noch nicht bestätigt'} last />
       </Card>
+
+      <SenderForm />
 
       <Pressable
         accessibilityRole="button"
@@ -54,6 +57,65 @@ export default function SettingsScreen() {
         />
       </View>
     </Screen>
+  );
+}
+
+/** Sender for cancellation letters, stored on the account. */
+function SenderForm() {
+  const { user, api, refreshUser } = useAuth();
+  const form = useForm({
+    name: user?.name ?? '',
+    address_street: user?.address_street ?? '',
+    address_zip: user?.address_zip ?? '',
+    address_city: user?.address_city ?? '',
+  });
+  const [saved, setSaved] = useState(false);
+
+  const onSave = () =>
+    form.submit(async (v) => {
+      setSaved(false);
+      await api.patch('me', {
+        name: v.name.trim(),
+        address_street: v.address_street.trim() || null,
+        address_zip: v.address_zip.trim() || null,
+        address_city: v.address_city.trim() || null,
+      });
+      await refreshUser();
+      setSaved(true);
+    });
+
+  return (
+    <Card style={styles.section}>
+      <AppText variant="small" color="textMuted">
+        Absender für Kündigungsschreiben
+      </AppText>
+      {form.formError && <Notice tone="danger">{form.formError}</Notice>}
+      {saved && <Notice tone="success">Gespeichert.</Notice>}
+      <TextField label="Name" value={form.values.name} onChangeText={form.set('name')} error={form.errors.name} autoComplete="name" />
+      <TextField
+        label="Straße und Hausnummer"
+        value={form.values.address_street}
+        onChangeText={form.set('address_street')}
+        error={form.errors.address_street}
+        autoComplete="street-address"
+      />
+      <View style={styles.twoCols}>
+        <View style={styles.zip}>
+          <TextField
+            label="PLZ"
+            value={form.values.address_zip}
+            onChangeText={form.set('address_zip')}
+            error={form.errors.address_zip}
+            keyboardType="number-pad"
+            autoComplete="postal-code"
+          />
+        </View>
+        <View style={styles.flex}>
+          <TextField label="Ort" value={form.values.address_city} onChangeText={form.set('address_city')} error={form.errors.address_city} />
+        </View>
+      </View>
+      <SecondaryButton label="Speichern" onPress={onSave} loading={form.submitting} />
+    </Card>
   );
 }
 
@@ -105,6 +167,16 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: colors.divider,
+  },
+  twoCols: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  zip: {
+    width: 96,
+  },
+  flex: {
+    flex: 1,
   },
   value: {
     flexShrink: 1,

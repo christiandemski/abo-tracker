@@ -7,6 +7,9 @@ export type User = {
   email_verified: boolean;
   is_admin: boolean;
   timezone: string;
+  address_street: string | null;
+  address_zip: string | null;
+  address_city: string | null;
 };
 
 export type AuthResponse = {
@@ -26,6 +29,7 @@ export type MessageResponse = { message: string };
 export type IntervalUnit = 'week' | 'month' | 'year';
 export type NoticeUnit = 'day' | 'week' | 'month';
 export type SubscriptionStatus = 'active' | 'cancelled' | 'paused';
+export type CancelMethod = 'online' | 'mail' | 'pdf' | 'other';
 
 export type Category = {
   id: number;
@@ -81,6 +85,13 @@ export type Subscription = {
   notes: string | null;
   source: 'manual' | 'import' | 'template';
   template_key: string | null;
+  customer_number: string | null;
+  provider_email: string | null;
+  cancelled_at: string | null;
+  cancel_method: CancelMethod | null;
+  kept_until: string | null;
+  /** "Behalten" chosen for the current term */
+  is_kept: boolean;
   price_history?: PriceChange[];
   /** Current price vs. first recorded price, percent; null without history */
   price_trend_percent?: number | null;
@@ -103,6 +114,8 @@ export type SubscriptionInput = {
   provider_url: string | null;
   notes: string | null;
   template_key: string | null;
+  customer_number: string | null;
+  provider_email: string | null;
 };
 
 export type CompactSubscription = {
@@ -231,4 +244,33 @@ export type PriceChangesResponse = {
     yearly_increase_cents: number;
     trends: { subscription_id: number; name: string; percent: number | null }[];
   };
+};
+
+export type CancellationLetter = {
+  sender: string;
+  subject: string;
+  body: string;
+  text: string;
+  expected_end: string | null;
+  recipient_email: string | null;
+  missing: ('name' | 'address' | 'customer_number')[];
+};
+
+export type UsageAnswer = 'often' | 'rare' | 'never' | 'skip';
+
+export type UsageCheckState = {
+  current: {
+    id: number;
+    name: string;
+    amount_cents: number;
+    rhythm_label: string;
+    yearly_cents: number;
+    category: Category | null;
+  } | null;
+  progress: { answered: number; total: number };
+  done: boolean;
+  candidates: { subscription_id: number; name: string; answer: 'rare' | 'never'; yearly_cents: number; has_term: boolean }[];
+  savings_yearly_cents: number;
+  last_checked_at: string | null;
+  due: boolean;
 };

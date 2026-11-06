@@ -20,6 +20,7 @@ import {
   SubscriptionRow,
   TextLink,
   UpcomingCard,
+  UsageCheckCard,
 } from '@/components';
 import { useAuth } from '@/lib/auth';
 import { formatCents, formatLongDate } from '@/lib/format';
@@ -107,6 +108,12 @@ function OverviewContent({ dashboard, period, onPeriodChange }: { dashboard: Das
       <View style={[styles.padded, styles.section]}>
         <HeroTotal dashboard={dashboard} period={period} onPeriodChange={onPeriodChange} />
       </View>
+
+      {dashboard.subscription_count > 0 && (
+        <View style={[styles.padded, styles.section]}>
+          <UsageCheckCard />
+        </View>
+      )}
 
       {dashboard.upcoming.length > 0 && (
         <View style={styles.sectionLarge}>
