@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Monatsansicht Abbuchungen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; box-sizing: border-box;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 20px 16px 0 16px;">
+    <button type="button" aria-label="Vorheriger Monat" style="width: 44px; height: 44px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+    </button>
+    <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">November 2026</h1>
+    <button type="button" aria-label="Nächster Monat" style="width: 44px; height: 44px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+    </button>
+  </header>
+
+  <section aria-label="Monatssumme" style="margin: 16px 20px 0 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+    <div style="padding: 12px 14px; border-radius: 16px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 3px;">
+      <span style="font-size: 12px; color: #A0A7B4;">Abbuchungen gesamt</span>
+      <span style="font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums;">337,71 €</span>
+    </div>
+    <div style="padding: 12px 14px; border-radius: 16px; background: #1A2033; border: 1px solid #34406A; display: flex; flex-direction: column; gap: 3px;">
+      <span style="font-size: 12px; color: #B4C5FF;">Noch offen ab heute</span>
+      <span style="font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums;">247,83 €</span>
+    </div>
+  </section>
+
+  <div aria-hidden="true" style="margin: 16px 20px 0 20px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; font-size: 11px; font-weight: 600; color: #A0A7B4; text-align: center;">
+    <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+  </div>
+  <div role="grid" aria-label="Tage im November" style="margin: 6px 20px 0 20px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px;">
+    <sc-for list="{{cells}}" as="d" hint-placeholder-count="36">
+      <sc-if value="{{d.empty}}" hint-placeholder-val="{{false}}"><span style="height: 50px;"></span></sc-if>
+      <sc-if value="{{d.real}}" hint-placeholder-val="{{true}}">
+        <button type="button" aria-label="{{d.aria}}" aria-pressed="{{d.sel}}" onClick="{{d.pick}}" style="{{d.style}}">
+          <span style="{{d.numStyle}}">{{d.n}}</span>
+          <span style="{{d.amtStyle}}">{{d.short}}</span>
+        </button>
+      </sc-if>
+    </sc-for>
+  </div>
+
+  <div aria-hidden="true" style="margin: 10px 20px 0 20px; display: flex; gap: 14px; font-size: 11px; color: #A0A7B4;">
+    <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #2E3546;"></span>unter 30 €</span>
+    <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #34406A;"></span>30–100 €</span>
+    <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #6B4A1F;"></span>über 100 €</span>
+  </div>
+
+  <section aria-live="polite" style="margin: 18px 20px 0 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+      <h2 style="margin: 0; font-size: 16px; font-weight: 600;">{{selTitle}}</h2>
+      <span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">{{selSum}}</span>
+    </div>
+    <sc-if value="{{selEmpty}}" hint-placeholder-val="{{false}}">
+      <p style="margin: 6px 0 0 0; font-size: 13px; color: #A0A7B4;">Keine Abbuchung an diesem Tag.</p>
+    </sc-if>
+    <ul style="list-style: none; margin: 0; padding: 0;">
+      <sc-for list="{{selItems}}" as="i" hint-placeholder-count="1">
+        <li style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #1E222A;">
+          <span style="{{i.dot}}"></span>
+          <span style="display: flex; flex-direction: column; flex-grow: 1; gap: 2px;">
+            <span style="font-size: 14px; font-weight: 600;">{{i.name}}</span>
+            <span style="font-size: 12px; color: #A0A7B4;">{{i.meta}}</span>
+          </span>
+          <span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">{{i.amt}}</span>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sel: 12 }; }
+  renderVals() {
+    var self = this;
+    var today = 6;
+    function fmt(n) { return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
+    var C = { s: '#B5E36B', t: '#8EA8FF', sp: '#4FD1C5', sw: '#C9A7FF' };
+    var deb = {
+      1: [['Internet', 'monatlich · Telefon & Internet', 39.99, C.t], ['Fitnessstudio', 'monatlich · Sport', 29.90, C.sp]],
+      3: [['Handyvertrag', 'monatlich · Telefon & Internet', 19.99, C.t]],
+      8: [['Disney+', 'monatlich · Streaming', 9.99, C.s]],
+      12: [['Adobe Creative Cloud', 'jährlich · kündbar bis 10.11.', 143.88, C.sw]],
+      15: [['Netflix', 'monatlich · Streaming', 13.99, C.s]],
+      18: [['iCloud+', 'monatlich · Software & Cloud', 2.99, C.sw]],
+      21: [['Strava', 'jährlich · kündbar bis 20.11.', 59.99, C.sp]],
+      22: [['Spotify Duo', 'monatlich · Streaming', 16.99, C.s]]
+    };
+    var wd = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    var cells = [];
+    for (var e = 0; e < 6; e++) cells.push({ empty: true, real: false });
+    for (var d = 1; d <= 30; d++) {
+      (function (day) {
+        var items = deb[day] || [];
+        var sum = items.reduce(function (s, x) { return s + x[2]; }, 0);
+        var sel = self.state.sel === day;
+        var past = day < today;
+        var bg = sum === 0 ? '#12151B' : (sum > 100 ? '#6B4A1F' : (sum >= 30 ? '#34406A' : '#2E3546'));
+        var st = 'height: 50px; padding: 4px 2px; box-sizing: border-box; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; background: ' + bg + '; ';
+        st += sel ? 'border: 2px solid #F2F3F5;' : (day === today ? 'border: 1.5px solid #8EA8FF;' : 'border: 1px solid transparent;');
+        if (past) st += ' opacity: 0.55;';
+        cells.push({
+          empty: false, real: true, n: day, sel: sel,
+          short: sum ? Math.round(sum) + ' €' : '',
+          aria: day + '. November' + (sum ? ', ' + fmt(sum) : ', keine Abbuchung'),
+          style: st,
+          numStyle: 'font-size: 13px; font-weight: ' + (day === today ? '700' : '500') + '; color: ' + (day === today ? '#8EA8FF' : '#F2F3F5') + ';',
+          amtStyle: 'font-size: 10px; font-weight: 600; color: ' + (sum > 100 ? '#FFD29E' : '#C8D3FF') + '; font-variant-numeric: tabular-nums; min-height: 12px;',
+          pick: function () { self.setState({ sel: day }); }
+        });
+      })(d);
+    }
+    var s = this.state.sel;
+    var items = deb[s] || [];
+    var sum = items.reduce(function (a, x) { return a + x[2]; }, 0);
+    var dow = wd[(s - 1) % 7];
+    return {
+      cells: cells,
+      selTitle: dow + ', ' + s + '.11.' + (s < today ? ' · abgebucht' : ''),
+      selSum: sum ? fmt(sum) : '',
+      selEmpty: items.length === 0,
+      selItems: items.map(function (x) {
+        return { name: x[0], meta: x[1], amt: fmt(x[2]), dot: 'flex: 0 0 auto; width: 10px; height: 10px; border-radius: 3px; background: ' + x[3] + ';' };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

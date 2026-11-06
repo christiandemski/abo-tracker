@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Abo-Detail mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; box-sizing: border-box; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 20px 16px 0 16px;">
+    <a href="Main.dc.html" aria-label="Zurück zur Übersicht" style="width: 44px; height: 44px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; display: flex; align-items: center; justify-content: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+    </a>
+    <span style="font-size: 15px; font-weight: 600;">Abo-Details</span>
+    <button style="height: 44px; padding: 0 14px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; font-size: 14px; font-weight: 500; cursor: pointer;">Bearbeiten</button>
+  </header>
+
+  <section style="display: flex; align-items: center; gap: 14px; padding: 22px 20px 0 20px;">
+    <span style="flex: 0 0 auto; width: 56px; height: 56px; border-radius: 18px; background: #C9A7FF; color: #0E1014; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 24px; font-weight: 700;">A</span>
+    <div style="display: flex; flex-direction: column; gap: 3px;">
+      <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em;">Adobe Creative Cloud</h1>
+      <span style="font-size: 13px; color: #A0A7B4;">Foto-Abo · Software &amp; Cloud</span>
+    </div>
+  </section>
+
+  <section role="status" style="margin: 20px 20px 0 20px; padding: 16px; border-radius: 20px; background: #2A2013; border: 1px solid #6B4A1F; display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; gap: 10px; align-items: flex-start;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFB25C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto; margin-top: 1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 15px; font-weight: 600; color: #FFB25C;">Kündigungsfrist endet in 5 Tagen</span>
+        <span style="font-size: 13px; line-height: 1.45; color: #D9CFBF;">Kündbar bis Mo, 10.11.2026. Danach verlängert sich das Abo am 12.11. automatisch um 12 Monate für 143,88 €.</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+      <button style="height: 44px; border-radius: 12px; border: 0; background: #FFB25C; color: #1A1208; font-size: 14px; font-weight: 600; cursor: pointer;">Kündigung vormerken</button>
+      <button style="height: 44px; border-radius: 12px; border: 1px solid #6B4A1F; background: transparent; color: #F2F3F5; font-size: 14px; font-weight: 500; cursor: pointer;">Behalten</button>
+    </div>
+  </section>
+
+  <section aria-label="Kosten" style="margin: 14px 20px 0 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+    <div style="padding: 12px; border-radius: 16px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-size: 11px; color: #A0A7B4;">Abbuchung</span>
+      <span style="font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums;">143,88 €</span>
+      <span style="font-size: 11px; color: #A0A7B4;">jährlich</span>
+    </div>
+    <div style="padding: 12px; border-radius: 16px; background: #1A2033; border: 1px solid #34406A; display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-size: 11px; color: #B4C5FF;">pro Monat</span>
+      <span style="font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums;">11,99 €</span>
+      <span style="font-size: 11px; color: #B4C5FF;">umgerechnet</span>
+    </div>
+    <div style="padding: 12px; border-radius: 16px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-size: 11px; color: #A0A7B4;">pro Tag</span>
+      <span style="font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums;">0,39 €</span>
+      <span style="font-size: 11px; color: #A0A7B4;">umgerechnet</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="fristen" style="margin: 22px 20px 0 20px;">
+    <h2 id="fristen" style="margin: 0 0 10px 0; font-size: 16px; font-weight: 600;">Laufzeit &amp; Fristen</h2>
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
+      <li style="display: flex; gap: 12px; align-items: stretch;">
+        <span style="display: flex; flex-direction: column; align-items: center; width: 12px;"><span style="width: 10px; height: 10px; border-radius: 99px; background: #4A5161; margin-top: 4px;"></span><span style="flex-grow: 1; width: 2px; background: #2A2F3A;"></span></span>
+        <span style="display: flex; justify-content: space-between; flex-grow: 1; padding-bottom: 14px;"><span style="font-size: 14px; color: #A0A7B4;">Vertragsbeginn</span><span style="font-size: 14px; font-variant-numeric: tabular-nums;">12.11.2023</span></span>
+      </li>
+      <li style="display: flex; gap: 12px; align-items: stretch;">
+        <span style="display: flex; flex-direction: column; align-items: center; width: 12px;"><span style="width: 10px; height: 10px; border-radius: 99px; background: #FFB25C; margin-top: 4px; box-shadow: 0 0 0 4px #3A2A14;"></span><span style="flex-grow: 1; width: 2px; background: #2A2F3A;"></span></span>
+        <span style="display: flex; justify-content: space-between; flex-grow: 1; padding-bottom: 14px;"><span style="font-size: 14px; font-weight: 600; color: #FFB25C;">Kündbar bis</span><span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">10.11.2026</span></span>
+      </li>
+      <li style="display: flex; gap: 12px; align-items: stretch;">
+        <span style="display: flex; flex-direction: column; align-items: center; width: 12px;"><span style="width: 10px; height: 10px; border-radius: 99px; background: #8EA8FF; margin-top: 4px;"></span></span>
+        <span style="display: flex; justify-content: space-between; flex-grow: 1;"><span style="font-size: 14px; color: #A0A7B4;">Nächste Verlängerung</span><span style="font-size: 14px; font-variant-numeric: tabular-nums;">12.11.2026</span></span>
+      </li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="einst" style="margin: 22px 20px 0 20px; border-radius: 20px; background: #171A21; border: 1px solid #22262F; overflow: hidden;">
+    <h2 id="einst" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Einstellungen</h2>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #22262F;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0A7B4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+      <span style="display: flex; flex-direction: column; flex-grow: 1; gap: 2px;"><span style="font-size: 14px; font-weight: 500;">Erinnerung</span><span style="font-size: 12px; color: #A0A7B4;">14 und 3 Tage vor Fristende</span></span>
+      <button role="switch" aria-checked="true" aria-label="Erinnerung an" style="width: 48px; height: 28px; border-radius: 99px; border: 0; background: #8EA8FF; position: relative; cursor: pointer;"><span style="position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 99px; background: #0E1014;"></span></button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 14px; border-bottom: 1px solid #22262F;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0A7B4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>
+      <span style="flex-grow: 1; font-size: 14px; font-weight: 500;">Zahlungsweg</span>
+      <span style="font-size: 14px; color: #A0A7B4;">[Konto / Karte]</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 14px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0A7B4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>
+      <span style="flex-grow: 1; font-size: 14px; font-weight: 500;">Preisverlauf</span>
+      <span style="font-size: 13px; font-weight: 600; color: #FFB25C;">+20 % seit Start</span>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

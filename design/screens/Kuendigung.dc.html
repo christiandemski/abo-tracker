@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Kündigungsassistent</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; box-sizing: border-box;">
+
+  <header style="display: flex; align-items: center; gap: 12px; padding: 20px 16px 0 16px;">
+    <a href="Detail.dc.html" aria-label="Zurück zum Abo" style="width: 44px; height: 44px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; display: flex; align-items: center; justify-content: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+    </a>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-size: 12px; color: #A0A7B4;">Adobe Creative Cloud</span>
+      <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Kündigen</h1>
+    </div>
+  </header>
+
+  <sc-if value="{{notSent}}" hint-placeholder-val="{{true}}">
+    <div style="display: flex; flex-direction: column;">
+      <div style="margin: 16px 20px 0 20px; padding: 12px 14px; border-radius: 14px; background: #2A2013; border: 1px solid #6B4A1F; display: flex; gap: 10px; align-items: center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB25C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+        <span style="font-size: 13px; color: #D9CFBF;"><strong style="color: #FFB25C; font-weight: 600;">Frist: Mo, 10.11.2026</strong> · noch 4 Tage</span>
+      </div>
+
+      <section aria-labelledby="brief" style="margin: 18px 20px 0 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+          <h2 id="brief" style="margin: 0; font-size: 16px; font-weight: 600;">Kündigungsschreiben</h2>
+          <a href="#" style="font-size: 13px; font-weight: 500;">Bearbeiten</a>
+        </div>
+        <div style="padding: 16px; border-radius: 16px; background: #F4F2EE; color: #22252B; font-size: 12.5px; line-height: 1.5; display: flex; flex-direction: column; gap: 8px;">
+          <span style="color: #555A63;">[Dein Name] · [Deine Adresse]</span>
+          <span style="font-weight: 700;">Kündigung meines Abonnements</span>
+          <span>Kundennummer: [Kundennummer]</span>
+          <span>Hiermit kündige ich mein Abonnement „Foto-Abo“ fristgerecht zum nächstmöglichen Zeitpunkt, voraussichtlich zum 11.11.2026.</span>
+          <span>Bitte bestätigen Sie mir die Kündigung und das Vertragsende schriftlich.</span>
+          <span>Mit freundlichen Grüßen<br>[Dein Name]</span>
+        </div>
+      </section>
+
+      <fieldset style="margin: 18px 20px 0 20px; padding: 0; border: 0;">
+        <legend style="padding: 0 0 8px 0; font-size: 16px; font-weight: 600;">Versandweg</legend>
+        <div role="radiogroup" aria-label="Versandweg" style="display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{ways}}" as="w" hint-placeholder-count="3">
+            <button type="button" role="radio" aria-checked="{{w.on}}" onClick="{{w.pick}}" style="{{w.style}}">
+              <span style="{{w.dot}}"></span>
+              <span style="display: flex; flex-direction: column; flex-grow: 1; gap: 2px; text-align: left;">
+                <span style="font-size: 14px; font-weight: 600; color: #F2F3F5;">{{w.title}}</span>
+                <span style="font-size: 12px; color: #A0A7B4;">{{w.sub}}</span>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+      </fieldset>
+
+      <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 20px 30px 20px; background: #12151B; border-top: 1px solid #22262F;">
+        <button type="button" style="width: 100%; height: 52px; border-radius: 16px; border: 0; background: #FFB25C; color: #1A1208; font-size: 15px; font-weight: 600; cursor: pointer;">{{cta}}</button>
+        <button type="button" onClick="{{send}}" style="width: 100%; height: 44px; margin-top: 8px; border-radius: 14px; border: 1px solid #2A2F3A; background: transparent; color: #F2F3F5; font-size: 14px; font-weight: 500; cursor: pointer;">Ich habe gekündigt</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{sent}}" hint-placeholder-val="{{false}}">
+    <div style="margin: 60px 24px 0 24px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
+      <span style="width: 72px; height: 72px; border-radius: 24px; background: #15302A; color: #5EE6B0; display: flex; align-items: center; justify-content: center;">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+      </span>
+      <h2 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 24px; font-weight: 600;">Kündigung vermerkt</h2>
+      <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #A0A7B4;">Das Abo läuft noch bis <strong style="color: #F2F3F5;">11.11.2026</strong>. Danach fällt es aus deinen Fixkosten.</p>
+    </div>
+    <ul style="list-style: none; margin: 28px 20px 0 20px; padding: 0; border-radius: 18px; background: #171A21; border: 1px solid #22262F;">
+      <li style="display: flex; gap: 12px; align-items: center; padding: 14px; border-bottom: 1px solid #22262F;">
+        <span style="width: 10px; height: 10px; border-radius: 99px; background: #5EE6B0;"></span>
+        <span style="flex-grow: 1; font-size: 14px;">Kündigung gesendet</span><span style="font-size: 13px; color: #A0A7B4;">heute</span>
+      </li>
+      <li style="display: flex; gap: 12px; align-items: center; padding: 14px; border-bottom: 1px solid #22262F;">
+        <span style="width: 10px; height: 10px; border-radius: 99px; border: 2px solid #FFB25C; box-sizing: border-box;"></span>
+        <span style="flex-grow: 1; font-size: 14px;">Bestätigung erwarten</span><span style="font-size: 13px; color: #A0A7B4;">Erinnerung in 7 Tagen</span>
+      </li>
+      <li style="display: flex; gap: 12px; align-items: center; padding: 14px;">
+        <span style="width: 10px; height: 10px; border-radius: 99px; border: 2px solid #4A5161; box-sizing: border-box;"></span>
+        <span style="flex-grow: 1; font-size: 14px;">Keine Abbuchung mehr prüfen</span><span style="font-size: 13px; color: #A0A7B4;">ab 12.11.</span>
+      </li>
+    </ul>
+    <div style="margin: 18px 20px 0 20px; padding: 14px; border-radius: 16px; background: #1A2033; border: 1px solid #34406A; display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-size: 14px; color: #B4C5FF;">Du sparst</span>
+      <span style="font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums;">143,88 € / Jahr</span>
+    </div>
+    <div style="position: absolute; left: 20px; right: 20px; bottom: 30px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+      <button type="button" onClick="{{reset}}" style="height: 48px; border-radius: 14px; border: 1px solid #2A2F3A; background: transparent; color: #F2F3F5; font-size: 14px; font-weight: 500; cursor: pointer;">Rückgängig</button>
+      <a href="Main.dc.html" style="height: 48px; border-radius: 14px; background: #8EA8FF; color: #0E1014; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center;">Zur Übersicht</a>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { way: 'online', sent: false }; }
+  renderVals() {
+    var self = this;
+    var defs = [
+      { id: 'online', title: 'Online beim Anbieter', sub: 'Kündigungsbutton im Kundenkonto öffnen', cta: 'Zum Kundenkonto' },
+      { id: 'mail', title: 'Per E-Mail', sub: 'Schreiben als Mail-Entwurf öffnen', cta: 'E-Mail öffnen' },
+      { id: 'pdf', title: 'Als PDF', sub: 'Zum Ausdrucken oder als Einschreiben', cta: 'PDF erstellen' }
+    ];
+    var cur = defs[0];
+    var ways = defs.map(function (d) {
+      var on = self.state.way === d.id;
+      if (on) cur = d;
+      return {
+        title: d.title, sub: d.sub, on: on,
+        style: 'width: 100%; min-height: 60px; box-sizing: border-box; padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; ' + (on ? 'background: #171D2E; border: 1.5px solid #8EA8FF;' : 'background: #171A21; border: 1px solid #22262F;'),
+        dot: 'flex: 0 0 auto; width: 20px; height: 20px; border-radius: 99px; box-sizing: border-box; ' + (on ? 'border: 6px solid #8EA8FF; background: #0E1014;' : 'border: 2px solid #4A5161;'),
+        pick: function () { self.setState({ way: d.id }); }
+      };
+    });
+    return {
+      ways: ways,
+      cta: cur.cta,
+      sent: this.state.sent, notSent: !this.state.sent,
+      send: function () { self.setState({ sent: true }); },
+      reset: function () { self.setState({ sent: false }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

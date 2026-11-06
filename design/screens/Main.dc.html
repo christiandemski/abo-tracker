@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Abo-Übersicht mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; box-sizing: border-box;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 24px 20px 4px 20px;">
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-size: 13px; color: #A0A7B4;">Donnerstag, 5. November</span>
+      <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 28px; font-weight: 600; letter-spacing: -0.02em;">Übersicht</h1>
+    </div>
+    <a href="Preis.dc.html" aria-label="Hinweise, 2 neu" style="width: 44px; height: 44px; box-sizing: border-box; border-radius: 14px; border: 1px solid #2A2F3A; background: #171A21; color: #F2F3F5; display: flex; align-items: center; justify-content: center; position: relative;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+      <span style="position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; border-radius: 99px; background: #FFB25C; border: 2px solid #171A21;"></span>
+    </a>
+  </header>
+
+  <section aria-label="Gesamtkosten" style="margin: 16px 20px 0 20px; padding: 18px 18px 18px 18px; border-radius: 24px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <span style="font-size: 13px; font-weight: 500; color: #A0A7B4;">{{periodLabel}}</span>
+      <div role="group" aria-label="Zeitraum" style="display: flex; padding: 3px; gap: 2px; border-radius: 12px; background: #0E1014; border: 1px solid #22262F;">
+        <button onClick="{{setMonth}}" aria-pressed="{{isMonth}}" style="{{monthStyle}}">Monat</button>
+        <button onClick="{{setYear}}" aria-pressed="{{isYear}}" style="{{yearStyle}}">Jahr</button>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 46px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums;">{{total}}</span>
+      <span style="font-size: 13px; color: #A0A7B4;">13 Abos · 6 jährliche auf Monat umgerechnet</span>
+    </div>
+    <div aria-hidden="true" style="display: flex; gap: 3px; height: 10px; border-radius: 99px; overflow: hidden;">
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+        <span style="{{c.barStyle}}"></span>
+      </sc-for>
+    </div>
+    <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 8px;">
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+        <li style="display: flex; gap: 7px; align-items: flex-start; min-width: 0;">
+          <span style="{{c.dotStyle}}"></span>
+          <span style="display: flex; flex-direction: column; min-width: 0;">
+            <span style="font-size: 11px; color: #A0A7B4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{c.short}}</span>
+            <span style="font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;">{{c.amount}}</span>
+          </span>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+
+  <section aria-labelledby="soon" style="margin-top: 22px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 0 20px 10px 20px;">
+      <h2 id="soon" style="margin: 0; font-size: 16px; font-weight: 600;">Demnächst</h2>
+      <a href="Monat.dc.html" style="font-size: 13px; font-weight: 500;">Kalender</a>
+    </div>
+    <div style="display: flex; gap: 10px; padding: 0 20px; overflow-x: auto;">
+      <a href="Detail.dc.html" style="flex: 0 0 158px; box-sizing: border-box; padding: 14px; border-radius: 18px; background: #2A2013; border: 1px solid #6B4A1F; color: #F2F3F5; display: flex; flex-direction: column; gap: 8px;">
+        <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #FFB25C;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path></svg>
+          Kündbar bis 10.11.
+        </span>
+        <span style="font-size: 14px; font-weight: 600;">Adobe Creative Cloud</span>
+        <span style="font-size: 12px; color: #C9BFAF;">143,88 € · verlängert 12.11.</span>
+      </a>
+      <div style="flex: 0 0 140px; box-sizing: border-box; padding: 14px; border-radius: 18px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 600; color: #A0A7B4;">Sa, 15.11.</span>
+        <span style="font-size: 14px; font-weight: 600;">Netflix</span>
+        <span style="font-size: 12px; color: #A0A7B4;">13,99 € · monatlich</span>
+      </div>
+      <div style="flex: 0 0 140px; box-sizing: border-box; padding: 14px; border-radius: 18px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 600; color: #A0A7B4;">Fr, 21.11.</span>
+        <span style="font-size: 14px; font-weight: 600;">Strava</span>
+        <span style="font-size: 12px; color: #A0A7B4;">59,99 € · jährlich</span>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="top" style="margin: 22px 20px 0 20px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 6px;">
+      <h2 id="top" style="margin: 0; font-size: 16px; font-weight: 600;">Größte Posten</h2>
+      <a href="#" style="font-size: 13px; font-weight: 500;">Alle 13</a>
+    </div>
+    <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
+      <sc-for list="{{top}}" as="t" hint-placeholder-count="2">
+        <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #1E222A;">
+          <span style="{{t.iconStyle}}">{{t.initial}}</span>
+          <span style="display: flex; flex-direction: column; flex-grow: 1; gap: 2px; min-width: 0;">
+            <span style="font-size: 15px; font-weight: 600;">{{t.name}}</span>
+            <span style="font-size: 12px; color: #A0A7B4;">{{t.meta}}</span>
+          </span>
+          <span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">{{t.amount}}</span>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+
+  <nav aria-label="Hauptnavigation" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; box-sizing: border-box; padding: 8px 12px 24px 12px; background: #12151B; border-top: 1px solid #22262F; display: flex; align-items: center; justify-content: space-around;">
+    <a href="#" aria-current="page" style="width: 64px; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #8EA8FF; font-size: 11px; font-weight: 600;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+      Übersicht
+    </a>
+    <a href="#" style="width: 64px; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #A0A7B4; font-size: 11px; font-weight: 500;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg>
+      Abos
+    </a>
+    <a href="Add.dc.html" aria-label="Abo hinzufügen" style="width: 52px; height: 52px; margin-top: -14px; border-radius: 18px; background: #8EA8FF; color: #0E1014; display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+    </a>
+    <a href="Monat.dc.html" style="width: 64px; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #A0A7B4; font-size: 11px; font-weight: 500;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
+      Kalender
+    </a>
+    <a href="Ruecklage.dc.html" style="width: 64px; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #A0A7B4; font-size: 11px; font-weight: 500;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"></path><path d="M7 15l4-4 3 3 5-6"></path></svg>
+      Statistik
+    </a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#8EA8FF","options":["#8EA8FF","#5EE6B0","#C9A7FF","#FFB25C"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { period: 'm' }; }
+  renderVals() {
+    var accent = this.props.accent ?? '#8EA8FF';
+    var y = this.state.period === 'y';
+    var f = y ? 12 : 1;
+    function fmt(n) { return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
+    var cats = [
+      { short: 'Telefon & Internet', v: 59.98, color: '#8EA8FF' },
+      { short: 'Streaming', v: 40.97, color: '#B5E36B' },
+      { short: 'Sport', v: 34.90, color: '#4FD1C5' },
+      { short: 'Software & Cloud', v: 17.97, color: '#C9A7FF' },
+      { short: 'Versicherung', v: 11.95, color: '#F48FB1' },
+      { short: 'Mobilität', v: 11.58, color: '#6B7385' }
+    ];
+    var total = cats.reduce(function (s, c) { return s + c.v; }, 0);
+    var seg = 'height: 44px; min-width: 68px; padding: 0 12px; border-radius: 9px; border: 0; font-size: 13px; font-weight: 600; cursor: pointer;';
+    var on = seg + ' background: ' + accent + '; color: #0E1014;';
+    var off = seg + ' background: transparent; color: #A0A7B4;';
+    var self = this;
+    var top = [
+      { name: 'Internet', meta: 'Telefon & Internet · 1. des Monats', v: 39.99, initial: 'I', color: '#8EA8FF' },
+      { name: 'Fitnessstudio', meta: 'Sport · Laufzeit bis 28.02.2027', v: 29.90, initial: 'F', color: '#4FD1C5' }
+    ];
+    return {
+      periodLabel: y ? 'Fixkosten pro Jahr' : 'Fixkosten pro Monat',
+      total: fmt(total * f),
+      isMonth: !y, isYear: y,
+      monthStyle: y ? off : on,
+      yearStyle: y ? on : off,
+      setMonth: function () { self.setState({ period: 'm' }); },
+      setYear: function () { self.setState({ period: 'y' }); },
+      cats: cats.map(function (c) {
+        return {
+          short: c.short,
+          amount: fmt(c.v * f),
+          barStyle: 'display:block; height:100%; width:' + (c.v / total * 100).toFixed(2) + '%; background:' + c.color + ';',
+          dotStyle: 'flex: 0 0 auto; width: 8px; height: 8px; margin-top: 4px; border-radius: 3px; background:' + c.color + ';'
+        };
+      }),
+      top: top.map(function (t) {
+        return {
+          name: t.name, meta: t.meta, initial: t.initial,
+          amount: fmt(t.v * f),
+          iconStyle: 'flex: 0 0 auto; width: 42px; height: 42px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-family: Space Grotesk, Inter, sans-serif; font-weight: 700; font-size: 17px; color: #0E1014; background:' + t.color + ';'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

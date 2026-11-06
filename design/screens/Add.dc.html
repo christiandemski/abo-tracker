@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Abo hinzufügen mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button,input,select{font-family:inherit}
+input::placeholder{color:#7D8494}
+input:focus,select:focus{outline:2px solid #8EA8FF;outline-offset:1px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; box-sizing: border-box; color-scheme: dark;">
+
+  <header style="display: flex; align-items: center; gap: 12px; padding: 20px 16px 0 16px;">
+    <a href="Main.dc.html" aria-label="Schließen" style="width: 44px; height: 44px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; display: flex; align-items: center; justify-content: center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+    </a>
+    <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Abo hinzufügen</h1>
+  </header>
+
+  <label style="margin: 16px 20px 0 20px; height: 48px; padding: 0 14px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; display: flex; align-items: center; gap: 10px; color: #A0A7B4;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+    <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Vorlage suchen</span>
+    <input type="search" placeholder="Dienst suchen, z. B. Netflix" style="flex-grow: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: #F2F3F5; font-size: 15px;">
+  </label>
+
+  <section aria-labelledby="vorl" style="margin: 16px 20px 0 20px;">
+    <h2 id="vorl" style="margin: 0 0 8px 0; font-size: 13px; font-weight: 500; color: #A0A7B4;">Beliebte Vorlagen</h2>
+    <div role="radiogroup" aria-labelledby="vorl" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+      <sc-for list="{{tpls}}" as="t" hint-placeholder-count="8">
+        <button role="radio" aria-checked="{{t.on}}" onClick="{{t.pick}}" style="{{t.tileStyle}}">
+          <span style="{{t.iconStyle}}">{{t.initial}}</span>
+          <span style="font-size: 11px; font-weight: 500; color: #E3E6EB; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">{{t.name}}</span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <form style="margin: 18px 20px 0 20px; display: flex; flex-direction: column; gap: 12px;">
+    <label style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 12px; font-weight: 500; color: #A0A7B4;">Name</span>
+      <input type="text" value="{{name}}" onChange="{{onName}}" placeholder="z. B. Zeitungsabo" style="height: 46px; box-sizing: border-box; padding: 0 14px; border-radius: 12px; border: 1px solid #2A2F3A; background: #171A21; color: #F2F3F5; font-size: 15px;">
+    </label>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+      <label style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 12px; font-weight: 500; color: #A0A7B4;">Betrag</span>
+        <span style="position: relative; display: block;">
+          <input type="text" inputmode="decimal" value="{{amount}}" onChange="{{onAmount}}" placeholder="0,00" style="width: 100%; height: 46px; box-sizing: border-box; padding: 0 32px 0 14px; border-radius: 12px; border: 1px solid #2A2F3A; background: #171A21; color: #F2F3F5; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">
+          <span aria-hidden="true" style="position: absolute; right: 14px; top: 13px; font-size: 15px; color: #A0A7B4;">€</span>
+        </span>
+      </label>
+      <label style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 12px; font-weight: 500; color: #A0A7B4;">Nächste Abbuchung</span>
+        <input type="date" value="2026-12-08" style="height: 46px; box-sizing: border-box; padding: 0 12px; border-radius: 12px; border: 1px solid #2A2F3A; background: #171A21; color: #F2F3F5; font-size: 14px;">
+      </label>
+    </div>
+
+    <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px;">
+      <legend style="padding: 0 0 6px 0; font-size: 12px; font-weight: 500; color: #A0A7B4;">Rhythmus</legend>
+      <div role="radiogroup" aria-label="Rhythmus" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 3px; border-radius: 13px; background: #171A21; border: 1px solid #2A2F3A;">
+        <sc-for list="{{rhythms}}" as="r" hint-placeholder-count="3">
+          <button type="button" role="radio" aria-checked="{{r.on}}" onClick="{{r.pick}}" style="{{r.style}}">{{r.label}}</button>
+        </sc-for>
+      </div>
+    </fieldset>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+      <label style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 12px; font-weight: 500; color: #A0A7B4;">Kategorie</span>
+        <select value="{{cat}}" onChange="{{onCat}}" style="height: 46px; box-sizing: border-box; padding: 0 10px; border-radius: 12px; border: 1px solid #2A2F3A; background: #171A21; color: #F2F3F5; font-size: 14px;">
+          <option>Streaming</option>
+          <option>Software &amp; Cloud</option>
+          <option>Sport</option>
+          <option>Telefon &amp; Internet</option>
+          <option>Versicherung</option>
+          <option>Mobilität</option>
+        </select>
+      </label>
+      <label style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 12px; font-weight: 500; color: #A0A7B4;">Kündigungsfrist</span>
+        <select style="height: 46px; box-sizing: border-box; padding: 0 10px; border-radius: 12px; border: 1px solid #2A2F3A; background: #171A21; color: #F2F3F5; font-size: 14px;">
+          <option>jederzeit</option>
+          <option>14 Tage</option>
+          <option>1 Monat</option>
+          <option>3 Monate</option>
+        </select>
+      </label>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 14px; border-radius: 12px; background: #171A21; border: 1px solid #2A2F3A;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A0A7B4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+      <span style="display: flex; flex-direction: column; flex-grow: 1; gap: 1px;">
+        <span id="rem" style="font-size: 14px; font-weight: 500;">Vor Fristende erinnern</span>
+        <span style="font-size: 12px; color: #A0A7B4;">14 und 3 Tage vorher</span>
+      </span>
+      <button type="button" role="switch" aria-checked="{{remind}}" aria-labelledby="rem" onClick="{{toggleRemind}}" style="{{switchStyle}}"><span style="{{knobStyle}}"></span></button>
+    </div>
+  </form>
+
+  <footer style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 20px 28px 20px; background: #12151B; border-top: 1px solid #22262F; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 13px;">
+      <span style="color: #A0A7B4;">{{hint}}</span>
+      <span style="font-weight: 600; font-variant-numeric: tabular-nums;">{{monthly}}</span>
+    </div>
+    <button type="button" style="{{ctaStyle}}">Abo speichern</button>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tpl: 'disney', name: 'Disney+', amount: '9,99', rhythm: 'm', cat: 'Streaming', remind: true };
+  }
+  renderVals() {
+    var self = this;
+    var s = this.state;
+    function fmt(n) { return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
+    var catColor = { 'Streaming': '#B5E36B', 'Software & Cloud': '#C9A7FF', 'Sport': '#4FD1C5', 'Telefon & Internet': '#8EA8FF', 'Versicherung': '#F48FB1', 'Mobilität': '#6B7385' };
+    var list = [
+      { id: 'netflix', name: 'Netflix', cat: 'Streaming', r: 'm' },
+      { id: 'spotify', name: 'Spotify', cat: 'Streaming', r: 'm' },
+      { id: 'disney', name: 'Disney+', cat: 'Streaming', r: 'm' },
+      { id: 'prime', name: 'Prime', cat: 'Streaming', r: 'y' },
+      { id: 'icloud', name: 'iCloud+', cat: 'Software & Cloud', r: 'm' },
+      { id: 'gym', name: 'Fitness', cat: 'Sport', r: 'm' },
+      { id: 'handy', name: 'Handy', cat: 'Telefon & Internet', r: 'm' },
+      { id: 'own', name: 'Eigenes', cat: 'Streaming', r: 'm', own: true }
+    ];
+    var tpls = list.map(function (t) {
+      var on = s.tpl === t.id;
+      var tile = 'height: 72px; box-sizing: border-box; padding: 8px 4px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; ';
+      tile += on ? 'background: #1A2033; border: 1.5px solid #8EA8FF;' : 'background: #171A21; border: 1px solid #22262F;';
+      var icon = 'width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: Space Grotesk, Inter, sans-serif; font-weight: 700; font-size: 14px; ';
+      icon += t.own ? 'background: transparent; border: 1.5px dashed #6B7385; color: #A0A7B4; box-sizing: border-box;' : 'color: #0E1014; background: ' + catColor[t.cat] + ';';
+      return {
+        name: t.name, on: on, initial: t.own ? '+' : t.name.charAt(0),
+        tileStyle: tile, iconStyle: icon,
+        pick: function () {
+          self.setState({ tpl: t.id, name: t.own ? '' : t.name, amount: '', rhythm: t.r, cat: t.cat });
+        }
+      };
+    });
+    var rDefs = [['m', 'monatlich', 1], ['q', 'vierteljährl.', 3], ['y', 'jährlich', 12]];
+    var rhythms = rDefs.map(function (r) {
+      var on = s.rhythm === r[0];
+      var st = 'height: 44px; border-radius: 10px; border: 0; font-size: 13px; font-weight: 600; cursor: pointer; ';
+      st += on ? 'background: #8EA8FF; color: #0E1014;' : 'background: transparent; color: #A0A7B4;';
+      return { label: r[1], on: on, style: st, pick: function () { self.setState({ rhythm: r[0] }); } };
+    });
+    var div = s.rhythm === 'q' ? 3 : (s.rhythm === 'y' ? 12 : 1);
+    var v = parseFloat(String(s.amount).replace(/\./g, '').replace(',', '.'));
+    var valid = !isNaN(v) && v > 0 && s.name.trim().length > 0;
+    var hint, monthly;
+    if (isNaN(v) || v <= 0) { hint = 'Betrag eingeben'; monthly = '–'; }
+    else if (div === 1) { hint = 'pro Monat · ' + fmt(v * 12) + ' im Jahr'; monthly = fmt(v); }
+    else { hint = 'umgerechnet pro Monat'; monthly = fmt(v / div); }
+    var cta = 'height: 52px; border-radius: 16px; border: 0; font-size: 15px; font-weight: 600; ';
+    cta += valid ? 'background: #8EA8FF; color: #0E1014; cursor: pointer;' : 'background: #2A2F3A; color: #A0A7B4; cursor: not-allowed;';
+    return {
+      tpls: tpls, rhythms: rhythms,
+      name: s.name, amount: s.amount, cat: s.cat, remind: s.remind,
+      hint: hint, monthly: monthly, ctaStyle: cta,
+      onName: function (e) { self.setState({ name: e.target.value }); },
+      onAmount: function (e) { self.setState({ amount: e.target.value }); },
+      onCat: function (e) { self.setState({ cat: e.target.value }); },
+      toggleRemind: function () { self.setState({ remind: !self.state.remind }); },
+      switchStyle: 'flex: 0 0 auto; width: 48px; height: 28px; border-radius: 99px; border: 0; position: relative; cursor: pointer; background: ' + (s.remind ? '#8EA8FF' : '#3A404D') + ';',
+      knobStyle: 'position: absolute; top: 3px; width: 22px; height: 22px; border-radius: 99px; background: ' + (s.remind ? '#0E1014' : '#A0A7B4') + '; ' + (s.remind ? 'right: 3px;' : 'left: 3px;')
+    };
+  }
+}
+</script>
+</body>
+</html>

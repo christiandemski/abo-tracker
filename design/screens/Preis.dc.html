@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Preiserhöhungen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; box-sizing: border-box;">
+
+  <header style="display: flex; align-items: center; gap: 12px; padding: 20px 16px 0 16px;">
+    <a href="Main.dc.html" aria-label="Zurück zur Übersicht" style="width: 44px; height: 44px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; display: flex; align-items: center; justify-content: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+    </a>
+    <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Preisänderungen</h1>
+  </header>
+
+  <section aria-label="Summe der Erhöhungen" style="margin: 18px 20px 0 20px; padding: 16px; border-radius: 20px; background: #2A2013; border: 1px solid #6B4A1F; display: flex; flex-direction: column; gap: 6px;">
+    <span style="font-size: 13px; font-weight: 500; color: #FFB25C;">2 neue Erhöhungen erkannt</span>
+    <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 34px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">+ 4,00 € / Monat</span>
+    <span style="font-size: 13px; color: #D9CFBF;">Das sind 48,00 € mehr im Jahr. Erkannt beim letzten CSV-Import und aus einer Ankündigung, die du eingetragen hast.</span>
+  </section>
+
+  <section aria-labelledby="neu" style="margin: 22px 20px 0 20px;">
+    <h2 id="neu" style="margin: 0 0 10px 0; font-size: 16px; font-weight: 600;">Neu</h2>
+
+    <article style="padding: 14px; border-radius: 18px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="flex: 0 0 auto; width: 42px; height: 42px; border-radius: 13px; background: #B5E36B; color: #0E1014; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', Inter, sans-serif; font-weight: 700; font-size: 17px;">S</span>
+        <span style="display: flex; flex-direction: column; flex-grow: 1; gap: 2px;">
+          <span style="font-size: 15px; font-weight: 600;">Spotify Duo</span>
+          <span style="font-size: 12px; color: #A0A7B4;">abgebucht am 22.10. · Kontoauszug</span>
+        </span>
+        <span style="padding: 4px 8px; border-radius: 8px; background: #3A2A14; color: #FFB25C; font-size: 12px; font-weight: 600;">+5,9 %</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; font-variant-numeric: tabular-nums;">
+        <span style="font-size: 15px; color: #A0A7B4; text-decoration: line-through;">16,99 €</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A0A7B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        <span style="font-size: 18px; font-weight: 600;">17,99 €</span>
+        <span style="font-size: 13px; color: #A0A7B4;">monatlich</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+        <button style="height: 44px; border-radius: 12px; border: 0; background: #8EA8FF; color: #0E1014; font-size: 14px; font-weight: 600; cursor: pointer;">Preis übernehmen</button>
+        <a href="Kuendigung.dc.html" style="height: 44px; border-radius: 12px; border: 1px solid #2A2F3A; color: #F2F3F5; font-size: 14px; font-weight: 500; display: flex; align-items: center; justify-content: center;">Kündigen prüfen</a>
+      </div>
+    </article>
+
+    <article style="margin-top: 10px; padding: 14px; border-radius: 18px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="flex: 0 0 auto; width: 42px; height: 42px; border-radius: 13px; background: #4FD1C5; color: #0E1014; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', Inter, sans-serif; font-weight: 700; font-size: 17px;">F</span>
+        <span style="display: flex; flex-direction: column; flex-grow: 1; gap: 2px;">
+          <span style="font-size: 15px; font-weight: 600;">Fitnessstudio</span>
+          <span style="font-size: 12px; color: #A0A7B4;">angekündigt ab 01.01.2027 · manuell</span>
+        </span>
+        <span style="padding: 4px 8px; border-radius: 8px; background: #3A2A14; color: #FFB25C; font-size: 12px; font-weight: 600;">+10,0 %</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; font-variant-numeric: tabular-nums;">
+        <span style="font-size: 15px; color: #A0A7B4; text-decoration: line-through;">29,90 €</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A0A7B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        <span style="font-size: 18px; font-weight: 600;">32,90 €</span>
+        <span style="font-size: 13px; color: #A0A7B4;">monatlich</span>
+      </div>
+      <p style="margin: 0; font-size: 13px; line-height: 1.45; color: #A0A7B4;">Bei Preiserhöhungen besteht oft ein Sonderkündigungsrecht. Prüfe die Ankündigung deines Anbieters.</p>
+    </article>
+  </section>
+
+  <section aria-labelledby="verl" style="margin: 22px 20px 0 20px;">
+    <h2 id="verl" style="margin: 0 0 6px 0; font-size: 16px; font-weight: 600;">Seit Vertragsbeginn</h2>
+    <ul style="list-style: none; margin: 0; padding: 0;">
+      <li style="display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #1E222A; font-size: 14px;"><span>Adobe Creative Cloud</span><span style="font-weight: 600; color: #FFB25C; font-variant-numeric: tabular-nums;">+20 %</span></li>
+      <li style="display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #1E222A; font-size: 14px;"><span>Netflix</span><span style="font-weight: 600; color: #FFB25C; font-variant-numeric: tabular-nums;">+8 %</span></li>
+      <li style="display: flex; justify-content: space-between; padding: 11px 0; font-size: 14px;"><span>Internet</span><span style="color: #A0A7B4;">unverändert</span></li>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# IDE / local
+.idea/
+.vscode/
+.claude-account
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.*
+!.env.example

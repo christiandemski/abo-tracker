@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Abo-Übersicht Desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 980px; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap; box-sizing: border-box;">
+
+  <aside style="flex: 1 1 220px; box-sizing: border-box; padding: 28px 20px; background: #12151B; border-right: 1px solid #22262F; display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="width: 36px; height: 36px; border-radius: 12px; background: #8EA8FF; color: #0E1014; display: flex; align-items: center; justify-content: center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 4v5h-5"></path></svg>
+      </span>
+      <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 19px; font-weight: 600; letter-spacing: -0.01em;">Abo-Tracker</span>
+    </div>
+    <nav aria-label="Hauptnavigation">
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px;">
+        <li><a href="#" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; background: #1A2033; color: #F2F3F5; font-size: 14px; font-weight: 600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8EA8FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>Übersicht</a></li>
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #A0A7B4; font-size: 14px; font-weight: 500;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg>Alle Abos</a></li>
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #A0A7B4; font-size: 14px; font-weight: 500;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>Kalender &amp; Fristen</a></li>
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #A0A7B4; font-size: 14px; font-weight: 500;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"></path><path d="M7 15l4-4 3 3 5-6"></path></svg>Statistik</a></li>
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #A0A7B4; font-size: 14px; font-weight: 500;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>Import</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px clamp(16px, 3vw, 40px) 48px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 13px; color: #A0A7B4;">Stand: 5. November 2026</span>
+        <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 32px; font-weight: 600; letter-spacing: -0.02em;">Deine Fixkosten</h1>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <button style="height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid #2A2F3A; background: #171A21; color: #F2F3F5; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"></path><path d="m7 8 5-5 5 5"></path><path d="M5 21h14"></path></svg>CSV importieren</button>
+        <button style="height: 44px; padding: 0 18px; border-radius: 12px; border: 0; background: #8EA8FF; color: #0E1014; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Abo hinzufügen</button>
+      </div>
+    </div>
+
+    <section aria-label="Kennzahlen" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+      <div style="padding: 18px; border-radius: 20px; background: #1A2033; border: 1px solid #34406A; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 13px; color: #B4C5FF;">Pro Monat</span>
+        <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 34px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">177,35 €</span>
+        <span style="font-size: 12px; color: #B4C5FF;">+5,98 € zum Vormonat</span>
+      </div>
+      <div style="padding: 18px; border-radius: 20px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 13px; color: #A0A7B4;">Pro Jahr</span>
+        <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 34px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">2.128,20 €</span>
+        <span style="font-size: 12px; color: #A0A7B4;">Monatsbetrag × 12</span>
+      </div>
+      <div style="padding: 18px; border-radius: 20px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 13px; color: #A0A7B4;">Aktive Abos</span>
+        <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 34px; font-weight: 600; letter-spacing: -0.02em;">13</span>
+        <span style="font-size: 12px; color: #A0A7B4;">7 monatlich · 6 jährlich</span>
+      </div>
+      <div style="padding: 18px; border-radius: 20px; background: #2A2013; border: 1px solid #6B4A1F; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 13px; color: #FFB25C;">Fristen in 30 Tagen</span>
+        <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 34px; font-weight: 600; letter-spacing: -0.02em;">4</span>
+        <span style="font-size: 12px; color: #D9CFBF;">nächste: Adobe CC am 10.11.</span>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px;">
+      <section aria-labelledby="verlauf" style="padding: 20px; border-radius: 20px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <h2 id="verlauf" style="margin: 0; font-size: 16px; font-weight: 600;">Monatliche Fixkosten</h2>
+          <span style="font-size: 12px; color: #A0A7B4;">letzte 12 Monate</span>
+        </div>
+        <div role="img" aria-label="Fixkosten stiegen von 158,40 € im Dezember 2025 auf 177,35 € im November 2026" style="display: flex; align-items: flex-end; gap: 6px; height: 170px; padding-top: 8px; border-bottom: 1px solid #2A2F3A;">
+          <sc-for list="{{months}}" as="mo" hint-placeholder-count="12">
+            <span style="flex: 1 1 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%;">
+              <span style="{{mo.barStyle}}"></span>
+            </span>
+          </sc-for>
+        </div>
+        <div aria-hidden="true" style="display: flex; gap: 6px; margin-top: -8px;">
+          <sc-for list="{{months}}" as="mo" hint-placeholder-count="12">
+            <span style="flex: 1 1 0; text-align: center; font-size: 11px; color: #A0A7B4;">{{mo.label}}</span>
+          </sc-for>
+        </div>
+      </section>
+
+      <section aria-labelledby="kat" style="padding: 20px; border-radius: 20px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <h2 id="kat" style="margin: 0; font-size: 16px; font-weight: 600;">Nach Kategorie</h2>
+          <span style="font-size: 12px; color: #A0A7B4;">pro Monat</span>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+            <li style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="display: flex; justify-content: space-between; font-size: 13px;">
+                <span>{{c.name}}</span>
+                <span style="font-weight: 600; font-variant-numeric: tabular-nums;">{{c.amount}} <span style="font-weight: 400; color: #A0A7B4;">· {{c.pct}}</span></span>
+              </span>
+              <span style="display: block; height: 8px; border-radius: 99px; background: #0E1014;"><span style="{{c.barStyle}}"></span></span>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+    </div>
+
+    <section aria-labelledby="alle" style="border-radius: 20px; background: #171A21; border: 1px solid #22262F; overflow: hidden;">
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; padding: 16px 20px;">
+        <h2 id="alle" style="margin: 0; font-size: 16px; font-weight: 600;">Alle Abos</h2>
+        <label style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: 12px; background: #0E1014; border: 1px solid #2A2F3A; color: #A0A7B4;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Abos durchsuchen</span>
+          <input type="search" placeholder="Suchen …" style="width: 180px; border: 0; outline: 0; background: transparent; color: #F2F3F5; font-family: inherit; font-size: 14px;">
+        </label>
+      </div>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14px;">
+          <thead>
+            <tr style="text-align: left; color: #A0A7B4; font-size: 12px;">
+              <th style="padding: 10px 20px; font-weight: 500; border-top: 1px solid #22262F; border-bottom: 1px solid #22262F;">Abo</th>
+              <th style="padding: 10px 12px; font-weight: 500; border-top: 1px solid #22262F; border-bottom: 1px solid #22262F;">Kategorie</th>
+              <th style="padding: 10px 12px; font-weight: 500; border-top: 1px solid #22262F; border-bottom: 1px solid #22262F;">Rhythmus</th>
+              <th style="padding: 10px 12px; font-weight: 500; text-align: right; border-top: 1px solid #22262F; border-bottom: 1px solid #22262F;">Betrag</th>
+              <th style="padding: 10px 12px; font-weight: 500; text-align: right; border-top: 1px solid #22262F; border-bottom: 1px solid #22262F;">pro Monat</th>
+              <th style="padding: 10px 12px; font-weight: 500; border-top: 1px solid #22262F; border-bottom: 1px solid #22262F;">Nächste Abbuchung</th>
+              <th style="padding: 10px 20px 10px 12px; font-weight: 500; border-top: 1px solid #22262F; border-bottom: 1px solid #22262F;">Kündbar bis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="13">
+              <tr>
+                <td style="padding: 11px 20px; border-bottom: 1px solid #1E222A;">
+                  <span style="display: flex; align-items: center; gap: 10px;"><span style="{{r.dotStyle}}"></span><span style="font-weight: 600;">{{r.name}}</span></span>
+                </td>
+                <td style="padding: 11px 12px; border-bottom: 1px solid #1E222A; color: #A0A7B4;">{{r.cat}}</td>
+                <td style="padding: 11px 12px; border-bottom: 1px solid #1E222A; color: #A0A7B4;">{{r.rhythm}}</td>
+                <td style="padding: 11px 12px; border-bottom: 1px solid #1E222A; text-align: right; font-variant-numeric: tabular-nums;">{{r.amount}}</td>
+                <td style="padding: 11px 12px; border-bottom: 1px solid #1E222A; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{r.monthly}}</td>
+                <td style="padding: 11px 12px; border-bottom: 1px solid #1E222A; font-variant-numeric: tabular-nums;">{{r.next}}</td>
+                <td style="padding: 11px 20px 11px 12px; border-bottom: 1px solid #1E222A;"><span style="{{r.dueStyle}}">{{r.due}}</span></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    function fmt(n) { return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
+    var colors = { 'Telefon & Internet': '#8EA8FF', 'Streaming': '#B5E36B', 'Sport': '#4FD1C5', 'Software & Cloud': '#C9A7FF', 'Versicherung': '#F48FB1', 'Mobilität': '#6B7385' };
+    var hist = [158.40, 158.40, 161.39, 161.39, 161.39, 166.38, 166.38, 166.38, 171.37, 171.37, 171.37, 177.35];
+    var labels = ['Dez', 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov'];
+    var max = 180;
+    var months = hist.map(function (v, i) {
+      var last = i === hist.length - 1;
+      return {
+        label: labels[i],
+        barStyle: 'display: block; width: 100%; max-width: 28px; border-radius: 6px 6px 2px 2px; height: ' + (v / max * 100).toFixed(1) + '%; background: ' + (last ? '#8EA8FF' : '#2E3546') + ';'
+      };
+    });
+    var catList = [
+      ['Telefon & Internet', 59.98], ['Streaming', 40.97], ['Sport', 34.90],
+      ['Software & Cloud', 17.97], ['Versicherung', 11.95], ['Mobilität', 11.58]
+    ];
+    var total = 177.35;
+    var cats = catList.map(function (c) {
+      return {
+        name: c[0], amount: fmt(c[1]),
+        pct: Math.round(c[1] / total * 100) + ' %',
+        barStyle: 'display: block; height: 100%; border-radius: 99px; width: ' + (c[1] / catList[0][1] * 100).toFixed(1) + '%; background: ' + colors[c[0]] + ';'
+      };
+    });
+    var data = [
+      ['Internet', 'Telefon & Internet', 'monatlich', 39.99, 39.99, '01.12.2026', '—'],
+      ['Fitnessstudio', 'Sport', 'monatlich', 29.90, 29.90, '01.12.2026', '30.11.2026'],
+      ['Handyvertrag', 'Telefon & Internet', 'monatlich', 19.99, 19.99, '03.12.2026', '—'],
+      ['Spotify Duo', 'Streaming', 'monatlich', 16.99, 16.99, '22.11.2026', 'jederzeit'],
+      ['Netflix', 'Streaming', 'monatlich', 13.99, 13.99, '15.11.2026', 'jederzeit'],
+      ['Adobe Creative Cloud', 'Software & Cloud', 'jährlich', 143.88, 11.99, '12.11.2026', '10.11.2026'],
+      ['ADAC Plus', 'Mobilität', 'jährlich', 139.00, 11.58, '01.03.2027', '30.11.2026'],
+      ['Disney+', 'Streaming', 'monatlich', 9.99, 9.99, '08.12.2026', 'jederzeit'],
+      ['Hausratversicherung', 'Versicherung', 'jährlich', 89.40, 7.45, '01.04.2027', '31.12.2026'],
+      ['Strava', 'Sport', 'jährlich', 59.99, 5.00, '21.11.2026', '20.11.2026'],
+      ['Haftpflicht', 'Versicherung', 'jährlich', 54.00, 4.50, '15.06.2027', '15.03.2027'],
+      ['iCloud+', 'Software & Cloud', 'monatlich', 2.99, 2.99, '18.11.2026', 'jederzeit'],
+      ['1Password', 'Software & Cloud', 'jährlich', 35.88, 2.99, '09.02.2027', '08.02.2027']
+    ];
+    var soon = { '10.11.2026': 1, '20.11.2026': 1, '30.11.2026': 1 };
+    var rows = data.map(function (d) {
+      var hot = !!soon[d[6]];
+      return {
+        name: d[0], cat: d[1], rhythm: d[2], amount: fmt(d[3]), monthly: fmt(d[4]), next: d[5], due: d[6],
+        dotStyle: 'flex: 0 0 auto; width: 10px; height: 10px; border-radius: 3px; background: ' + colors[d[1]] + ';',
+        dueStyle: hot
+          ? 'display: inline-block; padding: 3px 8px; border-radius: 8px; background: #2A2013; color: #FFB25C; font-weight: 600; font-variant-numeric: tabular-nums;'
+          : 'color: #A0A7B4; font-variant-numeric: tabular-nums;'
+      };
+    });
+    return { months: months, cats: cats, rows: rows };
+  }
+}
+</script>
+</body>
+</html>

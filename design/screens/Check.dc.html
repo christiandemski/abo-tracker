@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Lohnt sich das noch?</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; box-sizing: border-box;">
+
+  <header style="display: flex; align-items: center; gap: 12px; padding: 20px 16px 0 16px;">
+    <a href="Main.dc.html" aria-label="Schließen" style="width: 44px; height: 44px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; display: flex; align-items: center; justify-content: center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+    </a>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-size: 12px; color: #A0A7B4;">Quartals-Check · {{progress}}</span>
+      <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Lohnt sich das noch?</h1>
+    </div>
+  </header>
+
+  <div aria-hidden="true" style="display: flex; gap: 4px; padding: 16px 20px 0 20px;">
+    <sc-for list="{{steps}}" as="s" hint-placeholder-count="6">
+      <span style="{{s.style}}"></span>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{active}}" hint-placeholder-val="{{true}}">
+    <section aria-live="polite" style="margin: 22px 20px 0 20px; padding: 24px 20px; border-radius: 26px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+      <span style="{{cur.iconStyle}}">{{cur.initial}}</span>
+      <h2 style="margin: 6px 0 0 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 24px; font-weight: 600;">{{cur.name}}</h2>
+      <span style="font-size: 14px; color: #A0A7B4;">{{cur.meta}}</span>
+      <span style="margin-top: 6px; font-size: 13px; color: #A0A7B4;">Das sind <strong style="color: #F2F3F5;">{{cur.year}}</strong> im Jahr.</span>
+      <p style="margin: 14px 0 4px 0; font-size: 16px; font-weight: 600;">Wie oft nutzt du es?</p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%;">
+        <button type="button" onClick="{{often}}" style="height: 56px; border-radius: 14px; border: 1px solid #2B5A4D; background: #15302A; color: #5EE6B0; font-size: 15px; font-weight: 600; cursor: pointer;">Oft</button>
+        <button type="button" onClick="{{rare}}" style="height: 56px; border-radius: 14px; border: 1px solid #6B4A1F; background: #2A2013; color: #FFB25C; font-size: 15px; font-weight: 600; cursor: pointer;">Selten</button>
+        <button type="button" onClick="{{never}}" style="height: 56px; border-radius: 14px; border: 1px solid #6B2F3A; background: #2E161B; color: #FF8A9A; font-size: 15px; font-weight: 600; cursor: pointer;">Nie</button>
+      </div>
+      <button type="button" onClick="{{skip}}" style="margin-top: 4px; height: 44px; padding: 0 16px; border: 0; background: transparent; color: #A0A7B4; font-size: 14px; cursor: pointer;">Überspringen</button>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{done}}" hint-placeholder-val="{{false}}">
+    <section style="margin: 22px 20px 0 20px; padding: 20px; border-radius: 26px; background: #1A2033; border: 1px solid #34406A; display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 13px; color: #B4C5FF;">Check abgeschlossen</span>
+      <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 30px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">{{saveYear}} / Jahr</span>
+      <span style="font-size: 13px; color: #C8D3FF;">möglich, wenn du die Kandidaten unten kündigst.</span>
+    </section>
+    <div style="margin: 14px 20px 0 20px; display: flex; gap: 8px;">
+      <button type="button" onClick="{{restart}}" style="flex: 1 1 0; height: 44px; border-radius: 12px; border: 1px solid #2A2F3A; background: transparent; color: #F2F3F5; font-size: 14px; font-weight: 500; cursor: pointer;">Neu starten</button>
+      <a href="Kuendigung.dc.html" style="flex: 1 1 0; height: 44px; border-radius: 12px; background: #FFB25C; color: #1A1208; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center;">Kündigungen starten</a>
+    </div>
+  </sc-if>
+
+  <section aria-labelledby="kand" style="margin: 22px 20px 0 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+      <h2 id="kand" style="margin: 0; font-size: 16px; font-weight: 600;">Kündigungskandidaten</h2>
+      <span style="font-size: 13px; font-weight: 600; color: #FFB25C; font-variant-numeric: tabular-nums;">{{saveYear}} / Jahr</span>
+    </div>
+    <sc-if value="{{noCands}}" hint-placeholder-val="{{false}}">
+      <p style="margin: 8px 0 0 0; font-size: 13px; color: #A0A7B4;">Noch keine. Abos, die du selten oder nie nutzt, landen hier.</p>
+    </sc-if>
+    <ul style="list-style: none; margin: 0; padding: 0;">
+      <sc-for list="{{cands}}" as="c" hint-placeholder-count="2">
+        <li style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid #1E222A;">
+          <span style="{{c.tagStyle}}">{{c.tag}}</span>
+          <span style="flex-grow: 1; font-size: 14px; font-weight: 500;">{{c.name}}</span>
+          <span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">{{c.year}}</span>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { idx: 1, ans: { netflix: 'often' } }; }
+  renderVals() {
+    var self = this;
+    function fmt(n) { return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
+    var subs = [
+      { id: 'netflix', name: 'Netflix', m: 13.99, meta: '13,99 € monatlich · Streaming', color: '#B5E36B' },
+      { id: 'disney', name: 'Disney+', m: 9.99, meta: '9,99 € monatlich · Streaming', color: '#B5E36B' },
+      { id: 'spotify', name: 'Spotify Duo', m: 16.99, meta: '16,99 € monatlich · Streaming', color: '#B5E36B' },
+      { id: 'gym', name: 'Fitnessstudio', m: 29.90, meta: '29,90 € monatlich · Sport', color: '#4FD1C5' },
+      { id: 'strava', name: 'Strava', m: 59.99 / 12, meta: '59,99 € jährlich · Sport', color: '#4FD1C5' },
+      { id: 'icloud', name: 'iCloud+', m: 2.99, meta: '2,99 € monatlich · Software & Cloud', color: '#C9A7FF' }
+    ];
+    var idx = this.state.idx, ans = this.state.ans;
+    var done = idx >= subs.length;
+    function answer(kind) {
+      return function () {
+        var a = Object.assign({}, self.state.ans);
+        if (kind) a[subs[self.state.idx].id] = kind;
+        self.setState({ ans: a, idx: self.state.idx + 1 });
+      };
+    }
+    var steps = subs.map(function (s, i) {
+      var bg = i < idx ? '#8EA8FF' : (i === idx ? '#4A5A8F' : '#2A2F3A');
+      return { style: 'flex: 1 1 0; height: 4px; border-radius: 99px; background: ' + bg + ';' };
+    });
+    var save = 0;
+    var cands = [];
+    subs.forEach(function (s) {
+      var a = ans[s.id];
+      if (a === 'rare' || a === 'never') {
+        save += s.m * 12;
+        var nev = a === 'never';
+        cands.push({
+          name: s.name, year: fmt(s.m * 12), tag: nev ? 'Nie' : 'Selten',
+          tagStyle: 'flex: 0 0 auto; width: 56px; text-align: center; padding: 3px 0; border-radius: 8px; font-size: 12px; font-weight: 600; ' + (nev ? 'background: #2E161B; color: #FF8A9A;' : 'background: #2A2013; color: #FFB25C;')
+        });
+      }
+    });
+    var c = done ? subs[0] : subs[idx];
+    return {
+      active: !done, done: done,
+      progress: done ? 'fertig' : (idx + 1) + ' von ' + subs.length,
+      steps: steps,
+      cur: {
+        name: c.name, meta: c.meta, initial: c.name.charAt(0), year: fmt(c.m * 12),
+        iconStyle: 'width: 72px; height: 72px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-family: Space Grotesk, Inter, sans-serif; font-weight: 700; font-size: 30px; color: #0E1014; background: ' + c.color + ';'
+      },
+      often: answer('often'), rare: answer('rare'), never: answer('never'), skip: answer(null),
+      restart: function () { self.setState({ idx: 0, ans: {} }); },
+      cands: cands, noCands: cands.length === 0,
+      saveYear: fmt(save)
+    };
+  }
+}
+</script>
+</body>
+</html>

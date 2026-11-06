@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Kalender-Abo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#8EA8FF;text-decoration:none}a:hover{color:#B4C5FF}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0E1014; color: #F2F3F5; font-family: Inter, system-ui, sans-serif; box-sizing: border-box;">
+
+  <header style="display: flex; align-items: center; gap: 12px; padding: 20px 16px 0 16px;">
+    <a href="Main.dc.html" aria-label="Zurück" style="width: 44px; height: 44px; border-radius: 14px; background: #171A21; border: 1px solid #2A2F3A; color: #F2F3F5; display: flex; align-items: center; justify-content: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+    </a>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-size: 12px; color: #A0A7B4;">Einstellungen</span>
+      <h1 style="margin: 0; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Kalender-Abo</h1>
+    </div>
+  </header>
+
+  <p style="margin: 16px 20px 0 20px; font-size: 14px; line-height: 1.5; color: #A0A7B4;">Abonniere diesen Link in deinem Kalender. Neue Abos und geänderte Fristen erscheinen dort automatisch.</p>
+
+  <section aria-label="Kalender-Link" style="margin: 14px 20px 0 20px; padding: 14px; border-radius: 18px; background: #171A21; border: 1px solid #22262F; display: flex; flex-direction: column; gap: 10px;">
+    <label style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 12px; font-weight: 500; color: #A0A7B4;">Privater iCal-Link</span>
+      <input type="text" readonly value="https://[deine-domain]/ical/7f3a…c91.ics" style="height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 12px; border: 1px solid #2A2F3A; background: #0E1014; color: #F2F3F5; font-family: ui-monospace, Menlo, monospace; font-size: 13px;">
+    </label>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+      <button type="button" onClick="{{copy}}" style="{{copyStyle}}">{{copyLabel}}</button>
+      <button type="button" style="height: 44px; border-radius: 12px; border: 1px solid #2A2F3A; background: transparent; color: #F2F3F5; font-size: 14px; font-weight: 500; cursor: pointer;">Neuen Link erzeugen</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="inhalt" style="margin: 20px 20px 0 20px;">
+    <h2 id="inhalt" style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Was in den Kalender kommt</h2>
+    <ul style="list-style: none; margin: 0; padding: 0; border-radius: 18px; background: #171A21; border: 1px solid #22262F; overflow: hidden;">
+      <sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+        <li style="{{o.rowStyle}}">
+          <span style="display: flex; flex-direction: column; flex-grow: 1; gap: 2px;">
+            <span id="{{o.id}}" style="font-size: 14px; font-weight: 500;">{{o.title}}</span>
+            <span style="font-size: 12px; color: #A0A7B4;">{{o.sub}}</span>
+          </span>
+          <button type="button" role="switch" aria-checked="{{o.on}}" aria-labelledby="{{o.id}}" onClick="{{o.toggle}}" style="{{o.sw}}"><span style="{{o.knob}}"></span></button>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+
+  <section aria-labelledby="vorschau" style="margin: 20px 20px 0 20px;">
+    <h2 id="vorschau" style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">Vorschau</h2>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <sc-for list="{{events}}" as="e" hint-placeholder-count="3">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 12px; background: #12151B; border: 1px solid #22262F;">
+          <span style="{{e.bar}}"></span>
+          <span style="width: 46px; font-size: 12px; color: #A0A7B4; font-variant-numeric: tabular-nums;">{{e.date}}</span>
+          <span style="font-size: 13px; font-weight: 500;">{{e.title}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <p style="position: absolute; left: 20px; right: 20px; bottom: 26px; margin: 0; padding: 12px 14px; border-radius: 14px; background: #1A2033; border: 1px solid #34406A; font-size: 12.5px; line-height: 1.5; color: #C8D3FF;">In Nextcloud: Kalender › „+ Neuer Kalender“ › „Neues Abonnement aus Link“ und den Link einfügen.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { copied: false, o: { pay: true, due: true, rem: false, amt: true } }; }
+  renderVals() {
+    var self = this;
+    var o = this.state.o;
+    var defs = [
+      { id: 'pay', title: 'Abbuchungen', sub: 'Ganztägiger Termin am Abbuchungstag' },
+      { id: 'due', title: 'Kündigungsfristen', sub: 'Letzter Tag, an dem du kündigen kannst' },
+      { id: 'rem', title: 'Vorab-Erinnerungen', sub: 'Zusätzlich 14 Tage vor jeder Frist' },
+      { id: 'amt', title: 'Betrag im Titel', sub: 'z. B. „Netflix · 13,99 €“' }
+    ];
+    var opts = defs.map(function (d, i) {
+      var on = !!o[d.id];
+      return {
+        id: 'opt-' + d.id, title: d.title, sub: d.sub, on: on,
+        rowStyle: 'display: flex; align-items: center; gap: 12px; padding: 12px 14px;' + (i < defs.length - 1 ? ' border-bottom: 1px solid #22262F;' : ''),
+        sw: 'flex: 0 0 auto; width: 48px; height: 28px; border-radius: 99px; border: 0; position: relative; cursor: pointer; background: ' + (on ? '#8EA8FF' : '#3A404D') + ';',
+        knob: 'position: absolute; top: 3px; width: 22px; height: 22px; border-radius: 99px; background: ' + (on ? '#0E1014' : '#A0A7B4') + '; ' + (on ? 'right: 3px;' : 'left: 3px;'),
+        toggle: function () { var n = Object.assign({}, self.state.o); n[d.id] = !n[d.id]; self.setState({ o: n }); }
+      };
+    });
+    var ev = [];
+    function t(name, amt) { return o.amt ? name + ' · ' + amt : name; }
+    if (o.due) ev.push({ date: '10.11.', title: 'Frist: Adobe CC kündigen', c: '#FFB25C' });
+    if (o.pay) ev.push({ date: '12.11.', title: t('Adobe CC', '143,88 €'), c: '#C9A7FF' });
+    if (o.pay) ev.push({ date: '15.11.', title: t('Netflix', '13,99 €'), c: '#B5E36B' });
+    if (o.rem) ev.push({ date: '16.11.', title: 'Erinnerung: ADAC-Frist in 14 Tagen', c: '#8EA8FF' });
+    if (o.due) ev.push({ date: '20.11.', title: 'Frist: Strava kündigen', c: '#FFB25C' });
+    var events = ev.slice(0, 4).map(function (e) {
+      return { date: e.date, title: e.title, bar: 'flex: 0 0 auto; width: 4px; height: 20px; border-radius: 4px; background: ' + e.c + ';' };
+    });
+    if (!events.length) events = [{ date: '', title: 'Nichts ausgewählt', bar: 'width: 4px; height: 20px; border-radius: 4px; background: #3A404D;' }];
+    var c = this.state.copied;
+    return {
+      opts: opts, events: events,
+      copyLabel: c ? 'Kopiert' : 'Link kopieren',
+      copyStyle: 'height: 44px; border-radius: 12px; border: 0; font-size: 14px; font-weight: 600; cursor: pointer; ' + (c ? 'background: #15302A; color: #5EE6B0;' : 'background: #8EA8FF; color: #0E1014;'),
+      copy: function () { self.setState({ copied: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
