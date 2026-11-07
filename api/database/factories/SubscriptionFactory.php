@@ -49,6 +49,16 @@ class SubscriptionFactory extends Factory
         return $this->state(fn () => ['status' => 'cancelled', 'ends_at' => $endsAt]);
     }
 
+    public function installment(string $lastPayment): static
+    {
+        return $this->state(fn () => ['kind' => 'installment', 'ends_at' => $lastPayment]);
+    }
+
+    public function savings(): static
+    {
+        return $this->state(fn () => ['kind' => 'savings']);
+    }
+
     public function paused(): static
     {
         return $this->state(fn () => ['status' => 'paused']);

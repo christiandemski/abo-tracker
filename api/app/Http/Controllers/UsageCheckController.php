@@ -53,7 +53,8 @@ class UsageCheckController extends Controller
      */
     private function state(): array
     {
-        $active = Subscription::query()->with('category')->where('status', 'active')->get()
+        // Only real subscriptions: installments and savings are not "used"
+        $active = Subscription::query()->with('category')->where('status', 'active')->where('kind', 'subscription')->get()
             ->sortByDesc(function (Subscription $s) {
                 $m = $this->billing->monthlyFor($s);
 

@@ -48,6 +48,22 @@ class ChargeSchedule
         );
     }
 
+    /**
+     * Open installments from today up to and including the last one.
+     *
+     * @return array{count: int, cents: int}
+     */
+    public function remainingInstallments(Subscription $subscription, CarbonImmutable $today): array
+    {
+        if (! $subscription->isInstallment() || $subscription->ends_at === null) {
+            return ['count' => 0, 'cents' => 0];
+        }
+
+        $charges = $this->between($subscription, $today, $subscription->ends_at);
+
+        return ['count' => count($charges), 'cents' => array_sum(array_column($charges, 'amount_cents'))];
+    }
+
     /** Last day the subscription may charge, null = open-ended. */
     public function endOf(Subscription $subscription): ?CarbonImmutable
     {

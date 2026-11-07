@@ -21,11 +21,11 @@ describe('categories', function () {
 
         $data = $this->getJson('/api/v1/categories')->assertOk()->json('data');
 
-        expect($data)->toHaveCount(8)
+        expect($data)->toHaveCount(10)
             ->and($data[0]['name'])->toBe('Telefon & Internet')
             ->and($data[0]['is_default'])->toBeTrue()
-            ->and($data[7]['name'])->toBe('Zeitschriften')
-            ->and($data[7]['is_default'])->toBeFalse();
+            ->and($data[9]['name'])->toBe('Zeitschriften')
+            ->and($data[9]['is_default'])->toBeFalse();
     });
 
     it('only allows palette colors, never orange', function () {

@@ -59,7 +59,7 @@ Kern ist die Tabelle `subscriptions`; alles andere hängt daran oder am Nutzer. 
 | --- | --- | --- |
 | `users` | name, email, password, email_verified_at, timezone | Konto je Person |
 | `invitations` | email, token_hash, invited_by, expires_at, accepted_at | Einladungslinks für die Registrierung |
-| `subscriptions` | user_id, category_id, name, amount_cents, interval_unit (week/month/year), interval_count, anchor_date, next_charge_date, start_date, min_term_months, renewal_months, notice_value + notice_unit, cancel_by_date, status (active/cancelled/paused), ends_at, payment_method, provider_url, notes, source (manual/import/template) | ein Abo inkl. Laufzeit und Frist |
+| `subscriptions` | user_id, category_id, kind (subscription/installment/savings), name, amount_cents, interval_unit (week/month/year), interval_count, anchor_date, next_charge_date, start_date, min_term_months, renewal_months, notice_value + notice_unit, cancel_by_date, status (active/cancelled/paused/finished), ends_at (bei Raten: letzte Rate), payment_method, provider_url, notes, source (manual/import/template) | ein Abo, eine Rate oder ein Sparplan inkl. Laufzeit und Frist |
 | `categories` | user_id (null = Standard), name, color, sort | Streaming, Sport, Versicherung … |
 | `price_changes` | subscription_id, old_cents, new_cents, effective_date, source, status (pending/accepted/dismissed) | erkannte oder eingetragene Preisänderungen |
 | `reminder_settings` | user_id, offsets_days (z. B. [14, 3]), push, email | Erinnerungs-Einstellungen je Nutzer |
@@ -75,7 +75,7 @@ Kern ist die Tabelle `subscriptions`; alles andere hängt daran oder am Nutzer. 
 - Indizes: `subscriptions(user_id, status, next_charge_date)` und `subscriptions(user_id, cancel_by_date)` für Übersicht und Erinnerungslauf.
 - `sent_reminders` bekommt einen Unique-Index auf (subscription_id, type, due_date, offset_days, channel), damit ein doppelt laufender Cronjob nichts doppelt verschickt.
 - Abos werden per Soft Delete entfernt, damit Statistik und Preisverlauf erhalten bleiben.
-- Standardkategorien (Seeder): Telefon & Internet, Streaming, Sport, Software & Cloud, Versicherung, Mobilität, Sonstiges. Farben siehe `docs/DESIGN.md`.
+- Standardkategorien (Seeder): Telefon & Internet, Streaming, Sport, Software & Cloud, Versicherung, Mobilität, Kredite & Raten, Sparen & Vorsorge, Sonstiges. Farben siehe `docs/DESIGN.md`.
 
 ## API-Endpunkte
 
@@ -218,7 +218,7 @@ Ein GitHub-Repo mit zwei Ordnern: `api/` (Laravel) und `app/` (Expo). Beide Seit
 
 ## Umsetzungsreihenfolge & offene Punkte
 
-Gebaut wird in sechs Meilensteinen; nach M2 ist der Tracker schon im Alltag nutzbar, alles danach macht ihn besser.
+Gebaut wird in sieben Meilensteinen; nach M2 ist der Tracker schon im Alltag nutzbar, alles danach macht ihn besser.
 
 1. **M1 · Fundament:** Repo, Laravel-Projekt, Deployment auf kosten.codekorb.de, Auth mit Einladung, Expo-Projekt mit Login und Dark-Theme aus dem Design. → Details in `docs/START-M1.md`
 2. **M2 · Abos & Übersicht:** Abo anlegen (mit Vorlagen), Liste, Detail, Übersicht mit Monat/Jahr, Kategorien, Umrechnung, nächste Abbuchung, Kündigungsfrist.
@@ -226,6 +226,7 @@ Gebaut wird in sechs Meilensteinen; nach M2 ist der Tracker schon im Alltag nutz
 4. **M4 · CSV-Import:** Sparkasse-Adapter (CSV-CAMT V2), Erkennung, Import-Screen, Import-Regeln, Preisänderungen.
 5. **M5 · Sparen:** Kündigungsassistent mit Schreiben/PDF, „Lohnt sich das noch?“, Preisänderungs-Screen.
 6. **M6 · Überblick:** Monatsansicht, Rücklage, Statistik-Verlauf, iCal-Feed, Desktop-Layout der Web-Version.
+7. **M7 · Raten & Sparen:** Art je Eintrag (Abo, Rate, Sparen); Raten mit letzter Rate, Restbetrag und Status „abbezahlt“; Sparen getrennt von den Fixkosten; Tab „Fixkosten“.
 
 **Offene Punkte**
 

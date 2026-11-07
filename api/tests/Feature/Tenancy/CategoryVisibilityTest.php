@@ -15,14 +15,14 @@ beforeEach(function () {
 });
 
 it('shows default categories plus own ones', function () {
-    expect(Category::query()->count())->toBe(8)
+    expect(Category::query()->count())->toBe(10)
         ->and($this->aliceCategory->user_id)->toBe($this->alice->id);
 });
 
 it('hides user A\'s categories from user B', function () {
     $this->actingAs($this->bob);
 
-    expect(Category::query()->count())->toBe(7)
+    expect(Category::query()->count())->toBe(9)
         ->and(Category::find($this->aliceCategory->id))->toBeNull();
 });
 

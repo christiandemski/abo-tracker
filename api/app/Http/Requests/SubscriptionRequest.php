@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\IntervalUnit;
 use App\Enums\NoticeUnit;
+use App\Enums\SubscriptionKind;
 use App\Enums\SubscriptionStatus;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,6 +23,7 @@ class SubscriptionRequest extends FormRequest
         $required = $this->isMethod('POST') ? 'required' : 'sometimes';
 
         return [
+            'kind' => ['sometimes', Rule::enum(SubscriptionKind::class)],
             'name' => [$required, 'string', 'max:100'],
             'amount_cents' => [$required, 'integer', 'min:1', 'max:100000000'],
             'interval_unit' => [$required, Rule::enum(IntervalUnit::class)],
@@ -38,7 +40,10 @@ class SubscriptionRequest extends FormRequest
             'renewal_months' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:120'],
             'notice_value' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:365'],
             'notice_unit' => ['nullable', 'required_with:notice_value', Rule::enum(NoticeUnit::class)],
-            'status' => ['sometimes', Rule::enum(SubscriptionStatus::class)],
+            // Last installment; required for installments (checked in the controller, as PATCH may omit kind)
+            'ends_at' => ['sometimes', 'nullable', 'date_format:Y-m-d', 'after:1970-01-01', 'before:2100-01-01'],
+            // "finished" is set automatically after the last installment
+            'status' => ['sometimes', Rule::enum(SubscriptionStatus::class)->except(SubscriptionStatus::Finished)],
             'remind' => ['sometimes', 'boolean'],
             'payment_method' => ['sometimes', 'nullable', 'string', 'max:100'],
             'provider_url' => ['sometimes', 'nullable', 'url:http,https', 'max:255'],
@@ -58,7 +63,9 @@ class SubscriptionRequest extends FormRequest
             'amount_cents' => 'Betrag',
             'interval_unit' => 'Rhythmus',
             'interval_count' => 'Rhythmus',
+            'kind' => 'Art',
             'anchor_date' => 'nächste Abbuchung',
+            'ends_at' => 'letzte Rate',
             'category_id' => 'Kategorie',
             'start_date' => 'Vertragsbeginn',
             'min_term_months' => 'Mindestlaufzeit',

@@ -14,6 +14,7 @@ use App\Models\ReminderSetting;
 use App\Models\Subscription;
 use App\Models\Template;
 use App\Models\User;
+use App\Services\PriceChanges;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,8 @@ use Illuminate\Support\Facades\DB;
  *
  * Matching (SPEC step 6): an import rule or an existing subscription (name + amount ±10 %)
  * makes a candidate a duplicate. If the booked amount differs from the stored one by more than
- * 1 % or 0,10 €, a pending price change is created instead.
+ * 1 % or 0,10 €, a pending price change is created instead. For installments and savings the
+ * new amount is accepted right away (no call to action, so nothing orange).
  */
 class StatementImporter
 {
@@ -36,6 +38,7 @@ class StatementImporter
     public function __construct(
         private readonly RecurringPaymentDetector $detector,
         private readonly PayeeNormalizer $normalizer,
+        private readonly PriceChanges $priceChanges,
     ) {}
 
     public function import(User $user, BankStatementParser $parser, string $contents, ?string $fileName = null): ImportBatch
@@ -69,9 +72,12 @@ class StatementImporter
                 $template = $this->template($payment->payeeNormalized, $templates);
 
                 $status = ImportCandidate::STATUS_NEW;
+                $amountChanged = false;
                 if ($match) {
-                    $status = $this->isPriceChange($match->amount_cents, $payment->amountCents())
-                        && ! $this->priceChangedSince($match, $payment->lastDate())
+                    $amountChanged = $this->isPriceChange($match->amount_cents, $payment->amountCents())
+                        && ! $this->priceChangedSince($match, $payment->lastDate());
+                    // Installments and savings: a new amount is no call to action, it is taken over directly.
+                    $status = $amountChanged && $match->isSubscription()
                         ? ImportCandidate::STATUS_PRICE_CHANGE
                         : ImportCandidate::STATUS_DUPLICATE;
                 }
@@ -97,8 +103,12 @@ class StatementImporter
                 $candidate->user_id = $user->id;
                 $candidate->save();
 
-                if ($status === ImportCandidate::STATUS_PRICE_CHANGE && ($pc = $this->recordPriceChange($match, $payment))) {
-                    $newPriceChanges[] = $pc;
+                if ($amountChanged && ($pc = $this->recordPriceChange($match, $payment))) {
+                    if ($match->isSubscription()) {
+                        $newPriceChanges[] = $pc;
+                    } else {
+                        $this->priceChanges->accept($pc);
+                    }
                 }
             }
 

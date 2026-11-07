@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\IntervalUnit;
 use App\Enums\NoticeUnit;
+use App\Enums\SubscriptionKind;
 use App\Enums\SubscriptionSource;
 use App\Enums\SubscriptionStatus;
 use App\Models\Concerns\BelongsToUser;
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ?CarbonImmutable $ends_at
  */
 #[Fillable([
-    'category_id', 'name', 'amount_cents', 'interval_unit', 'interval_count', 'anchor_date',
+    'category_id', 'kind', 'name', 'amount_cents', 'interval_unit', 'interval_count', 'anchor_date',
     'start_date', 'min_term_months', 'renewal_months', 'notice_value', 'notice_unit',
     'status', 'ends_at', 'remind', 'payment_method', 'provider_url', 'notes', 'source', 'template_key',
     'customer_number', 'provider_email',
@@ -42,6 +43,7 @@ class Subscription extends Model
     }
 
     protected $attributes = [
+        'kind' => 'subscription',
         'interval_count' => 1,
         'status' => 'active',
         'remind' => true,
@@ -51,6 +53,7 @@ class Subscription extends Model
     protected function casts(): array
     {
         return [
+            'kind' => SubscriptionKind::class,
             'amount_cents' => 'integer',
             'interval_unit' => IntervalUnit::class,
             'interval_count' => 'integer',
@@ -113,9 +116,26 @@ class Subscription extends Model
             && $termEnd->lessThanOrEqualTo($keptUntil);
     }
 
-    /** Has a minimum term / automatic renewal, i.e. a real cancellation deadline. */
+    /** Has a minimum term / automatic renewal, i.e. a real cancellation deadline. Only subscriptions do. */
     public function hasTerm(): bool
     {
-        return $this->min_term_months !== null && $this->start_date !== null;
+        return $this->isSubscription() && $this->min_term_months !== null && $this->start_date !== null;
+    }
+
+    /** A real subscription or contract: cancellable, with the saving features. */
+    public function isSubscription(): bool
+    {
+        return $this->kind === SubscriptionKind::Subscription;
+    }
+
+    public function isInstallment(): bool
+    {
+        return $this->kind === SubscriptionKind::Installment;
+    }
+
+    /** Savings are shown, but not counted as fixed costs. */
+    public function isSavings(): bool
+    {
+        return $this->kind === SubscriptionKind::Savings;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PriceChangeStatus;
+use App\Enums\SubscriptionKind;
 use App\Enums\SubscriptionSource;
 use App\Enums\SubscriptionStatus;
 use App\Http\Requests\SubscriptionRequest;
@@ -17,6 +18,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class SubscriptionController extends Controller
 {
@@ -25,7 +27,8 @@ class SubscriptionController extends Controller
         Gate::authorize('viewAny', Subscription::class);
 
         $filters = $request->validate([
-            'status' => ['sometimes', Rule::in(['active', 'cancelled', 'paused', 'all'])],
+            'status' => ['sometimes', Rule::in(['active', 'cancelled', 'paused', 'finished', 'all'])],
+            'kind' => ['sometimes', Rule::enum(SubscriptionKind::class)],
             'category' => ['sometimes', 'integer'],
             'q' => ['sometimes', 'nullable', 'string', 'max:100'],
             'sort' => ['sometimes', Rule::in(['name', 'price', 'next_charge'])],
@@ -36,6 +39,9 @@ class SubscriptionController extends Controller
         $status = $filters['status'] ?? 'all';
         if ($status !== 'all') {
             $query->where('status', $status);
+        }
+        if (isset($filters['kind'])) {
+            $query->where('kind', $filters['kind']);
         }
         if (isset($filters['category'])) {
             $query->where('category_id', $filters['category']);
@@ -66,6 +72,7 @@ class SubscriptionController extends Controller
         Gate::authorize('create', Subscription::class);
 
         $subscription = new Subscription($request->validated());
+        $this->checkLastInstallment($subscription);
         $subscription->source = $subscription->template_key ? SubscriptionSource::Template : SubscriptionSource::Manual;
         $subscription->save();
 
@@ -89,9 +96,11 @@ class SubscriptionController extends Controller
             $oldAmount = $subscription->amount_cents;
             $subscription->fill($request->validated());
 
-            if ($subscription->status !== SubscriptionStatus::Cancelled) {
+            // For installments ends_at is the last payment; otherwise only cancelling sets it.
+            if ($subscription->status !== SubscriptionStatus::Cancelled && ! $subscription->isInstallment()) {
                 $subscription->ends_at = null;
             }
+            $this->checkLastInstallment($subscription);
 
             // Manual price edits are recorded, so the detail page shows a price history.
             if ($subscription->isDirty('amount_cents')) {
@@ -126,6 +135,7 @@ class SubscriptionController extends Controller
     public function cancel(Request $request, Subscription $subscription): SubscriptionResource
     {
         Gate::authorize('update', $subscription);
+        abort_if($subscription->isInstallment(), 422, 'Eine Rate lässt sich nicht kündigen. Ändere stattdessen die letzte Rate.');
 
         $data = $request->validate([
             'ends_at' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
@@ -153,9 +163,28 @@ class SubscriptionController extends Controller
     public function reactivate(Subscription $subscription): SubscriptionResource
     {
         Gate::authorize('update', $subscription);
+        abort_if($subscription->isInstallment(), 422, 'Eine Rate lässt sich nicht reaktivieren. Ändere stattdessen die letzte Rate.');
 
         $subscription->forceFill(['status' => SubscriptionStatus::Active, 'ends_at' => null, 'cancelled_at' => null, 'cancel_method' => null])->save();
 
         return SubscriptionResource::make($subscription->load('category', 'priceChanges'));
+    }
+
+    /**
+     * Installments need their last payment, and it cannot lie before the first one.
+     *
+     * @throws ValidationException
+     */
+    private function checkLastInstallment(Subscription $subscription): void
+    {
+        if (! $subscription->isInstallment()) {
+            return;
+        }
+        if ($subscription->ends_at === null) {
+            throw ValidationException::withMessages(['ends_at' => 'Gib an, wann die letzte Rate fällig ist.']);
+        }
+        if ($subscription->ends_at->lessThan($subscription->anchor_date)) {
+            throw ValidationException::withMessages(['ends_at' => 'Die letzte Rate kann nicht vor der ersten liegen.']);
+        }
     }
 }

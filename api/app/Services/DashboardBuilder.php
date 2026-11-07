@@ -38,23 +38,29 @@ class DashboardBuilder
         /** @var Collection<int, Subscription> $all */
         $all = Subscription::query()->with('category')->get();
         $active = $all->filter(fn (Subscription $s) => $s->isActive())->values();
+        // Savings are shown on their own line, not as fixed costs
+        [$savings, $costs] = $active->partition(fn (Subscription $s) => $s->isSavings());
+        $costs = $costs->values();
 
-        $total = $this->billing->monthlyTotal($active)->multiply($factor);
+        $total = $this->billing->monthlyTotal($costs)->multiply($factor);
 
         return [
             'period' => $period,
             'total_cents' => $total->round(),
-            'subscription_count' => $active->count(),
-            'converted_count' => $active->filter(
+            'subscription_count' => $costs->count(),
+            'converted_count' => $costs->filter(
                 fn (Subscription $s) => $this->billing->isLongInterval($s->interval_unit, $s->interval_count)
             )->count(),
             'inactive_count' => $all->count() - $active->count(),
+            'savings_cents' => $this->billing->monthlyTotal($savings)->multiply($factor)->round(),
+            'savings_count' => $savings->count(),
             // Badge on the bell: price changes waiting for a decision
             'notices_count' => PriceChange::query()->where('status', 'pending')->whereHas('subscription')->count(),
             'deadlines' => $this->deadlines($active, $today),
-            'categories' => $this->categories($active, $total, $factor),
+            'categories' => $this->categories($costs, $total, $factor),
+            // Upcoming charges include savings: the money leaves the account all the same
             'upcoming' => $this->upcoming($active, $today),
-            'biggest' => $this->biggest($active, $factor),
+            'biggest' => $this->biggest($costs, $factor),
         ];
     }
 
@@ -191,6 +197,7 @@ class DashboardBuilder
     {
         return [
             'id' => $s->id,
+            'kind' => $s->kind->value,
             'name' => $s->name,
             'amount_cents' => $s->amount_cents,
             'monthly_cents' => $this->billing->monthlyFor($s)->round(),

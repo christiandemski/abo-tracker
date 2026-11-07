@@ -19,6 +19,7 @@ class CancellationController extends Controller
     public function letter(Request $request, Subscription $subscription): Response
     {
         Gate::authorize('view', $subscription);
+        abort_if($subscription->isInstallment(), 422, 'Eine Rate lässt sich nicht kündigen.');
         $format = $request->validate(['format' => ['sometimes', 'in:text,pdf']])['format'] ?? 'text';
 
         $letter = $this->letters->build($subscription->loadMissing('category'), $request->user());

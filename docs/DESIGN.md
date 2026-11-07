@@ -38,6 +38,8 @@ Dark Mode, ruhige Flächen, eine Akzentfarbe (Blau) für Aktionen und eine Signa
 | Software & Cloud | `#C9A7FF` |
 | Versicherung | `#F48FB1` |
 | Mobilität | `#6B7385` |
+| Kredite & Raten | `#7DD3FC` |
+| Sparen & Vorsorge | `#86EFAC` |
 | Sonstiges | `#9AA3B5` |
 
 Regel: Keine Kategorie bekommt Orange. Kategoriefarbe nie als einziger Bedeutungsträger – immer Name daneben.

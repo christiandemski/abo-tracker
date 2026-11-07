@@ -13,7 +13,9 @@ use Illuminate\Support\Collection;
  * (no snapshots):
  *
  * - A subscription counts from its start_date on; without one it is assumed to have always existed.
- * - Cancelled ones count up to their end (ends_at, else the day of cancellation).
+ * - Cancelled ones count up to their end (ends_at, else the day of cancellation),
+ *   installments up to their last payment.
+ * - Savings are not fixed costs and are left out.
  * - Paused ones are left out (we do not know since when).
  * - Prices follow the accepted price changes (PriceTimeline).
  * - The current month equals the overview total (active subscriptions, current price).
@@ -35,7 +37,9 @@ class HistoryBuilder
     {
         $today ??= CarbonImmutable::today();
         /** @var Collection<int, Subscription> $all */
-        $all = Subscription::query()->with('priceChanges')->get();
+        $all = Subscription::query()->with('priceChanges')->get()
+            ->reject(fn (Subscription $s) => $s->isSavings())
+            ->values();
 
         $current = $this->billing->monthlyTotal($all->filter(fn (Subscription $s) => $s->isActive()))->round();
 

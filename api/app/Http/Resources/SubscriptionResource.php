@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Enums\PriceChangeStatus;
 use App\Models\Subscription;
 use App\Services\BillingCalculator;
+use App\Services\ChargeSchedule;
 use App\Services\DeadlineCalculator;
 use App\Support\Fraction;
 use Carbon\CarbonImmutable;
@@ -30,9 +31,14 @@ class SubscriptionResource extends JsonResource
 
         $unit = $this->interval_unit;
         $count = $this->interval_count;
+        $remaining = $this->isInstallment()
+            ? app(ChargeSchedule::class)->remainingInstallments($this->resource, $today)
+            : null;
 
         return [
             'id' => $this->id,
+            'kind' => $this->kind->value,
+            'kind_label' => $this->kind->label(),
             'name' => $this->name,
             'category' => $this->category_id ? CategoryResource::make($this->whenLoaded('category')) : null,
             'category_id' => $this->category_id,
@@ -63,6 +69,9 @@ class SubscriptionResource extends JsonResource
 
             'status' => $this->status->value,
             'ends_at' => $this->ends_at?->toDateString(),
+            // Installments only: open payments from today up to the last one (ends_at)
+            'remaining_count' => $remaining['count'] ?? null,
+            'remaining_cents' => $remaining['cents'] ?? null,
             'remind' => $this->remind,
             'payment_method' => $this->payment_method,
             'provider_url' => $this->provider_url,

@@ -18,6 +18,8 @@ class CategorySeeder extends Seeder
         ['key' => 'software', 'name' => 'Software & Cloud', 'color' => '#C9A7FF'],
         ['key' => 'insurance', 'name' => 'Versicherung', 'color' => '#F48FB1'],
         ['key' => 'mobility', 'name' => 'Mobilität', 'color' => '#6B7385'],
+        ['key' => 'loans', 'name' => 'Kredite & Raten', 'color' => '#7DD3FC'],
+        ['key' => 'savings', 'name' => 'Sparen & Vorsorge', 'color' => '#86EFAC'],
         ['key' => 'other', 'name' => 'Sonstiges', 'color' => '#9AA3B5'],
     ];
 

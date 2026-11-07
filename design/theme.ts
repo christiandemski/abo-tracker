@@ -49,6 +49,8 @@ export const categoryColors = {
   software: '#C9A7FF', // Software & Cloud
   insurance: '#F48FB1', // Versicherung
   mobility: '#6B7385', // Mobilität
+  loans: '#7DD3FC', // Kredite & Raten
+  savings: '#86EFAC', // Sparen & Vorsorge
   other: '#9AA3B5', // Sonstiges
 } as const;
 

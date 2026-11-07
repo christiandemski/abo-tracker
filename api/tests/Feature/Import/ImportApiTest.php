@@ -125,6 +125,23 @@ describe('matching existing subscriptions', function () {
         expect(PriceChange::count())->toBe(1);
     });
 
+    it('takes over a new amount for savings and installments without a notice', function () {
+        Queue::fake();
+        $gym = Subscription::factory()->for($this->user)->savings()->create(['name' => 'FitX', 'amount_cents' => 2990]);
+        $token = new PushToken(['expo_token' => 'ExponentPushToken[x]']);
+        $token->user_id = $this->user->id;
+        $token->save();
+
+        upload()->assertCreated()->assertJsonPath('data.counts.price_change', 0);
+
+        $pc = PriceChange::sole();
+        expect([$pc->old_cents, $pc->new_cents, $pc->effective_date->toDateString(), $pc->status->value])
+            ->toBe([2990, 3290, '2026-09-01', 'accepted'])
+            ->and($gym->refresh()->amount_cents)->toBe(3290)
+            ->and($this->getJson('/api/v1/dashboard')->json('data.notices_count'))->toBe(0);
+        Queue::assertNotPushed(SendPushReminders::class);
+    });
+
     it('does not suggest an outdated price if the price was changed after the statement', function () {
         // Spotify costs 10,99 € in the statement (last booking 15.10.2026),
         // but the user entered a price cut to 9,99 € effective 06.11.2026.
