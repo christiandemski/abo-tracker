@@ -18,7 +18,7 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Übersicht' }} />
-      <Tabs.Screen name="subscriptions" options={{ title: 'Abos' }} />
+      <Tabs.Screen name="subscriptions" options={{ title: 'Fixkosten' }} />
       <Tabs.Screen name="calendar" options={{ title: 'Kalender' }} />
       <Tabs.Screen name="stats" options={{ title: 'Statistik' }} />
     </Tabs>

@@ -27,7 +27,7 @@ class SubscriptionController extends Controller
         Gate::authorize('viewAny', Subscription::class);
 
         $filters = $request->validate([
-            'status' => ['sometimes', Rule::in(['active', 'cancelled', 'paused', 'finished', 'all'])],
+            'status' => ['sometimes', Rule::in(['active', 'cancelled', 'paused', 'finished', 'ended', 'all'])],
             'kind' => ['sometimes', Rule::enum(SubscriptionKind::class)],
             'category' => ['sometimes', 'integer'],
             'q' => ['sometimes', 'nullable', 'string', 'max:100'],
@@ -37,7 +37,10 @@ class SubscriptionController extends Controller
         $query = Subscription::query()->with('category');
 
         $status = $filters['status'] ?? 'all';
-        if ($status !== 'all') {
+        if ($status === 'ended') {
+            // Cancelled subscriptions and savings, paid-off installments
+            $query->whereIn('status', [SubscriptionStatus::Cancelled->value, SubscriptionStatus::Finished->value]);
+        } elseif ($status !== 'all') {
             $query->where('status', $status);
         }
         if (isset($filters['kind'])) {

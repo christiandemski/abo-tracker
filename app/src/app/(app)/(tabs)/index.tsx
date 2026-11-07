@@ -40,7 +40,9 @@ export default function OverviewScreen() {
   const notices = dashboard.data?.notices_count ?? 0;
   const desktop = useIsDesktop();
 
-  if (desktop && verified && period === 'month' && dashboard.data && dashboard.data.subscription_count > 0) {
+  const hasActive = !!dashboard.data && dashboard.data.subscription_count + dashboard.data.savings_count > 0;
+
+  if (desktop && verified && period === 'month' && dashboard.data && hasActive) {
     return (
       <Screen bare>
         <DesktopOverview dashboard={dashboard.data} />
@@ -93,7 +95,7 @@ export default function OverviewScreen() {
                 <Notice tone="info">Keine Verbindung. Du siehst den letzten bekannten Stand.</Notice>
               </View>
             )}
-            {dashboard.data.subscription_count === 0 && dashboard.data.inactive_count === 0 ? (
+            {!hasActive && dashboard.data.inactive_count === 0 ? (
               <View style={[styles.padded, styles.section]}>
                 <EmptyState />
               </View>
@@ -173,13 +175,13 @@ function EmptyState() {
       <AppText variant="small" color="textMuted" style={styles.label}>
         Fixkosten pro Monat
       </AppText>
-      <AppText variant="h1">Noch keine Abos</AppText>
+      <AppText variant="h1">Noch nichts erfasst</AppText>
       <AppText variant="body" color="textMuted">
-        Leg dein erstes Abo an oder importier einen Kontoauszug. Dann siehst du hier, was dich jeden Monat fest kostet
-        und wann du kündigen kannst.
+        Leg dein erstes Abo, eine Rate oder einen Sparplan an oder importier einen Kontoauszug. Dann siehst du hier, was
+        dich jeden Monat fest kostet und wann du kündigen kannst.
       </AppText>
       <View style={styles.actions}>
-        <PrimaryButton label="Erstes Abo anlegen" icon={CirclePlus} onPress={() => router.push('/add')} />
+        <PrimaryButton label="Ersten Eintrag anlegen" icon={CirclePlus} onPress={() => router.push('/add')} />
         <SecondaryButton label="CSV importieren" icon={FileUp} onPress={() => router.push('/import')} />
       </View>
     </Card>

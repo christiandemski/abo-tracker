@@ -354,8 +354,8 @@ function Result({ result, priceChanges }: { result: ImportApplyResult; priceChan
             </View>
           ))}
           <AppText variant="caption" color="textMuted" style={styles.note}>
-            Prüf bei den neuen Abos Kategorie und Kündigungsfrist. Beim nächsten Import erkennt der Cost-Tracker sie
-            automatisch wieder.
+            Prüf bei den neuen Abos Kategorie und Kündigungsfrist. Ist eine Rate oder ein Sparplan dabei, stell unter
+            „Bearbeiten“ die Art um. Beim nächsten Import erkennt der Cost-Tracker sie automatisch wieder.
           </AppText>
         </View>
       )}

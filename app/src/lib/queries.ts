@@ -1,5 +1,5 @@
 import { useAuth } from './auth';
-import type { CalendarMonth, Category, Dashboard, History, Reserve, Resource, Subscription, Template } from './types';
+import type { CalendarMonth, Category, Dashboard, History, Reserve, Resource, Subscription, SubscriptionKind, Template } from './types';
 import { useQuery } from './useQuery';
 
 /** Query keys; invalidate('subscriptions', 'dashboard') after changes. */
@@ -24,7 +24,9 @@ export function useDashboard(period: 'month' | 'year') {
 }
 
 export type ListParams = {
-  status?: 'all' | 'active' | 'cancelled' | 'paused';
+  /** ended = cancelled or paid off */
+  status?: 'all' | 'active' | 'cancelled' | 'paused' | 'finished' | 'ended';
+  kind?: SubscriptionKind;
   category?: number;
   q?: string;
   sort?: 'next_charge' | 'price' | 'name';

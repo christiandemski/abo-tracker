@@ -10,12 +10,12 @@ import { AppText } from './AppText';
 
 const TABS: Record<string, { label: string; icon: LucideIcon }> = {
   index: { label: 'Übersicht', icon: LayoutDashboard },
-  subscriptions: { label: 'Abos', icon: List },
+  subscriptions: { label: 'Fixkosten', icon: List },
   calendar: { label: 'Kalender', icon: Calendar },
   stats: { label: 'Statistik', icon: ChartLine },
 };
 
-/** Index after which the raised plus button sits (between "Abos" and "Kalender"). */
+/** Index after which the raised plus button sits (between "Fixkosten" and "Kalender"). */
 const PLUS_AFTER = 1;
 
 export function TabBar({ state, navigateToTab, insets }: BottomTabBarProps) {
@@ -47,7 +47,7 @@ export function TabBar({ state, navigateToTab, insets }: BottomTabBarProps) {
             {index === PLUS_AFTER && (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Abo hinzufügen"
+                accessibilityLabel="Hinzufügen"
                 onPress={() => router.push('/add')}
                 style={({ pressed }) => [styles.plus, pressed && styles.plusPressed]}
               >

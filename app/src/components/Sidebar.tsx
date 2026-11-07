@@ -9,7 +9,7 @@ import { AppText } from './AppText';
 
 const TABS: Record<string, { label: string; icon: LucideIcon }> = {
   index: { label: 'Übersicht', icon: LayoutDashboard },
-  subscriptions: { label: 'Alle Abos', icon: List },
+  subscriptions: { label: 'Fixkosten', icon: List },
   calendar: { label: 'Kalender & Fristen', icon: Calendar },
   stats: { label: 'Statistik', icon: ChartLine },
 };
@@ -54,7 +54,7 @@ export function Sidebar({ state, navigateToTab }: BottomTabBarProps) {
         >
           <Plus size={18} strokeWidth={2.4} color={colors.onAccent} />
           <AppText variant="body" color="onAccent" style={styles.semi}>
-            Abo hinzufügen
+            Hinzufügen
           </AppText>
         </Pressable>
         <NavItem label="Einstellungen" icon={Settings} onPress={() => router.push('/settings')} />

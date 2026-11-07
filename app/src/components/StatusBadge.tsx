@@ -8,13 +8,15 @@ const LABELS = {
   active: 'Aktiv',
   cancelled: 'Gekündigt',
   paused: 'Pausiert',
+  finished: 'Abbezahlt',
 } as const;
 
-export function StatusBadge({ status }: { status: keyof typeof LABELS }) {
+/** label overrides the default text, e.g. "Beendet" for a savings plan */
+export function StatusBadge({ status, label }: { status: keyof typeof LABELS; label?: string }) {
   return (
     <View style={styles.badge}>
       <AppText variant="tab" color="textMuted">
-        {LABELS[status]}
+        {label ?? LABELS[status]}
       </AppText>
     </View>
   );

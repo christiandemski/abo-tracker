@@ -28,7 +28,9 @@ export type MessageResponse = { message: string };
 
 export type IntervalUnit = 'week' | 'month' | 'year';
 export type NoticeUnit = 'day' | 'week' | 'month';
-export type SubscriptionStatus = 'active' | 'cancelled' | 'paused';
+export type SubscriptionStatus = 'active' | 'cancelled' | 'paused' | 'finished';
+/** subscription = Abo/Vertrag, installment = Rate (ends on its own), savings = Sparen (not fixed costs) */
+export type SubscriptionKind = 'subscription' | 'installment' | 'savings';
 export type CancelMethod = 'online' | 'mail' | 'pdf' | 'other';
 
 export type Category = {
@@ -53,6 +55,8 @@ export type PriceChange = {
 
 export type Subscription = {
   id: number;
+  kind: SubscriptionKind;
+  kind_label: string;
   name: string;
   category: Category | null;
   category_id: number | null;
@@ -78,7 +82,11 @@ export type Subscription = {
   cancel_by_date: string | null;
   days_until_deadline: number | null;
   status: SubscriptionStatus;
+  /** cancelled: end of the contract; installment: last payment */
   ends_at: string | null;
+  /** installments only: open payments from today up to the last one */
+  remaining_count: number | null;
+  remaining_cents: number | null;
   remind: boolean;
   payment_method: string | null;
   provider_url: string | null;
@@ -98,11 +106,14 @@ export type Subscription = {
 };
 
 export type SubscriptionInput = {
+  kind: SubscriptionKind;
   name: string;
   amount_cents: number;
   interval_unit: IntervalUnit;
   interval_count: number;
   anchor_date: string;
+  /** last installment (installments only) */
+  ends_at: string | null;
   category_id: number | null;
   start_date: string | null;
   min_term_months: number | null;
@@ -120,6 +131,7 @@ export type SubscriptionInput = {
 
 export type CompactSubscription = {
   id: number;
+  kind: SubscriptionKind;
   name: string;
   amount_cents: number;
   monthly_cents: number;
@@ -144,6 +156,9 @@ export type Dashboard = {
   subscription_count: number;
   converted_count: number;
   inactive_count: number;
+  /** savings: not part of total_cents, shown on their own line */
+  savings_cents: number;
+  savings_count: number;
   /** price changes waiting for a decision (bell badge) */
   notices_count: number;
   /** open cancellation deadlines in the next 30 days */

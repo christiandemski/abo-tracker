@@ -47,6 +47,7 @@ import {
 import { ApiError } from '@/lib/api';
 import { keys, useSubscription } from '@/lib/queries';
 import type { Resource, Subscription } from '@/lib/types';
+import { endedLabel, remainingLabel } from '@/lib/subscriptionText';
 import { invalidate } from '@/lib/useQuery';
 import { colors, fonts, radius, screenPadding } from '@/theme';
 
@@ -66,7 +67,7 @@ export default function SubscriptionDetailScreen() {
           accessibilityLabel="Zurück"
           onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
         />
-        <AppText variant="rowTitle">Abo-Details</AppText>
+        <AppText variant="rowTitle">Details</AppText>
         {s ? (
           <Pressable
             accessibilityRole="button"
@@ -118,6 +119,8 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
     s.days_until_deadline <= BANNER_DAYS;
   const history = s.price_history ?? [];
   const trend = s.price_trend_percent ?? null;
+  const isSubscription = s.kind === 'subscription';
+  const isInstallment = s.kind === 'installment';
 
   async function run(action: string, fn: () => Promise<unknown>, after?: () => void) {
     setBusy(action);
@@ -145,9 +148,10 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
           </AppText>
           <View style={styles.subtitle}>
             <AppText variant="small" color="textMuted">
+              {isSubscription ? '' : `${s.kind_label} · `}
               {s.category?.name ?? 'Ohne Kategorie'}
             </AppText>
-            {s.status !== 'active' && <StatusBadge status={s.status} />}
+            {s.status !== 'active' && <StatusBadge status={s.status} label={endedLabel(s)} />}
           </View>
         </View>
       </View>
@@ -183,7 +187,15 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
         </View>
       )}
 
-      {s.status === 'cancelled' && (
+      {s.status === 'cancelled' && s.kind === 'savings' && (
+        <View style={styles.block}>
+          <Notice tone="info" title={s.ends_at ? `Beendet zum ${formatDate(s.ends_at)}` : 'Beendet'}>
+            Der Sparplan zählt nicht mehr zu deinem Sparen pro Monat.
+          </Notice>
+        </View>
+      )}
+
+      {s.status === 'cancelled' && s.kind !== 'savings' && (
         <View style={styles.block}>
           <Notice tone="info" title={s.ends_at ? `Gekündigt zum ${formatDate(s.ends_at)}` : 'Gekündigt'}>
             Das Abo zählt nicht mehr zu deinen Fixkosten.
@@ -191,28 +203,47 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
         </View>
       )}
 
+      {s.status === 'finished' && (
+        <View style={styles.block}>
+          <Notice tone="success" title="Abbezahlt">
+            {s.ends_at ? `Die letzte Rate war am ${formatDate(s.ends_at)}. ` : ''}Die Rate zählt nicht mehr zu deinen
+            Fixkosten.
+          </Notice>
+        </View>
+      )}
+
       <View style={styles.costs} accessibilityLabel="Kosten">
-        <CostTile label="Abbuchung" value={formatCents(s.amount_cents)} meta={s.rhythm_label} />
+        <CostTile label={isInstallment ? 'Rate' : 'Abbuchung'} value={formatCents(s.amount_cents)} meta={s.rhythm_label} />
         <CostTile label="pro Monat" value={formatCents(s.monthly_cents)} meta={s.interval_unit === 'month' && s.interval_count === 1 ? 'monatlich' : 'umgerechnet'} accent />
-        <CostTile label="pro Tag" value={formatCents(s.daily_cents)} meta="umgerechnet" />
+        {isInstallment && s.remaining_cents !== null ? (
+          <CostTile
+            label="noch offen"
+            value={formatCents(s.remaining_cents)}
+            meta={s.remaining_count ? remainingLabel(s.remaining_count) : 'abbezahlt'}
+          />
+        ) : (
+          <CostTile label="pro Tag" value={formatCents(s.daily_cents)} meta="umgerechnet" />
+        )}
       </View>
 
       <View style={styles.section}>
         <AppText variant="h2" accessibilityRole="header" style={styles.sectionTitle}>
-          {'Laufzeit & Fristen'}
+          {isSubscription ? 'Laufzeit & Fristen' : 'Laufzeit'}
         </AppText>
         <Timeline s={s} />
       </View>
 
       <View style={[styles.section, styles.settings]}>
-        <SettingRow icon={Bell} label="Erinnerung" meta={s.has_term ? '14 und 3 Tage vor Fristende' : 'Greift, sobald eine Laufzeit eingetragen ist'}>
-          <Switch
-            value={s.remind}
-            accessibilityLabel="Vor Fristende erinnern"
-            disabled={busy !== null}
-            onValueChange={(remind) => run('remind', () => api.patch(`subscriptions/${s.id}`, { remind }))}
-          />
-        </SettingRow>
+        {isSubscription && (
+          <SettingRow icon={Bell} label="Erinnerung" meta={s.has_term ? '14 und 3 Tage vor Fristende' : 'Greift, sobald eine Laufzeit eingetragen ist'}>
+            <Switch
+              value={s.remind}
+              accessibilityLabel="Vor Fristende erinnern"
+              disabled={busy !== null}
+              onValueChange={(remind) => run('remind', () => api.patch(`subscriptions/${s.id}`, { remind }))}
+            />
+          </SettingRow>
+        )}
         <SettingRow icon={CreditCard} label="Zahlungsweg">
           <AppText variant="body" color="textMuted" numberOfLines={1} style={styles.settingValue}>
             {s.payment_method || 'Nicht angegeben'}
@@ -225,9 +256,10 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
             </AppText>
           </SettingRow>
         ) : null}
-        <SettingRow icon={History} label="Preisverlauf" last={!s.notes}>
+        <SettingRow icon={History} label={isSubscription ? 'Preisverlauf' : 'Betragsverlauf'} last={!s.notes}>
           {trend !== null ? (
-            <AppText variant="small" color={trend > 0 ? 'warn' : 'textMuted'} style={styles.semi}>
+            // Orange only where a higher price calls for action, i.e. for subscriptions
+            <AppText variant="small" color={trend > 0 && isSubscription ? 'warn' : 'textMuted'} style={styles.semi}>
               {formatPercent(trend)} seit Start
             </AppText>
           ) : (
@@ -271,11 +303,21 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
               loading={busy === 'pause'}
               onPress={() => run('pause', () => api.patch(`subscriptions/${s.id}`, { status: 'paused' }))}
             />
-            <SecondaryButton
-              label="Kündigen"
-              icon={CircleSlash}
-              onPress={() => router.push(`/subscription/${s.id}/cancel`)}
-            />
+            {isSubscription && (
+              <SecondaryButton
+                label="Kündigen"
+                icon={CircleSlash}
+                onPress={() => router.push(`/subscription/${s.id}/cancel`)}
+              />
+            )}
+            {s.kind === 'savings' && (
+              <SecondaryButton
+                label="Sparplan beenden"
+                icon={CircleSlash}
+                loading={busy === 'end'}
+                onPress={() => run('end', post('cancel'))}
+              />
+            )}
           </>
         )}
         {s.status === 'paused' && (
@@ -318,7 +360,7 @@ function Detail({ subscription: s }: { subscription: Subscription }) {
             </View>
           </View>
         ) : (
-          <SecondaryButton label="Abo löschen" icon={Trash2} onPress={() => setConfirmDelete(true)} />
+          <SecondaryButton label={isSubscription ? 'Abo löschen' : 'Eintrag löschen'} icon={Trash2} onPress={() => setConfirmDelete(true)} />
         )}
       </View>
     </View>
@@ -334,6 +376,7 @@ function AnnouncePrice({ subscription: s }: { subscription: Subscription }) {
   const [errors, setErrors] = useState<{ amount?: string; date?: string; form?: string }>({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
+  const title = s.kind === 'subscription' ? 'Preisänderung eintragen' : 'Betragsänderung eintragen';
 
   async function submit() {
     const cents = parseEuroInput(amount);
@@ -348,7 +391,7 @@ function AnnouncePrice({ subscription: s }: { subscription: Subscription }) {
     try {
       await api.post(`subscriptions/${s.id}/price-changes`, { new_cents: cents, effective_date: iso });
       invalidate('subscriptions', 'dashboard', 'calendar', 'stats', 'price-changes');
-      setDone(`Neuer Preis gilt ab ${date}.`);
+      setDone(`${s.kind === 'subscription' ? 'Neuer Preis' : 'Neuer Betrag'} gilt ab ${date}.`);
       setOpen(false);
     } catch (e) {
       if (e instanceof ApiError && e.isValidation) {
@@ -365,21 +408,23 @@ function AnnouncePrice({ subscription: s }: { subscription: Subscription }) {
     return (
       <View style={[styles.section, styles.actions]}>
         {done && <Notice tone="success">{done}</Notice>}
-        <SecondaryButton label="Preisänderung eintragen" icon={TrendingUp} onPress={() => setOpen(true)} />
+        <SecondaryButton label={title} icon={TrendingUp} onPress={() => setOpen(true)} />
       </View>
     );
   }
 
   return (
     <View style={[styles.section, styles.announce]}>
-      <AppText variant="rowTitle">Preisänderung eintragen</AppText>
+      <AppText variant="rowTitle">{title}</AppText>
       <AppText variant="small" color="textMuted">
-        Zum Beispiel aus einer Ankündigung deines Anbieters. Der neue Preis gilt ab dem Datum.
+        {s.kind === 'subscription'
+          ? 'Zum Beispiel aus einer Ankündigung deines Anbieters. Der neue Preis gilt ab dem Datum.'
+          : 'Zum Beispiel eine neue Sparrate. Der neue Betrag gilt ab dem Datum.'}
       </AppText>
       {errors.form && <Notice tone="danger">{errors.form}</Notice>}
       <View style={styles.confirmButtons}>
         <View style={styles.flex}>
-          <TextField label="Neuer Preis in €" value={amount} onChangeText={setAmount} error={errors.amount} keyboardType="decimal-pad" inputMode="decimal" />
+          <TextField label={s.kind === 'subscription' ? 'Neuer Preis in €' : 'Neuer Betrag in €'} value={amount} onChangeText={setAmount} error={errors.amount} keyboardType="decimal-pad" inputMode="decimal" />
         </View>
         <View style={styles.flex}>
           <TextField label="Gültig ab" value={date} onChangeText={setDate} error={errors.date} placeholder="TT.MM.JJJJ" keyboardType="numbers-and-punctuation" />
@@ -469,8 +514,9 @@ function Timeline({ s }: { s: Subscription }) {
     if (s.cancel_by_date) items.push({ label: 'Kündbar bis', date: s.cancel_by_date, tone: s.is_kept ? undefined : 'warn' });
     if (s.term_end_date) items.push({ label: 'Nächste Verlängerung', date: s.term_end_date, tone: 'accent' });
   } else if (s.next_charge_date) {
-    items.push({ label: 'Nächste Abbuchung', date: s.next_charge_date, tone: 'accent' });
+    items.push({ label: s.kind === 'installment' ? 'Nächste Rate' : 'Nächste Abbuchung', date: s.next_charge_date, tone: 'accent' });
   }
+  if (s.kind === 'installment' && s.ends_at) items.push({ label: 'Letzte Rate', date: s.ends_at });
   if (s.status === 'cancelled' && s.ends_at) items.push({ label: 'Endet am', date: s.ends_at });
 
   return (
@@ -496,7 +542,7 @@ function Timeline({ s }: { s: Subscription }) {
           </View>
         );
       })}
-      {!s.has_term && (
+      {!s.has_term && s.kind === 'subscription' && (
         <AppText variant="small" color="textMuted" style={styles.hint}>
           Jederzeit kündbar{s.notice_label ? ` mit ${s.notice_label} Frist` : ''}. Trag unter „Bearbeiten“ eine
           Mindestlaufzeit ein, wenn es eine gibt.

@@ -48,6 +48,59 @@ describe('validate', () => {
     });
   });
 
+  it('sends no contract term for installments and savings', () => {
+    const term = { notice: '1m', minTerm: '24', startDate: '01.03.2026' } as const;
+
+    expect(validate(base({ kind: 'savings', ...term })).payload).toMatchObject({
+      kind: 'savings',
+      ends_at: null,
+      notice_value: null,
+      min_term_months: null,
+      renewal_months: null,
+      start_date: null,
+    });
+    expect(validate(base({ kind: 'installment', lastPayment: '01.12.2027', ...term })).payload).toMatchObject({
+      kind: 'installment',
+      ends_at: '2027-12-01',
+      notice_value: null,
+      min_term_months: null,
+    });
+  });
+
+  it('needs the last payment of an installment, not before the next one', () => {
+    expect(validate(base({ kind: 'installment' })).errors.lastPayment).toBe('Gib das Datum der letzten Rate ein.');
+    expect(validate(base({ kind: 'installment', lastPayment: '31.13.2027' })).errors.lastPayment).toBe('Datum als TT.MM.JJJJ.');
+    expect(validate(base({ kind: 'installment', lastPayment: '04.11.2026' })).errors.lastPayment).toBe(
+      'Die letzte Rate kann nicht vor der nächsten liegen.',
+    );
+    expect(validate(base({ kind: 'installment', lastPayment: '05.11.2026' })).errors).toEqual({});
+    // A subscription ignores the field
+    expect(validate(base({ lastPayment: 'x' })).payload).toMatchObject({ kind: 'subscription', ends_at: null });
+  });
+
+  it('round-trips an installment with its last payment', () => {
+    const s = {
+      kind: 'installment',
+      name: 'Autokredit',
+      amount_cents: 25000,
+      interval_unit: 'month',
+      interval_count: 1,
+      anchor_date: '2026-01-01',
+      next_charge_date: '2026-12-01',
+      ends_at: '2028-06-01',
+      min_term_months: null,
+      notice_value: null,
+      notice_unit: null,
+      renewal_months: null,
+      start_date: null,
+      remind: true,
+    } as unknown as Subscription;
+
+    const form = formFromSubscription(s);
+    expect(form).toMatchObject({ kind: 'installment', lastPayment: '01.06.2028' });
+    expect(validate(form).payload).toMatchObject({ kind: 'installment', anchor_date: '2026-12-01', ends_at: '2028-06-01' });
+  });
+
   it('reports missing and invalid fields', () => {
     const { payload, errors } = validate(base({ name: ' ', amount: 'abc', anchorDate: '31.02.2026' }));
 
@@ -82,6 +135,7 @@ describe('templates and editing', () => {
 
   it('round-trips an existing subscription', () => {
     const s = {
+      kind: 'subscription',
       name: 'Adobe Creative Cloud',
       amount_cents: 14388,
       interval_unit: 'year',

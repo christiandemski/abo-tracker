@@ -2,17 +2,20 @@
 // Pure mapping of user input; all amounts/dates are converted, never calculated.
 
 import { centsToInput, formatDate, parseEuroInput, parseGermanDate, toIsoDate } from '@/lib/format';
-import type { IntervalUnit, NoticeUnit, Subscription, SubscriptionInput, Template } from '@/lib/types';
+import type { IntervalUnit, NoticeUnit, Subscription, SubscriptionInput, SubscriptionKind, Template } from '@/lib/types';
 
 export type RhythmPreset = 'month' | 'quarter' | 'year' | 'custom';
 export type NoticePreset = 'anytime' | '14d' | '1m' | '3m' | 'custom';
 export type TermPreset = '1' | '12' | '24' | 'custom';
 
 export type FormState = {
+  kind: SubscriptionKind;
   templateKey: string | null;
   name: string;
   amount: string;
   anchorDate: string;
+  /** installments: last payment, TT.MM.JJJJ */
+  lastPayment: string;
   rhythm: RhythmPreset;
   customUnit: IntervalUnit;
   customCount: string;
@@ -46,10 +49,12 @@ export const NOTICE_PRESETS: Record<'14d' | '1m' | '3m', { value: number; unit: 
 
 export function emptyForm(today = new Date()): FormState {
   return {
+    kind: 'subscription',
     templateKey: null,
     name: '',
     amount: '',
     anchorDate: formatDate(today),
+    lastPayment: '',
     rhythm: 'month',
     customUnit: 'month',
     customCount: '2',
@@ -105,10 +110,12 @@ export function formFromSubscription(s: Subscription): FormState {
       : 'custom';
 
   return {
+    kind: s.kind,
     templateKey: s.template_key,
     name: s.name,
     amount: centsToInput(s.amount_cents),
     anchorDate: formatDate(s.next_charge_date ?? s.anchor_date),
+    lastPayment: s.kind === 'installment' && s.ends_at ? formatDate(s.ends_at) : '',
     rhythm: rhythmOf(s.interval_unit, s.interval_count),
     customUnit: s.interval_unit,
     customCount: String(s.interval_count),
@@ -157,8 +164,18 @@ export function validate(form: FormState): { payload: SubscriptionInput | null; 
   let noticeUnit: NoticeUnit | null = null;
   let minTerm: number | null = null;
   let startDate: string | null = null;
+  let endsAt: string | null = null;
 
-  if (form.notice !== 'anytime') {
+  // Only subscriptions have a term and a notice period
+  const hasTerm = form.kind === 'subscription' && form.notice !== 'anytime';
+
+  if (form.kind === 'installment') {
+    endsAt = parseGermanDate(form.lastPayment);
+    if (!endsAt) errors.lastPayment = form.lastPayment.trim() ? 'Datum als TT.MM.JJJJ.' : 'Gib das Datum der letzten Rate ein.';
+    else if (anchor && endsAt < anchor) errors.lastPayment = 'Die letzte Rate kann nicht vor der nächsten liegen.';
+  }
+
+  if (form.kind === 'subscription' && form.notice !== 'anytime') {
     if (form.notice === 'custom') {
       const v = Number(form.customNoticeValue);
       if (!Number.isInteger(v) || v < 0 || v > 365) errors.customNoticeValue = 'Zahl zwischen 0 und 365.';
@@ -193,15 +210,17 @@ export function validate(form: FormState): { payload: SubscriptionInput | null; 
   return {
     errors,
     payload: {
+      kind: form.kind,
       name,
       amount_cents: amount,
       interval_unit: interval.unit,
       interval_count: interval.count,
       anchor_date: anchor,
+      ends_at: endsAt,
       category_id: form.categoryId,
       start_date: startDate,
       min_term_months: minTerm,
-      renewal_months: form.notice === 'anytime' ? null : form.renewalMonths,
+      renewal_months: hasTerm ? form.renewalMonths : null,
       notice_value: noticeValue,
       notice_unit: noticeUnit,
       remind: form.remind,
@@ -220,6 +239,7 @@ export const SERVER_FIELD: Partial<Record<keyof SubscriptionInput, keyof FormSta
   name: 'name',
   amount_cents: 'amount',
   anchor_date: 'anchorDate',
+  ends_at: 'lastPayment',
   interval_count: 'customCount',
   category_id: 'categoryId',
   start_date: 'startDate',

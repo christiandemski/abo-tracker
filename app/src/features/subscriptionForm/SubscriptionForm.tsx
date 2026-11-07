@@ -9,7 +9,7 @@ import { ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { formatCents, parseEuroInput } from '@/lib/format';
 import { useCategories, useTemplates } from '@/lib/queries';
-import type { BillingPreview, Resource, SubscriptionInput } from '@/lib/types';
+import type { BillingPreview, Category, Resource, SubscriptionInput, SubscriptionKind } from '@/lib/types';
 import { colors, fonts, radius, screenPadding } from '@/theme';
 
 import {
@@ -23,6 +23,24 @@ import {
   type RhythmPreset,
   type TermPreset,
 } from './model';
+
+const KINDS = [
+  { value: 'subscription', label: 'Abo / Vertrag' },
+  { value: 'installment', label: 'Rate' },
+  { value: 'savings', label: 'Sparen' },
+] as const;
+
+/** Default category suggested per kind (keys of the default categories) */
+const KIND_CATEGORY: Partial<Record<SubscriptionKind, string>> = {
+  installment: 'loans',
+  savings: 'savings',
+};
+
+const NAME_PLACEHOLDER: Record<SubscriptionKind, string> = {
+  subscription: 'z. B. Zeitungsabo',
+  installment: 'z. B. Autokredit',
+  savings: 'z. B. ETF-Sparplan',
+};
 
 const RHYTHMS = [
   { value: 'month', label: 'monatlich' },
@@ -121,6 +139,26 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
     setErrors((e) => ({ ...e, [key]: undefined }));
   };
 
+  // Switching the kind suggests its category, unless the user picked another one.
+  const setKind = (kind: SubscriptionKind) => {
+    const byKey = (key: string | undefined): Category | undefined =>
+      key ? categories.data?.find((c) => c.is_default && c.key === key) : undefined;
+    setForm((f) => {
+      const previous = byKey(KIND_CATEGORY[f.kind]);
+      const untouched = f.categoryId === null || f.categoryId === previous?.id;
+      const suggested = byKey(KIND_CATEGORY[kind]);
+      return {
+        ...f,
+        kind,
+        templateKey: kind === 'subscription' ? f.templateKey : null,
+        categoryId: untouched ? (suggested?.id ?? null) : f.categoryId,
+      };
+    });
+    setErrors({});
+  };
+
+  const isSubscription = form.kind === 'subscription';
+
   const amountCents = parseEuroInput(form.amount);
   const interval = intervalOf(form);
   const preview = usePreview(amountCents, interval.unit, interval.count);
@@ -168,7 +206,21 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
   return (
     <View style={styles.root}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        {withTemplates && (
+        <View style={styles.kind}>
+          <Segmented options={KINDS} value={form.kind} onChange={setKind} accessibilityLabel="Art" stretch />
+          {form.kind === 'savings' && (
+            <AppText variant="small" color="textMuted">
+              Sparen zählt nicht zu deinen Fixkosten, sondern steht in der Übersicht in einer eigenen Zeile.
+            </AppText>
+          )}
+          {form.kind === 'installment' && (
+            <AppText variant="small" color="textMuted">
+              Nach der letzten Rate ist der Eintrag abbezahlt und zählt nicht mehr zu den Fixkosten.
+            </AppText>
+          )}
+        </View>
+
+        {withTemplates && isSubscription && (
           <>
             <View style={styles.search}>
               <Search size={18} strokeWidth={2} color={colors.textMuted} />
@@ -242,7 +294,7 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
             value={form.name}
             onChangeText={(v) => set('name', v)}
             error={errors.name}
-            placeholder="z. B. Zeitungsabo"
+            placeholder={NAME_PLACEHOLDER[form.kind]}
           />
 
           <View style={styles.twoCols}>
@@ -259,7 +311,7 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
             </View>
             <View style={styles.col}>
               <TextField
-                label="Nächste Abbuchung"
+                label={form.kind === 'installment' ? 'Nächste Rate' : 'Nächste Abbuchung'}
                 value={form.anchorDate}
                 onChangeText={(v) => set('anchorDate', v)}
                 error={errors.anchorDate}
@@ -268,6 +320,18 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
               />
             </View>
           </View>
+
+          {form.kind === 'installment' && (
+            <TextField
+              label="Letzte Rate am"
+              value={form.lastPayment}
+              onChangeText={(v) => set('lastPayment', v)}
+              error={errors.lastPayment}
+              placeholder="TT.MM.JJJJ"
+              hint="Steht im Kredit- oder Ratenvertrag. Daraus berechnen wir den Restbetrag."
+              keyboardType="numbers-and-punctuation"
+            />
+          )}
 
           <View style={styles.group}>
             <AppText variant="caption" color="textMuted">
@@ -324,37 +388,39 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
             </View>
           </View>
 
-          <View style={styles.group}>
-            <AppText variant="caption" color="textMuted">
-              Kündigungsfrist
-            </AppText>
-            <View accessibilityRole="radiogroup" accessibilityLabel="Kündigungsfrist" style={styles.chips}>
-              {NOTICES.map((n) => (
-                <Chip key={n.value} label={n.label} selected={form.notice === n.value} onPress={() => set('notice', n.value)} />
-              ))}
-            </View>
-            {form.notice === 'custom' && (
-              <View style={styles.customRow}>
-                <View style={styles.countField}>
-                  <TextField
-                    label="Frist"
-                    value={form.customNoticeValue}
-                    onChangeText={(v) => set('customNoticeValue', v)}
-                    error={errors.customNoticeValue}
-                    keyboardType="number-pad"
+          {isSubscription && (
+            <View style={styles.group}>
+              <AppText variant="caption" color="textMuted">
+                Kündigungsfrist
+              </AppText>
+              <View accessibilityRole="radiogroup" accessibilityLabel="Kündigungsfrist" style={styles.chips}>
+                {NOTICES.map((n) => (
+                  <Chip key={n.value} label={n.label} selected={form.notice === n.value} onPress={() => set('notice', n.value)} />
+                ))}
+              </View>
+              {form.notice === 'custom' && (
+                <View style={styles.customRow}>
+                  <View style={styles.countField}>
+                    <TextField
+                      label="Frist"
+                      value={form.customNoticeValue}
+                      onChangeText={(v) => set('customNoticeValue', v)}
+                      error={errors.customNoticeValue}
+                      keyboardType="number-pad"
+                    />
+                  </View>
+                  <Segmented
+                    options={NOTICE_UNITS}
+                    value={form.customNoticeUnit}
+                    onChange={(v) => set('customNoticeUnit', v)}
+                    accessibilityLabel="Einheit der Frist"
                   />
                 </View>
-                <Segmented
-                  options={NOTICE_UNITS}
-                  value={form.customNoticeUnit}
-                  onChange={(v) => set('customNoticeUnit', v)}
-                  accessibilityLabel="Einheit der Frist"
-                />
-              </View>
-            )}
-          </View>
+              )}
+            </View>
+          )}
 
-          {form.notice !== 'anytime' && (
+          {isSubscription && form.notice !== 'anytime' && (
             <View style={[styles.group, styles.termBox]}>
               <AppText variant="rowTitle">Vertragslaufzeit</AppText>
               <AppText variant="small" color="textMuted">
@@ -402,18 +468,20 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
             </View>
           )}
 
-          <View style={styles.remind}>
-            <Bell size={18} strokeWidth={1.8} color={colors.textMuted} />
-            <View style={styles.remindText}>
-              <AppText variant="body" style={styles.medium}>
-                Vor Fristende erinnern
-              </AppText>
-              <AppText variant="caption" color="textMuted">
-                14 und 3 Tage vorher
-              </AppText>
+          {isSubscription && (
+            <View style={styles.remind}>
+              <Bell size={18} strokeWidth={1.8} color={colors.textMuted} />
+              <View style={styles.remindText}>
+                <AppText variant="body" style={styles.medium}>
+                  Vor Fristende erinnern
+                </AppText>
+                <AppText variant="caption" color="textMuted">
+                  14 und 3 Tage vorher
+                </AppText>
+              </View>
+              <Switch value={form.remind} onValueChange={(v) => set('remind', v)} accessibilityLabel="Vor Fristende erinnern" />
             </View>
-            <Switch value={form.remind} onValueChange={(v) => set('remind', v)} accessibilityLabel="Vor Fristende erinnern" />
-          </View>
+          )}
 
           <Pressable
             accessibilityRole="button"
@@ -445,22 +513,26 @@ export function SubscriptionForm({ initial, withTemplates, submitLabel, onSubmit
                 autoCapitalize="none"
                 keyboardType="url"
               />
-              <TextField
-                label="Kundennummer"
-                value={form.customerNumber}
-                onChangeText={(v) => set('customerNumber', v)}
-                error={errors.customerNumber}
-                hint="Steht im Kündigungsschreiben."
-              />
-              <TextField
-                label="E-Mail für Kündigungen"
-                value={form.providerEmail}
-                onChangeText={(v) => set('providerEmail', v)}
-                error={errors.providerEmail}
-                placeholder="z. B. kuendigung@anbieter.de"
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
+              {form.kind !== 'installment' && (
+                <>
+                  <TextField
+                    label="Kundennummer"
+                    value={form.customerNumber}
+                    onChangeText={(v) => set('customerNumber', v)}
+                    error={errors.customerNumber}
+                    hint="Steht im Kündigungsschreiben."
+                  />
+                  <TextField
+                    label="E-Mail für Kündigungen"
+                    value={form.providerEmail}
+                    onChangeText={(v) => set('providerEmail', v)}
+                    error={errors.providerEmail}
+                    placeholder="z. B. kuendigung@anbieter.de"
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                  />
+                </>
+              )}
               <TextField
                 label="Notizen"
                 value={form.notes}
@@ -522,6 +594,10 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 15,
     ...Platform.select({ web: { outlineStyle: 'none' } as object }),
+  },
+  kind: {
+    marginTop: 16,
+    gap: 8,
   },
   block: {
     marginTop: 16,

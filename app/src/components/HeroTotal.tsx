@@ -22,9 +22,9 @@ type Props = {
 };
 
 export function HeroTotal({ dashboard, period, onPeriodChange }: Props) {
-  const { total_cents, subscription_count, converted_count, categories } = dashboard;
+  const { total_cents, subscription_count, converted_count, categories, savings_cents, savings_count } = dashboard;
   const subtitle = [
-    subscription_count === 1 ? '1 Abo' : `${subscription_count} Abos`,
+    subscription_count === 1 ? '1 Eintrag' : `${subscription_count} Einträge`,
     converted_count > 0 && period === 'month'
       ? `${converted_count} ${converted_count === 1 ? 'längeres' : 'längere'} auf Monat umgerechnet`
       : null,
@@ -48,6 +48,15 @@ export function HeroTotal({ dashboard, period, onPeriodChange }: Props) {
         <AppText variant="small" color="textMuted">
           {subtitle}
         </AppText>
+        {savings_count > 0 && (
+          <AppText variant="small" color="textMuted">
+            {'+ '}
+            <AppText variant="small" amount style={styles.savings}>
+              {formatCents(savings_cents)}
+            </AppText>
+            {` Sparen ${period === 'month' ? 'pro Monat' : 'pro Jahr'}`}
+          </AppText>
+        )}
       </View>
 
       {categories.length > 0 && (
@@ -87,6 +96,9 @@ export function HeroTotal({ dashboard, period, onPeriodChange }: Props) {
 }
 
 const styles = StyleSheet.create({
+  savings: {
+    color: colors.text,
+  },
   top: {
     flexDirection: 'row',
     alignItems: 'center',

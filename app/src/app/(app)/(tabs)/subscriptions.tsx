@@ -17,16 +17,24 @@ import {
 } from '@/components';
 import { Chip } from '@/components/Chip';
 import { useAuth } from '@/lib/auth';
-import { formatCents, formatShortDate } from '@/lib/format';
+import { formatCents } from '@/lib/format';
 import { useCategories, useSubscriptions, type ListParams } from '@/lib/queries';
-import type { Subscription } from '@/lib/types';
+import { endedLabel, metaFor } from '@/lib/subscriptionText';
+import type { SubscriptionKind } from '@/lib/types';
 import { colors, fonts, radius, screenPadding } from '@/theme';
 
 const STATUS = [
   { value: 'active', label: 'Aktiv' },
-  { value: 'cancelled', label: 'Gekündigt' },
+  { value: 'ended', label: 'Beendet' },
   { value: 'paused', label: 'Pausiert' },
   { value: 'all', label: 'Alle' },
+] as const;
+
+const KINDS = [
+  { value: 'all', label: 'Alles' },
+  { value: 'subscription', label: 'Abos' },
+  { value: 'installment', label: 'Raten' },
+  { value: 'savings', label: 'Sparen' },
 ] as const;
 
 const SORT = [
@@ -36,6 +44,7 @@ const SORT = [
 ] as const;
 
 type Status = (typeof STATUS)[number]['value'];
+type KindFilter = SubscriptionKind | 'all';
 type Sort = (typeof SORT)[number]['value'];
 
 function useDebounced<T>(value: T, delay = 250): T {
@@ -47,46 +56,41 @@ function useDebounced<T>(value: T, delay = 250): T {
   return debounced;
 }
 
-function metaFor(s: Subscription): string {
-  if (s.status === 'cancelled') {
-    return s.ends_at ? `Gekündigt zum ${formatShortDate(s.ends_at)}` : 'Gekündigt';
-  }
-  if (s.status === 'paused') return 'Pausiert';
-  const parts = [s.category?.name ?? 'Ohne Kategorie'];
-  if (s.next_charge_date) parts.push(`nächste ${formatShortDate(s.next_charge_date)}`);
-  return parts.join(' · ');
-}
-
 export default function SubscriptionsScreen() {
   const { user } = useAuth();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<Status>('active');
+  const [kind, setKind] = useState<KindFilter>('all');
   const [category, setCategory] = useState<number | undefined>(undefined);
   const [sort, setSort] = useState<Sort>('next_charge');
   const q = useDebounced(query.trim());
 
-  const params: ListParams = useMemo(() => ({ status, category, q: q || undefined, sort }), [status, category, q, sort]);
+  const params: ListParams = useMemo(
+    () => ({ status, kind: kind === 'all' ? undefined : kind, category, q: q || undefined, sort }),
+    [status, kind, category, q, sort],
+  );
   const list = useSubscriptions(params);
   const categories = useCategories();
 
   const header = (
     <View style={styles.header}>
-      <ScreenHeader title="Abos" />
+      <ScreenHeader title="Fixkosten" />
 
       <View style={styles.search}>
         <Search size={18} strokeWidth={2} color={colors.textMuted} />
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Abos durchsuchen"
+          placeholder="Durchsuchen"
           placeholderTextColor={colors.placeholder}
-          accessibilityLabel="Abos durchsuchen"
+          accessibilityLabel="Fixkosten durchsuchen"
           style={styles.searchInput}
           returnKeyType="search"
           autoCorrect={false}
         />
       </View>
 
+      <Segmented options={KINDS} value={kind} onChange={setKind} accessibilityLabel="Art" stretch />
       <Segmented options={STATUS} value={status} onChange={setStatus} accessibilityLabel="Status" stretch />
 
       {categories.data && categories.data.length > 0 && (
@@ -134,17 +138,17 @@ export default function SubscriptionsScreen() {
   if (!user?.email_verified) {
     return (
       <Screen>
-        <ScreenHeader title="Abos" />
+        <ScreenHeader title="Fixkosten" />
         <View style={styles.top16}>
           <Notice tone="info" title="Bitte bestätige zuerst deine E-Mail-Adresse">
-            Den Link findest du in deinem Postfach. Danach kannst du hier deine Abos verwalten.
+            Den Link findest du in deinem Postfach. Danach kannst du hier deine Fixkosten verwalten.
           </Notice>
         </View>
       </Screen>
     );
   }
 
-  const filtered = status !== 'active' || category !== undefined || q !== '';
+  const filtered = status !== 'active' || kind !== 'all' || category !== undefined || q !== '';
 
   return (
     <Screen bare>
@@ -165,6 +169,7 @@ export default function SubscriptionsScreen() {
             amountMeta={item.rhythm_label}
             categoryColor={item.category?.color}
             status={item.status}
+            statusLabel={endedLabel(item)}
             last={index === (list.data?.length ?? 0) - 1}
             onPress={() => router.push(`/subscription/${item.id}`)}
           />
@@ -176,15 +181,15 @@ export default function SubscriptionsScreen() {
             <ErrorState message={list.error.message} onRetry={list.refetch} retrying={list.refreshing} />
           ) : filtered ? (
             <AppText variant="body" color="textMuted" style={styles.empty}>
-              Keine Abos gefunden.
+              Nichts gefunden.
             </AppText>
           ) : (
             <Card>
-              <AppText variant="h2">Noch keine Abos</AppText>
+              <AppText variant="h2">Noch keine Fixkosten</AppText>
               <AppText variant="body" color="textMuted">
-                Leg dein erstes Abo an. Vorlagen für bekannte Dienste helfen dir dabei.
+                Leg dein erstes Abo, deine erste Rate oder einen Sparplan an. Vorlagen für bekannte Dienste helfen dir dabei.
               </AppText>
-              <PrimaryButton label="Abo anlegen" icon={CirclePlus} onPress={() => router.push('/add')} />
+              <PrimaryButton label="Hinzufügen" icon={CirclePlus} onPress={() => router.push('/add')} />
             </Card>
           )
         }

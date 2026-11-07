@@ -55,7 +55,7 @@ export function DesktopOverview({ dashboard }: { dashboard: Dashboard }) {
         <Pressable accessibilityRole="button" onPress={() => router.push('/add')} style={({ pressed }) => [styles.primary, pressed && styles.pressed]}>
           <Plus size={16} strokeWidth={2.4} color={colors.onAccent} />
           <AppText variant="body" color="onAccent" style={styles.semi}>
-            Abo hinzufügen
+            Hinzufügen
           </AppText>
         </Pressable>
       </View>
@@ -66,9 +66,17 @@ export function DesktopOverview({ dashboard }: { dashboard: Dashboard }) {
           value={formatCents(dashboard.total_cents)}
           sub={change === null ? ' ' : change === 0 ? 'wie im Vormonat' : `${change > 0 ? '+' : '−'}${formatCents(Math.abs(change))} zum Vormonat`}
         />
-        <Kpi label="Pro Jahr" value={yearly.data ? formatCents(yearly.data.total_cents) : '…'} sub="alle aktiven Abos" />
         <Kpi
-          label="Aktive Abos"
+          label="Pro Jahr"
+          value={yearly.data ? formatCents(yearly.data.total_cents) : '…'}
+          sub={
+            dashboard.savings_count > 0
+              ? `+ ${yearly.data ? formatCents(yearly.data.savings_cents) : '…'} Sparen`
+              : 'alle aktiven Einträge'
+          }
+        />
+        <Kpi
+          label="Aktive Einträge"
           value={String(dashboard.subscription_count)}
           sub={`${shortCount} monatlich · ${longCount} seltener`}
         />
@@ -137,7 +145,7 @@ export function DesktopOverview({ dashboard }: { dashboard: Dashboard }) {
       <View style={styles.panel}>
         <View style={styles.tableHead}>
           <AppText variant="h2" accessibilityRole="header" style={styles.flex}>
-            Alle Abos
+            Alle aktiven Einträge
           </AppText>
           <View style={styles.search}>
             <Search size={16} strokeWidth={2} color={colors.textMuted} />
@@ -146,7 +154,7 @@ export function DesktopOverview({ dashboard }: { dashboard: Dashboard }) {
               onChangeText={setQuery}
               placeholder="Suchen …"
               placeholderTextColor={colors.placeholder}
-              accessibilityLabel="Abos durchsuchen"
+              accessibilityLabel="Einträge durchsuchen"
               style={styles.searchInput}
             />
           </View>
@@ -166,7 +174,7 @@ export function DesktopOverview({ dashboard }: { dashboard: Dashboard }) {
             <SkeletonList rows={5} />
           ) : (list.data ?? []).length === 0 ? (
             <AppText variant="body" color="textMuted" style={styles.empty}>
-              {q ? 'Keine Abos gefunden.' : 'Noch keine aktiven Abos.'}
+              {q ? 'Nichts gefunden.' : 'Noch keine aktiven Einträge.'}
             </AppText>
           ) : (
             (list.data ?? []).map((s) => <TableRow key={s.id} s={s} />)
@@ -178,7 +186,7 @@ export function DesktopOverview({ dashboard }: { dashboard: Dashboard }) {
 }
 
 const COLUMNS: { key: string; label: string; flex: number; right?: boolean }[] = [
-  { key: 'name', label: 'Abo', flex: 2.2 },
+  { key: 'name', label: 'Name', flex: 2.2 },
   { key: 'cat', label: 'Kategorie', flex: 1.5 },
   { key: 'rhythm', label: 'Rhythmus', flex: 1.1 },
   { key: 'amount', label: 'Betrag', flex: 1, right: true },

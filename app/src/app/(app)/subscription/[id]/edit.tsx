@@ -18,7 +18,7 @@ export default function EditSubscriptionScreen() {
   return (
     <Screen bare>
       <View style={styles.header}>
-        <ScreenHeader title="Abo bearbeiten" nav="close" />
+        <ScreenHeader title="Bearbeiten" nav="close" />
       </View>
       {query.data ? (
         <SubscriptionForm

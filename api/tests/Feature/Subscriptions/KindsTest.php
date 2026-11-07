@@ -201,3 +201,15 @@ it('filters by kind without leaking other users\' entries', function () {
     expect($ids->all())->toBe([$mine->id]);
     $this->getJson('/api/v1/subscriptions?kind=rent')->assertJsonValidationErrors('kind');
 });
+
+it('lists cancelled and paid-off entries together as "ended"', function () {
+    $cancelled = Subscription::factory()->for($this->user)->cancelled('2026-10-31')->create();
+    $paidOff = Subscription::factory()->for($this->user)->installment('2026-10-01')->create(['anchor_date' => '2026-01-01']);
+    Subscription::factory()->for($this->user)->create();
+    Subscription::factory()->for($this->user)->paused()->create();
+
+    $ids = collect($this->getJson('/api/v1/subscriptions?status=ended&sort=name')->assertOk()->json('data'))->pluck('id')->sort()->values();
+
+    expect($paidOff->refresh()->status->value)->toBe('finished')
+        ->and($ids->all())->toBe([$cancelled->id, $paidOff->id]);
+});

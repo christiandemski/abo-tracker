@@ -18,6 +18,10 @@ Punkte, die SPEC.md und DESIGN.md offen ließen und die mit dem Nutzer geklärt 
 - Neben Abos gibt es die Arten **Rate** (Kredit, Ratenkauf; mit letzter Rate) und **Sparen** (Sparplan, Bausparen, Vorsorge). Keine „Pflichtzahlungen“, kein Wohnen/Miete, kein Haushaltsbuch (keine Nicht-Abo-Umsätze).
 - Sparen zählt nicht zu „Fixkosten pro Monat“, sondern erscheint als eigene Zeile; die Rücklage rechnet Sparen mit ein.
 - Tab „Abos“ heißt „Fixkosten“. Neue Standardkategorien „Kredite & Raten“ und „Sparen & Vorsorge“.
+- Rate: `ends_at` = letzte Rate (Pflicht). Danach setzt der nächtliche Lauf den Status `finished` („Abbezahlt“); wird die letzte Rate nach hinten verschoben, wird sie wieder aktiv. Raten haben keine Laufzeit/Frist, lassen sich nicht kündigen; Restbetrag und offene Raten liefert die API.
+- Sparen: keine Laufzeit/Frist, kein Quartals-Check; „Sparplan beenden“ nutzt den Kündigen-Endpunkt ohne Assistent.
+- Import legt alles als Abo an (Hinweis: Art unter „Bearbeiten“ umstellen). Ändert sich der Betrag einer Rate oder eines Sparplans, wird er direkt übernommen (angenommene Preisänderung, kein Orange, kein Push).
+- Listenfilter „Beendet“ = gekündigt + abbezahlt (API `status=ended`), dazu Filter nach Art.
 
 ## M2 · Abos & Übersicht
 

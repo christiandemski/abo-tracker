@@ -17,12 +17,12 @@ export default function AddSubscriptionScreen() {
   return (
     <Screen bare>
       <View style={styles.header}>
-        <ScreenHeader title="Abo hinzufügen" nav="close" />
+        <ScreenHeader title="Hinzufügen" nav="close" />
       </View>
       <SubscriptionForm
         initial={initial}
         withTemplates
-        submitLabel="Abo speichern"
+        submitLabel="Speichern"
         onSubmit={async (payload) => {
           const { data } = await api.post<Resource<Subscription>>('subscriptions', payload);
           invalidate('subscriptions', 'dashboard', 'calendar', 'stats');

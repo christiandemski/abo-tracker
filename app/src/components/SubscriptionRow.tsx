@@ -13,12 +13,24 @@ type Props = {
   /** Second line under the amount, e.g. "/ Monat" */
   amountMeta?: string;
   categoryColor?: string | null;
-  status?: 'active' | 'cancelled' | 'paused';
+  status?: 'active' | 'cancelled' | 'paused' | 'finished';
+  /** Text of the status badge if it differs from the default */
+  statusLabel?: string;
   last?: boolean;
   onPress?: () => void;
 };
 
-export function SubscriptionRow({ name, meta, amount, amountMeta, categoryColor, status = 'active', last, onPress }: Props) {
+export function SubscriptionRow({
+  name,
+  meta,
+  amount,
+  amountMeta,
+  categoryColor,
+  status = 'active',
+  statusLabel,
+  last,
+  onPress,
+}: Props) {
   const inactive = status !== 'active';
 
   return (
@@ -36,7 +48,7 @@ export function SubscriptionRow({ name, meta, amount, amountMeta, categoryColor,
             <AppText variant="rowTitle" numberOfLines={1} style={styles.name}>
               {name}
             </AppText>
-            {inactive && <StatusBadge status={status} />}
+            {inactive && <StatusBadge status={status} label={statusLabel} />}
           </View>
           <AppText variant="caption" color="textMuted" numberOfLines={1}>
             {meta}
