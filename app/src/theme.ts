@@ -1,4 +1,4 @@
-// Abo-Tracker – design tokens (dark mode only).
+// Cost-Tracker – design tokens (dark mode only).
 // Source: design/theme.ts and docs/DESIGN.md. Components use these tokens only, never hex values.
 
 export const colors = {

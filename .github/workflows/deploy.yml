@@ -83,4 +83,4 @@ jobs:
             && $PHP_BIN artisan optimize"
 
       - name: Health check
-        run: curl --fail --silent --show-error https://abo.codekorb.de/api/v1/health
+        run: curl --fail --silent --show-error https://kosten.codekorb.de/api/v1/health

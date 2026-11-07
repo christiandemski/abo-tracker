@@ -15,7 +15,7 @@ type InvitationState =
 
 const MIN_PASSWORD = 12;
 
-/** Opened from the invitation mail: https://abo.codekorb.de/register?token=… */
+/** Opened from the invitation mail: https://kosten.codekorb.de/register?token=… */
 export default function RegisterScreen() {
   const { token } = useLocalSearchParams<{ token?: string }>();
   const { checkInvitation, register } = useAuth();

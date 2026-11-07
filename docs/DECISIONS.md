@@ -1,12 +1,23 @@
 # Entscheidungen
 
-Punkte, die SPEC.md und DESIGN.md offen ließen und die mit dem Nutzer geklärt wurden (Stand: 06.11.2026, M1–M6 umgesetzt).
+Punkte, die SPEC.md und DESIGN.md offen ließen und die mit dem Nutzer geklärt wurden (Stand: 07.11.2026, M1–M6 umgesetzt, M7 in Arbeit).
 
 ## Arbeitsweise
 
 - **Commits ohne `Co-Authored-By`-Zeile** (ausdrücklicher Wunsch). Commit-Mail: christian.demski@outlook.com.
 - Vor jedem Meilenstein kurz planen, offene Punkte nachfragen, dann in kleinen lauffähigen Commits arbeiten.
-- Lokal: bevorzugt DDEV (`.ddev/`, PHP 8.5, MySQL 8.4, Mailpit), siehe README. Ohne DDEV: PHP 8.5 über scoop (`~/scoop/shims/php.exe`).
+- Lokal: bevorzugt DDEV (`.ddev/`, PHP 8.5, MySQL 8.4, Mailpit), siehe README. Ohne DDEV: System-PHP (8.4 über winget) reicht für die Tests (SQLite in-memory).
+
+## Name (07.11.2026)
+
+- Projekt heißt **Cost-Tracker** (Repo `cost-tracker`), Domain **kosten.codekorb.de**, Android-Paket `de.codekorb.kosten`, Postfach `kosten@codekorb.de`. Grund: neben Abos kommen Raten und Sparpläne dazu (M7).
+- Verweise auf den Design-Canvas „Abo-Tracker Design“ und das Claude-Doc bleiben, das sind Namen externer Dokumente.
+
+## M7 · Raten & Sparen
+
+- Neben Abos gibt es die Arten **Rate** (Kredit, Ratenkauf; mit letzter Rate) und **Sparen** (Sparplan, Bausparen, Vorsorge). Keine „Pflichtzahlungen“, kein Wohnen/Miete, kein Haushaltsbuch (keine Nicht-Abo-Umsätze).
+- Sparen zählt nicht zu „Fixkosten pro Monat“, sondern erscheint als eigene Zeile; die Rücklage rechnet Sparen mit ein.
+- Tab „Abos“ heißt „Fixkosten“. Neue Standardkategorien „Kredite & Raten“ und „Sparen & Vorsorge“.
 
 ## M2 · Abos & Übersicht
 

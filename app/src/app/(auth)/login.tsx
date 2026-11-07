@@ -15,7 +15,7 @@ export default function LoginScreen() {
 
   return (
     <Screen narrow>
-      <AuthHeader title="Abo-Tracker" subtitle="Melde dich an, um deine Abos und Fristen zu sehen." />
+      <AuthHeader title="Cost-Tracker" subtitle="Melde dich an, um deine Abos und Fristen zu sehen." />
 
       <View style={styles.form}>
         {verified === '1' && (
@@ -60,7 +60,7 @@ export default function LoginScreen() {
 
       <View style={styles.footer}>
         <Notice tone="info">
-          Ein Konto bekommst du nur per Einladung. Frag die Person, die den Abo-Tracker betreibt.
+          Ein Konto bekommst du nur per Einladung. Frag die Person, die den Cost-Tracker betreibt.
         </Notice>
       </View>
     </Screen>

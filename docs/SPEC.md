@@ -1,10 +1,10 @@
-# Abo-Tracker · Technik-Spezifikation
+# Cost-Tracker · Technik-Spezifikation
 
 Stand: 06.11.2026 · Quelle: Claude-Doc „Abo-Tracker · Technik-Spezifikation“
 
 ## Überblick & Entscheidungen
 
-Der Abo-Tracker wird eine Laravel-API auf dem Netcup-Webspace unter abo.codekorb.de plus eine Expo-App, die als Android-App und als Web-Version für den Desktop gebaut wird. Ziel: jederzeit sehen, was die wiederkehrenden Kosten pro Monat ausmachen, und keine Kündigungsfrist mehr verpassen.
+Der Cost-Tracker wird eine Laravel-API auf dem Netcup-Webspace unter kosten.codekorb.de plus eine Expo-App, die als Android-App und als Web-Version für den Desktop gebaut wird. Ziel: jederzeit sehen, was die wiederkehrenden Kosten pro Monat ausmachen, und keine Kündigungsfrist mehr verpassen.
 
 | Thema | Entscheidung | Begründung |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ Der Abo-Tracker wird eine Laravel-API auf dem Netcup-Webspace unter abo.codekorb
 | Nutzer | mehrere, Daten strikt getrennt | Freunde mit eigenen Konten |
 | Login | E-Mail + Passwort, BearID vorerst nicht | BearID bleibt nur für den Eigentümer; später nachrüstbar |
 | Erinnerungen | Push (Expo) + E-Mail | Cronjob auf dem Server |
-| Domain | abo.codekorb.de | API unter /api, Web-App unter / |
+| Domain | kosten.codekorb.de | API unter /api, Web-App unter / |
 | Design | Dark-Mode-Entwurf vom Canvas „Abo-Tracker Design“ | 11 Screens als Vorlage, siehe `docs/DESIGN.md` |
 
 ## Architektur
@@ -29,7 +29,7 @@ flowchart LR
     W[Web-App im Browser<br/>Expo Web]
     K[Kalender-App<br/>Nextcloud abonniert iCal]
   end
-  subgraph Netcup["Netcup · abo.codekorb.de"]
+  subgraph Netcup["Netcup · kosten.codekorb.de"]
     API[Laravel-API<br/>REST /api/v1, Sanctum<br/>liefert Web-App + iCal]
     DB[(MySQL)]
     S[Cron + Scheduler<br/>Fristen, Erinnerungen, Backup]
@@ -79,7 +79,7 @@ Kern ist die Tabelle `subscriptions`; alles andere hängt daran oder am Nutzer. 
 
 ## API-Endpunkte
 
-Alle Endpunkte liegen unter `https://abo.codekorb.de/api/v1`, sprechen JSON und verlangen außer Auth und iCal ein Sanctum-Token (`Authorization: Bearer …`). Jede Abfrage ist auf den eingeloggten Nutzer beschränkt (Laravel Policies).
+Alle Endpunkte liegen unter `https://kosten.codekorb.de/api/v1`, sprechen JSON und verlangen außer Auth und iCal ein Sanctum-Token (`Authorization: Bearer …`). Jede Abfrage ist auf den eingeloggten Nutzer beschränkt (Laravel Policies).
 
 | Bereich | Methode + Pfad | Liefert / tut |
 | --- | --- | --- |
@@ -194,15 +194,15 @@ Weil Freunde eigene Konten bekommen und Kontoauszüge verarbeitet werden, gelten
 
 ## Deployment & Android-Build
 
-API und Web-Version laufen zusammen auf abo.codekorb.de; die Android-App wird über Expo EAS gebaut und als APK verteilt.
+API und Web-Version laufen zusammen auf kosten.codekorb.de; die Android-App wird über Expo EAS gebaut und als APK verteilt.
 
 **Server (Netcup Webhosting 8000)**
 
-1. Subdomain abo.codekorb.de anlegen, Dokumentenwurzel auf den Laravel-Ordner `public/` setzen, PHP auf die aktuelle 8.x-Version stellen, Let's-Encrypt-Zertifikat aktivieren.
+1. Subdomain kosten.codekorb.de anlegen, Dokumentenwurzel auf den Laravel-Ordner `public/` setzen, PHP auf die aktuelle 8.x-Version stellen, Let's-Encrypt-Zertifikat aktivieren.
 2. MySQL-Datenbank im Panel anlegen, Zugangsdaten in `.env` (außerhalb von `public/`).
 3. Ausrollen: `composer install --no-dev` und Web-Build lokal oder per GitHub Actions, dann per SFTP/rsync hochladen; danach `php artisan migrate --force` und `php artisan optimize`. Wenn das Paket SSH bietet, läuft das als ein Deploy-Skript.
 4. Cronjob im Panel: `php artisan schedule:run` so oft, wie das Paket erlaubt (ideal minütlich). Der Scheduler startet Erinnerungen, Fristen-Neuberechnung, Backup und arbeitet die Queue ab (`queue:work --stop-when-empty`, Treiber database), da dauerhaft laufende Prozesse auf dem Webspace nicht möglich sind.
-5. Mails über SMTP mit einem Netcup-Postfach (z. B. abo@codekorb.de), SPF und DKIM für die Domain prüfen.
+5. Mails über SMTP mit einem Netcup-Postfach (z. B. kosten@codekorb.de), SPF und DKIM für die Domain prüfen.
 
 **App (Expo)**
 
@@ -220,7 +220,7 @@ Ein GitHub-Repo mit zwei Ordnern: `api/` (Laravel) und `app/` (Expo). Beide Seit
 
 Gebaut wird in sechs Meilensteinen; nach M2 ist der Tracker schon im Alltag nutzbar, alles danach macht ihn besser.
 
-1. **M1 · Fundament:** Repo, Laravel-Projekt, Deployment auf abo.codekorb.de, Auth mit Einladung, Expo-Projekt mit Login und Dark-Theme aus dem Design. → Details in `docs/START-M1.md`
+1. **M1 · Fundament:** Repo, Laravel-Projekt, Deployment auf kosten.codekorb.de, Auth mit Einladung, Expo-Projekt mit Login und Dark-Theme aus dem Design. → Details in `docs/START-M1.md`
 2. **M2 · Abos & Übersicht:** Abo anlegen (mit Vorlagen), Liste, Detail, Übersicht mit Monat/Jahr, Kategorien, Umrechnung, nächste Abbuchung, Kündigungsfrist.
 3. **M3 · Erinnerungen:** Scheduler, E-Mail, Push über Expo, Erinnerungs-Einstellungen, Protokoll gegen Doppelversand.
 4. **M4 · CSV-Import:** Sparkasse-Adapter (CSV-CAMT V2), Erkennung, Import-Screen, Import-Regeln, Preisänderungen.
@@ -231,6 +231,6 @@ Gebaut wird in sechs Meilensteinen; nach M2 ist der Tracker schon im Alltag nutz
 
 - [x] Bank: Sparkasse, Export als CSV-CAMT V2 ab 01.01.2026. Anonymisierte Beispieldatei zum Testen des Adapters bereitlegen.
 - [ ] Erlaubt das Netcup-Paket SSH und minütliche Cronjobs? (im Panel prüfen)
-- [ ] Name der App: „Abo-Tracker“ als Arbeitstitel oder ein eigener Name?
+- [x] Name der App: „Cost-Tracker“ (Repo `cost-tracker`, Domain kosten.codekorb.de, Paket-ID `de.codekorb.kosten`).
 - [ ] Soll das Tool in Bear Cave verlinkt werden, auch wenn der Login vorerst eigenständig ist?
 - [ ] Startkategorien und Standard-Erinnerungsabstände (14 und 3 Tage) so übernehmen?

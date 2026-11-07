@@ -1,5 +1,5 @@
 // Web: sessionStorage – the token is gone when the browser tab is closed.
-const KEY = 'abo-tracker.token';
+const KEY = 'cost-tracker.token';
 
 function storage(): Storage | null {
   try {

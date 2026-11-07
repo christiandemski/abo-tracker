@@ -1,6 +1,6 @@
-# Abo-Tracker
+# Cost-Tracker
 
-Persönlicher Abo- und Fixkosten-Tracker: monatliche Kosten, Kündigungsfristen, Preiserhöhungen, CSV-Import aus Kontoauszügen. Laravel-API plus Expo-App (Android + Web), gehostet unter https://abo.codekorb.de.
+Persönlicher Abo- und Fixkosten-Tracker: monatliche Kosten, Kündigungsfristen, Preiserhöhungen, CSV-Import aus Kontoauszügen. Laravel-API plus Expo-App (Android + Web), gehostet unter https://kosten.codekorb.de.
 
 | Ordner | Inhalt |
 | --- | --- |
@@ -16,7 +16,7 @@ Persönlicher Abo- und Fixkosten-Tracker: monatliche Kosten, Kündigungsfristen,
 Voraussetzungen: Docker, [DDEV](https://ddev.com), Node 24. PHP 8.5 und MySQL 8.4 (wie in CI) laufen im Container, Mails landen in Mailpit.
 
 ```bash
-ddev start                          # https://abo-tracker.ddev.site
+ddev start                          # https://cost-tracker.ddev.site
 ddev composer install
 cp api/.env.example api/.env        # DDEV trägt DB- und Mail-Werte beim Start selbst ein
 ddev artisan key:generate
@@ -30,7 +30,7 @@ ddev artisan test
 Falls `MAIL_SCHEME=smtps` in der `.env` steht: für Mailpit auf `smtp` ändern.
 
 Die App läuft weiter auf dem Rechner (nicht im Container), mit
-`EXPO_PUBLIC_API_URL=https://abo-tracker.ddev.site/api/v1` in `app/.env`, dann `cd app && npm run web`.
+`EXPO_PUBLIC_API_URL=https://cost-tracker.ddev.site/api/v1` in `app/.env`, dann `cd app && npm run web`.
 
 ### Ohne DDEV
 

@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-const FALLBACK_API_URL = 'https://abo.codekorb.de/api/v1';
+const FALLBACK_API_URL = 'https://kosten.codekorb.de/api/v1';
 
 function resolveApiUrl(): string {
   // Explicit override (e.g. Expo dev server on :8081 talking to `php artisan serve` on :8000)

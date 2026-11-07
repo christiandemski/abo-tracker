@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Abo-Tracker'),
+    'name' => env('APP_NAME', 'Cost-Tracker'),
 
     /*
     |--------------------------------------------------------------------------

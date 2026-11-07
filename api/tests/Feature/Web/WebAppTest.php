@@ -7,7 +7,7 @@ beforeEach(function () {
     $this->hadAppDir = File::isDirectory($this->appDir);
     $this->tmpDir = storage_path('framework/testing/webapp');
     File::ensureDirectoryExists($this->tmpDir.'/_expo/static/js');
-    File::put($this->tmpDir.'/index.html', '<!doctype html><title>Abo-Tracker</title>');
+    File::put($this->tmpDir.'/index.html', '<!doctype html><title>Cost-Tracker</title>');
     File::put($this->tmpDir.'/_expo/static/js/entry.js', 'console.log(1)');
     app()->usePublicPath(storage_path('framework/testing'));
     File::moveDirectory($this->tmpDir, public_path('app'), true);
@@ -57,6 +57,6 @@ it('publishes Android asset links when fingerprints are configured', function ()
 
     $this->getJson('/.well-known/assetlinks.json')
         ->assertOk()
-        ->assertJsonPath('0.target.package_name', 'de.codekorb.abo')
+        ->assertJsonPath('0.target.package_name', 'de.codekorb.kosten')
         ->assertJsonPath('0.target.sha256_cert_fingerprints', ['AA:BB']);
 });

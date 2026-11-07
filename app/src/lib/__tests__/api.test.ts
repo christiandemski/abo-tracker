@@ -12,7 +12,7 @@ function setup(token: string | null = 'secret-token') {
   const fetchImpl = jest.fn<Promise<Response>, Parameters<typeof fetch>>();
   const onUnauthorized = jest.fn();
   const client = createApiClient({
-    baseUrl: 'https://abo.codekorb.de/api/v1/',
+    baseUrl: 'https://kosten.codekorb.de/api/v1/',
     getToken: async () => token,
     onUnauthorized,
     fetchImpl: fetchImpl as unknown as typeof fetch,
@@ -28,7 +28,7 @@ describe('createApiClient', () => {
     await expect(client.post('/auth/login', { email: 'a@b.de' })).resolves.toEqual({ data: { id: 1 } });
 
     const [url, init] = fetchImpl.mock.calls[0];
-    expect(url).toBe('https://abo.codekorb.de/api/v1/auth/login');
+    expect(url).toBe('https://kosten.codekorb.de/api/v1/auth/login');
     expect(init?.method).toBe('POST');
     expect(init?.body).toBe(JSON.stringify({ email: 'a@b.de' }));
     expect(init?.headers).toMatchObject({

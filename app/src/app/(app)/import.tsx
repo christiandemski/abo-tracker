@@ -27,7 +27,7 @@ import type { BankFormat, ImportApplyResult, ImportBatch, ImportCandidate, Resou
 import { invalidate, useQuery } from '@/lib/useQuery';
 import { colors, fonts, radius, screenPadding } from '@/theme';
 
-const FORMAT_KEY = 'abo-tracker.bank-format';
+const FORMAT_KEY = 'cost-tracker.bank-format';
 
 type Step =
   | { step: 1 }
@@ -354,7 +354,7 @@ function Result({ result, priceChanges }: { result: ImportApplyResult; priceChan
             </View>
           ))}
           <AppText variant="caption" color="textMuted" style={styles.note}>
-            Prüf bei den neuen Abos Kategorie und Kündigungsfrist. Beim nächsten Import erkennt der Abo-Tracker sie
+            Prüf bei den neuen Abos Kategorie und Kündigungsfrist. Beim nächsten Import erkennt der Cost-Tracker sie
             automatisch wieder.
           </AppText>
         </View>

@@ -79,7 +79,7 @@ class CalendarFeedController extends Controller
 
         return response($body, 200, [
             'Content-Type' => 'text/calendar; charset=utf-8',
-            'Content-Disposition' => 'inline; filename="abo-tracker.ics"',
+            'Content-Disposition' => 'inline; filename="cost-tracker.ics"',
             'Cache-Control' => 'private, max-age=900',
             'X-Robots-Tag' => 'noindex',
         ]);

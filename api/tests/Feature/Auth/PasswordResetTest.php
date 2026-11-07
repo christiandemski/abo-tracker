@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Notification;
 
 beforeEach(function () {
     Notification::fake();
-    config(['app.frontend_url' => 'https://abo.codekorb.de']);
+    config(['app.frontend_url' => 'https://kosten.codekorb.de']);
     $this->user = User::factory()->create(['email' => 'chris@example.com']);
 });
 
@@ -16,7 +16,7 @@ it('sends a reset link pointing to the web app', function () {
     Notification::assertSentTo($this->user, ResetPassword::class, function (ResetPassword $n) {
         $url = $n->toMail($this->user)->actionUrl;
 
-        return str_starts_with($url, 'https://abo.codekorb.de/reset-password?token=')
+        return str_starts_with($url, 'https://kosten.codekorb.de/reset-password?token=')
             && str_contains($url, 'email=chris%40example.com');
     });
 });

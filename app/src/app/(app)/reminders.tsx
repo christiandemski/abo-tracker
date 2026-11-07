@@ -123,7 +123,7 @@ function RemindersForm({ initial }: { initial: ReminderSettings }) {
             action={<SecondaryButton label="Jetzt einrichten" loading={registering} onPress={retryPush} />}
           >
             {pushStatus === 'denied'
-              ? 'Erlaube Benachrichtigungen für den Abo-Tracker in den Android-Einstellungen und tipp dann noch mal hier.'
+              ? 'Erlaube Benachrichtigungen für den Cost-Tracker in den Android-Einstellungen und tipp dann noch mal hier.'
               : pushStatus === 'unconfigured'
                 ? 'Push ist für diese App-Version noch nicht eingerichtet. Mails kommen trotzdem an.'
                 : 'Damit Erinnerungen auf diesem Gerät ankommen, braucht die App deine Erlaubnis.'}

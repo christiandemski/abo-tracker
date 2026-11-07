@@ -14,9 +14,9 @@ return [
     |
     */
 
-    // Android App Links: lets the app open https://abo.codekorb.de links (invitation, password reset)
+    // Android App Links: lets the app open https://kosten.codekorb.de links (invitation, password reset)
     'android' => [
-        'package_name' => env('ANDROID_PACKAGE_NAME', 'de.codekorb.abo'),
+        'package_name' => env('ANDROID_PACKAGE_NAME', 'de.codekorb.kosten'),
         'sha256_cert_fingerprints' => array_values(array_filter(array_map('trim', explode(',', (string) env('ANDROID_SHA256_CERT_FINGERPRINTS', ''))))),
     ],
 

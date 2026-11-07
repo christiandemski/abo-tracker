@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         ]));
 
         ResetPassword::toMailUsing(fn (User $user, string $token) => (new MailMessage)
-            ->subject('Neues Passwort für den Abo-Tracker')
+            ->subject('Neues Passwort für den Cost-Tracker')
             ->greeting("Hallo {$user->name}!")
             ->line('Du hast ein neues Passwort angefordert.')
             ->action('Passwort festlegen', FrontendUrl::to('reset-password', [

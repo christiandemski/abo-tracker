@@ -6,7 +6,7 @@
 
 ## Ziel
 
-Am Ende von M1 kann ich mich per Einladung registrieren, in der Android-App und im Browser einloggen und sehe einen leeren, aber fertig gestylten Übersichts-Screen. Das Backend läuft auf abo.codekorb.de, der Cronjob ist eingerichtet.
+Am Ende von M1 kann ich mich per Einladung registrieren, in der Android-App und im Browser einloggen und sehe einen leeren, aber fertig gestylten Übersichts-Screen. Das Backend läuft auf kosten.codekorb.de, der Cronjob ist eingerichtet.
 
 ## Aufgaben
 
@@ -44,9 +44,9 @@ Am Ende von M1 kann ich mich per Einladung registrieren, in der Android-App und 
 1. `php artisan test` grün, inklusive Mandanten-Test.
 2. Einladung per `php artisan invite:create` → Mail mit Link → Registrierung in der App → Login funktioniert auf Android (APK) und im Browser.
 3. Leere Übersicht sieht aus wie das Design (Farben, Schriften, Tab-Bar, Abstände).
-4. `https://abo.codekorb.de/api/v1/health` antwortet mit `{"status":"ok"}`.
+4. `https://kosten.codekorb.de/api/v1/health` antwortet mit `{"status":"ok"}`.
 
 ## Noch zu klären (vor oder während M1)
 
 - Erlaubt das Netcup-Paket SSH und minütliche Cronjobs? Davon hängt ab, ob das Deploy-Skript per SSH oder nur per SFTP läuft.
-- App-Name und Paket-ID für Android (Vorschlag: `de.codekorb.abo`).
+- App-Name und Paket-ID für Android (Vorschlag: `de.codekorb.kosten`).

@@ -1,22 +1,22 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 // Production API. Override locally with EXPO_PUBLIC_API_URL (see .env.example).
-const DEFAULT_API_URL = 'https://abo.codekorb.de/api/v1';
-const APP_HOST = 'abo.codekorb.de';
+const DEFAULT_API_URL = 'https://kosten.codekorb.de/api/v1';
+const APP_HOST = 'kosten.codekorb.de';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'Abo-Tracker',
-  slug: 'abo-tracker',
+  name: 'Cost-Tracker',
+  slug: 'cost-tracker',
   version: '1.0.0',
   platforms: ['android', 'web'],
   orientation: 'portrait',
   icon: './assets/images/icon.png',
-  scheme: 'abotracker',
+  scheme: 'costtracker',
   userInterfaceStyle: 'dark',
   backgroundColor: '#0E1014',
   android: {
-    package: 'de.codekorb.abo',
+    package: 'de.codekorb.kosten',
     adaptiveIcon: {
       backgroundColor: '#0E1014',
       foregroundImage: './assets/images/android-icon-foreground.png',

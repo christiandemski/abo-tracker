@@ -9,7 +9,7 @@ import { Platform } from 'react-native';
 import type { ApiClient } from './api';
 import { deviceName } from './config';
 
-const TOKEN_KEY = 'abo-tracker.push-token';
+const TOKEN_KEY = 'cost-tracker.push-token';
 export const CHANNEL_ID = 'reminders';
 
 export const pushSupported = Platform.OS === 'android';

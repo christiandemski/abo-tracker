@@ -155,7 +155,7 @@ export default function CalendarFeedScreen() {
               ) : confirm === 'off' ? (
                 <View style={styles.confirm}>
                   <AppText variant="small" color="textMuted">
-                    Dein Kalender bekommt danach keine Termine mehr vom Abo-Tracker.
+                    Dein Kalender bekommt danach keine Termine mehr vom Cost-Tracker.
                   </AppText>
                   <View style={styles.row}>
                     <View style={styles.flex}>

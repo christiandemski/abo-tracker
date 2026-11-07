@@ -7,7 +7,7 @@ import { useForm } from '@/lib/useForm';
 
 const MIN_PASSWORD = 12;
 
-/** Opened from the reset mail: https://abo.codekorb.de/reset-password?token=…&email=… */
+/** Opened from the reset mail: https://kosten.codekorb.de/reset-password?token=…&email=… */
 export default function ResetPasswordScreen() {
   const { token, email } = useLocalSearchParams<{ token?: string; email?: string }>();
   const { resetPassword } = useAuth();

@@ -9,7 +9,7 @@ use Laravel\Sanctum\Sanctum;
 
 beforeEach(function () {
     Notification::fake();
-    config(['app.frontend_url' => 'https://abo.codekorb.de']);
+    config(['app.frontend_url' => 'https://kosten.codekorb.de']);
 });
 
 /** Returns the plain token from the faked mail link. */
@@ -55,7 +55,7 @@ describe('invite:create', function () {
         Notification::assertSentTo(new AnonymousNotifiable, InvitationNotification::class,
             function (InvitationNotification $n) use ($token) {
                 return $n->toMail(new AnonymousNotifiable)->actionUrl
-                    === 'https://abo.codekorb.de/register?token='.$token;
+                    === 'https://kosten.codekorb.de/register?token='.$token;
             });
     });
 

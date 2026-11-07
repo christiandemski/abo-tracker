@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 
 beforeEach(function () {
-    config(['app.frontend_url' => 'https://abo.codekorb.de']);
+    config(['app.frontend_url' => 'https://kosten.codekorb.de']);
 });
 
 function verificationUrl(User $user, ?string $email = null): string
@@ -21,7 +21,7 @@ it('verifies via the signed link and redirects to the web app', function () {
     $user = User::factory()->unverified()->create();
 
     $this->get(verificationUrl($user))
-        ->assertRedirect('https://abo.codekorb.de/login?verified=1');
+        ->assertRedirect('https://kosten.codekorb.de/login?verified=1');
 
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
 });

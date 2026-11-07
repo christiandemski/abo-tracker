@@ -75,7 +75,7 @@ class ReminderDigestNotification extends Notification implements ShouldQueue
         $first = $this->items[0];
 
         return $mail
-            ->action(count($this->items) === 1 ? 'Abo ansehen' : 'Abo-Tracker öffnen', count($this->items) === 1
+            ->action(count($this->items) === 1 ? 'Abo ansehen' : 'Cost-Tracker öffnen', count($this->items) === 1
                 ? FrontendUrl::to('subscription/'.$first['subscription_id'])
                 : FrontendUrl::to(''))
             ->line('Die Abstände der Erinnerungen stellst du in der App unter Einstellungen ein.');

@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Last API responses, so the overview shows instantly (and offline) on the next start.
 // Only display data lives here; tokens stay in SecureStore.
 
-const PREFIX = 'abo-tracker.cache.';
+const PREFIX = 'cost-tracker.cache.';
 
 export async function readCache<T>(key: string): Promise<T | undefined> {
   try {

@@ -1,4 +1,4 @@
-name: abo-tracker
+name: cost-tracker
 type: laravel
 docroot: api/public
 php_version: "8.5"

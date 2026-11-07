@@ -1,4 +1,4 @@
-# Abo-Tracker · Design-Vorgaben
+# Cost-Tracker · Design-Vorgaben
 
 Dark Mode, ruhige Flächen, eine Akzentfarbe (Blau) für Aktionen und eine Signalfarbe (Orange) nur für Handlungsbedarf. Die wichtigste Zahl steht immer oben, darunter das, was als Nächstes eine Entscheidung braucht, danach Details.
 

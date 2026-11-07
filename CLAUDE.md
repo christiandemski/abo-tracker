@@ -1,8 +1,8 @@
-# Abo-Tracker – Projektkontext für Claude
+# Cost-Tracker – Projektkontext für Claude
 
 Persönlicher Abo- und Fixkosten-Tracker: Überblick über monatliche wiederkehrende Kosten, Kündigungsfristen, Preiserhöhungen, CSV-Import aus Kontoauszügen. Mehrere Nutzer (Freunde) mit strikt getrennten Daten.
 
-- **Domain:** https://abo.codekorb.de (API unter `/api/v1`, Web-App unter `/`)
+- **Domain:** https://kosten.codekorb.de (API unter `/api/v1`, Web-App unter `/`)
 - **Spezifikation:** `docs/SPEC.md` (Datenmodell, API, Fachlogik, Import, Sicherheit, Deployment, Meilensteine)
 - **Design:** `docs/DESIGN.md` (Tokens, Komponenten, Screens, UX-Regeln) + Screen-Vorlagen in `design/screens/`
 - **Aktueller Auftrag:** siehe `docs/START-M1.md`

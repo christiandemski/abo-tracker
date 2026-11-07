@@ -12,7 +12,7 @@ import { colors } from '@/theme';
 import { AppText } from './AppText';
 import { TextLink } from './TextLink';
 
-const DISMISS_KEY = 'abo-tracker.check-dismissed-at';
+const DISMISS_KEY = 'cost-tracker.check-dismissed-at';
 const DISMISS_DAYS = 30;
 
 /** Overview hint: shown when the last usage check is more than 3 months ago (dismissible). */

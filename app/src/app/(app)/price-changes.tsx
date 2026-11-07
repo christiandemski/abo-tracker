@@ -70,7 +70,7 @@ function Content({ data, onChanged }: { data: PriceChangesResponse; onChanged: (
       ) : (
         <View style={styles.block}>
           <Notice tone="success" title="Keine offenen Preisänderungen">
-            Neue Preise erkennt der Abo-Tracker beim CSV-Import. Angekündigte Erhöhungen trägst du in den Abo-Details ein.
+            Neue Preise erkennt der Cost-Tracker beim CSV-Import. Angekündigte Erhöhungen trägst du in den Abo-Details ein.
           </Notice>
         </View>
       )}

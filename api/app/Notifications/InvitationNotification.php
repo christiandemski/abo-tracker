@@ -28,11 +28,11 @@ class InvitationNotification extends Notification
         $url = FrontendUrl::to('register', ['token' => $this->plainToken]);
 
         return (new MailMessage)
-            ->subject('Deine Einladung zum Abo-Tracker')
+            ->subject('Deine Einladung zum Cost-Tracker')
             ->greeting('Hallo!')
             ->line($inviter
-                ? "{$inviter} hat dich zum Abo-Tracker eingeladen."
-                : 'Du bist zum Abo-Tracker eingeladen.')
+                ? "{$inviter} hat dich zum Cost-Tracker eingeladen."
+                : 'Du bist zum Cost-Tracker eingeladen.')
             ->line('Damit behältst du deine Abos, Fixkosten und Kündigungsfristen im Blick.')
             ->action('Konto anlegen', $url)
             ->line('Der Link gilt bis '.$this->invitation->expires_at->format('d.m.Y, H:i').' Uhr.')

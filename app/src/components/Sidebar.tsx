@@ -23,7 +23,7 @@ export function Sidebar({ state, navigateToTab }: BottomTabBarProps) {
           <RefreshCw size={18} strokeWidth={2.2} color={colors.onAccent} />
         </View>
         <AppText variant="rowTitle" style={styles.brandText}>
-          Abo-Tracker
+          Cost-Tracker
         </AppText>
       </View>
 

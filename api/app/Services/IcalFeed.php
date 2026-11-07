@@ -106,10 +106,10 @@ class IcalFeed
         $lines = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//codekorb//Abo-Tracker//DE',
+            'PRODID:-//codekorb//Cost-Tracker//DE',
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH',
-            'X-WR-CALNAME:Abo-Tracker',
+            'X-WR-CALNAME:Cost-Tracker',
             'X-WR-TIMEZONE:Europe/Berlin',
             'REFRESH-INTERVAL;VALUE=DURATION:PT6H',
             'X-PUBLISHED-TTL:PT6H',
